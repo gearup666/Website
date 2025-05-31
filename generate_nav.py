@@ -80,7 +80,7 @@ def main():
         print("错误: 未找到 index.html。请创建一个包含占位符的基础 index.html 文件。")
         return
 
-    placeholder = ""
+    placeholder = "" # 已修正此处的占位符
     if placeholder not in index_content:
         print(f"错误: 在 index.html 中未找到占位符 '{placeholder}'。")
         return
@@ -90,8 +90,20 @@ def main():
     if len(parts) == 2:
         new_index_content = parts[0] + nav_links_html + parts[1]
     else:
-        print(f"错误: 占位符 '{placeholder}' 在 index.html 中出现多次或结构异常。")
-        return
+        # 如果占位符是HTML注释，它可能在文件中有多个实例（例如，如果用户添加了其他注释）
+        # 更稳健的方法是只替换第一个或最后一个实例，或者使用更独特的占位符。
+        # 对于这个场景，假设占位符是唯一的。
+        # 如果 index.html 结构复杂，可能需要更复杂的替换逻辑。
+        # 例如，使用正则表达式确保只替换特定div内的占位符。
+        # 但对于当前简单的占位符，split应该可以工作，前提是占位符是唯一的。
+        print(f"警告: 占位符 '{placeholder}' 在 index.html 中未精确匹配或出现多次。将尝试替换第一个实例。")
+        # 尝试找到第一个实例并替换
+        start_index = index_content.find(placeholder)
+        if start_index != -1:
+            new_index_content = index_content[:start_index] + nav_links_html + index_content[start_index + len(placeholder):]
+        else:
+            print(f"错误: 无法在 index.html 中定位占位符 '{placeholder}' 进行替换。")
+            return
 
     # 仅当内容发生变化时才写入文件
     if new_index_content != index_content:
