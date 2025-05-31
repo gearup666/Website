@@ -39,7 +39,7 @@ jobs:
       - name: Commit and push if index.html changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: Automated update: Refresh navigation links [skip ci]
+          commit_message: "Automated update: Refresh navigation links [skip ci]" # 已将此字符串用引号括起
           file_pattern: index.html # 仅当 index.html 发生变化时才提交
           # commit_user_name: GitHub Actions Bot # 可选
           # commit_user_email: actions@github.com # 可选
