@@ -13,7 +13,7 @@ CARD_TEMPLATE = """
 """
 
 # 导航内容的占位符，必须与 index.html 中的占位符完全一致
-NAV_PLACEHOLDER = "" # <--- 请确保您的脚本中此行完全一致
+NAV_PLACEHOLDER = "" # <--- 已修正此行
 
 def extract_details(html_filepath):
     """
@@ -100,14 +100,14 @@ def main():
         return
 
     # 检查 NAV_PLACEHOLDER 是否为空 (理论上不应该，因为它是硬编码的)
-    if not NAV_PLACEHOLDER or not NAV_PLACEHOLDER.strip():
+    if not NAV_PLACEHOLDER or not NAV_PLACEHOLDER.strip(): # NAV_PLACEHOLDER.strip() 确保它不只是空格
         print(f"严重错误: 脚本中的 NAV_PLACEHOLDER 变量为空或仅包含空格。值为: '{NAV_PLACEHOLDER}'")
         return
 
     # 替换占位符
     if NAV_PLACEHOLDER not in index_content_original:
         print(f"错误: 在 '{index_html_path}' 中未找到占位符 '{NAV_PLACEHOLDER}'。")
-        print("请确保 index.html 文件中包含该占位符。")
+        print(f"请确保 index.html 文件中包含该占位符: {NAV_PLACEHOLDER}")
         return
 
     # 执行替换
@@ -116,13 +116,11 @@ def main():
     
     # 确保占位符确实被找到了 (partition 总是返回3个部分，但如果没找到，placeholder_found 会是空)
     # 不过，前面的 `NAV_PLACEHOLDER not in index_content_original` 已经处理了未找到的情况。
-    # 但为了稳健，可以再次确认。
-    if not placeholder_found and NAV_PLACEHOLDER: # 检查 placeholder_found 是否等于 NAV_PLACEHOLDER
+    if placeholder_found != NAV_PLACEHOLDER : # 进一步确认 partition 是否按预期工作
          # 这个情况理论上不应该发生，因为 if NAV_PLACEHOLDER not in index_content_original 已经检查过了
-         print(f"警告: partition 未能按预期分割字符串，尽管占位符 '{NAV_PLACEHOLDER}' 似乎存在。")
-         # 可以尝试使用 find 和 slicing 作为备选方案，但如果 partition 失败，通常意味着更深层的问题
-         # 或者简单地在此处返回错误
-         # return
+         print(f"警告: partition 未能按预期分割字符串，或者占位符 '{NAV_PLACEHOLDER}' 在文件中存在但 partition 行为异常。")
+         # 可以考虑在此处返回错误或记录更详细的调试信息
+         # return # 如果严格要求，可以在此返回
 
     new_index_content = before_placeholder + nav_content + after_placeholder
     
