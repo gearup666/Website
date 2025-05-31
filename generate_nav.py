@@ -118,6 +118,10 @@ def main():
     # 执行替换
     # 使用 partition 来分割字符串
     before_placeholder, placeholder_found, after_placeholder = index_content_original.partition(NAV_PLACEHOLDER)
+
+    
+    # 保留占位符，便于下次增量更新
+    new_index_content = before_placeholder + nav_content + "\n" + NAV_PLACEHOLDER + after_placeholder
     
     # 确保占位符确实被找到了 (partition 总是返回3个部分，但如果没找到，placeholder_found 会是空)
     # 不过，前面的 `NAV_PLACEHOLDER not in index_content_original` 已经处理了未找到的情况。
