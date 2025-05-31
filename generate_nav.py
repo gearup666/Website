@@ -58,6 +58,8 @@ def main():
 
     if not html_files:
         print("未找到用于生成导航的HTML文件 (已排除 index.html)。")
+        # 即使没有文件，也应该继续尝试更新index.html，以便清空旧的链接（如果适用）
+        # nav_links_html 将保持为空字符串
 
     # 对文件进行排序，可以按文件名或路径
     html_files.sort()
@@ -81,17 +83,18 @@ def main():
         return
 
     # --- 这是关键的修正 ---
-    placeholder = "" 
+    placeholder = ""
     # ----------------------
 
-    if not placeholder.strip(): # 再次检查 placeholder 是否为空或仅包含空格
+    # 这个检查现在应该不会被触发，因为placeholder被正确设置了
+    if not placeholder.strip(): 
         print("错误: placeholder 变量为空或仅包含空格。脚本无法继续。")
         return
 
     if placeholder not in index_content:
         print(f"错误: 在 index.html 中未找到占位符 '{placeholder}'。")
         print("请确保 index.html 文件中包含以下占位符，通常在一个 div 内部：")
-        print("")
+        print("") # 修正了这里显示的占位符
         return
 
     # 确保占位符前后的内容保持不变，只替换占位符本身
@@ -118,7 +121,7 @@ def main():
         except Exception as e:
             print(f"写入更新后的 index.html 时出错: {e}")
     else:
-        print("index.html 内容无变化，无需更新。")
+        print("index.html 内容无变化，无需更新。") # 如果脚本执行到这里，说明它认为新旧内容相同
 
 if __name__ == "__main__":
     main()
