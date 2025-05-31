@@ -3,125 +3,124 @@ import os
 import glob
 from bs4 import BeautifulSoup # 需要安装: pip install beautifulsoup4
 
-def get_html_details(filepath):
+# HTML 卡片模板
+# 注意：这里的 class 名称需要和 index.html 中的 CSS 定义一致
+CARD_TEMPLATE = """
+<a href="{link_path}" class="card">
+    <h2 class="card-title">{title}</h2>
+    <p class="card-description">{description}</p>
+</a>
+"""
+
+# 导航内容的占位符，必须与 index.html 中的占位符完全一致
+NAV_PLACEHOLDER = ""
+
+def extract_details(html_filepath):
     """
-    从 HTML 文件中提取标题和描述。
-    优先顺序:
-    1. <meta name="description">
-    2. <title>
-    3. 文件名 (作为标题和描述)
+    从指定的 HTML 文件中提取标题和描述。
     """
-    filename_title = os.path.splitext(os.path.basename(filepath))[0].replace('_', ' ').replace('-', ' ').title()
-    description = filename_title # 默认描述为文件名
-    page_title = filename_title   # 默认页面标题为文件名
+    page_title = os.path.splitext(os.path.basename(html_filepath))[0].replace('_', ' ').replace('-', ' ').title() # 默认标题为文件名
+    description = "暂无描述。" # 默认描述
 
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            soup = BeautifulSoup(f, 'html.parser')
+        with open(html_filepath, 'r', encoding='utf-8') as file:
+            soup = BeautifulSoup(file, 'html.parser')
 
-            meta_desc_tag = soup.find('meta', attrs={'name': 'description'})
-            if meta_desc_tag and meta_desc_tag.get('content'):
-                description = meta_desc_tag.get('content').strip()
-
+            # 1. 尝试获取 <title> 标签内容
             title_tag = soup.title
             if title_tag and title_tag.string:
                 page_title = title_tag.string.strip()
-                # 如果描述仍然是文件名，并且页面标题更具描述性，则使用页面标题作为描述
-                if description == filename_title and page_title != filename_title:
-                    description = page_title
 
+            # 2. 尝试获取 <meta name="description"> 的内容
+            meta_desc_tag = soup.find('meta', attrs={'name': 'description'})
+            if meta_desc_tag and meta_desc_tag.get('content'):
+                description = meta_desc_tag.get('content').strip()
+            elif page_title != os.path.splitext(os.path.basename(html_filepath))[0].replace('_', ' ').replace('-', ' ').title():
+                # 如果没有 meta description，但成功获取了 <title>，则用 title 作为描述
+                description = page_title
+                
     except Exception as e:
-        print(f"处理文件 {filepath} 时出错: {e}")
-        # 出错时，描述和标题将保留为基于文件名的默认值
-
+        print(f"处理文件 '{html_filepath}' 时发生错误: {e}")
+        # 保留默认值
+    
     return page_title, description
 
-def generate_card_html(file_title, link_path, description):
-    """为每个HTML文件生成卡片HTML代码"""
-    # 你可以根据你的CSS样式自定义这里的HTML结构
-    return f"""
-<div class="card">
-  <h3><a href="{link_path}">{file_title}</a></h3>
-  <p>{description}</p>
-</div>
-"""
-
 def main():
-    nav_links_html = ""
-    # 查找所有HTML文件，排除index.html自身和.github目录下的文件
-    # 假设脚本在仓库根目录运行
-    html_files = [
-        f for f in glob.glob('**/*.html', recursive=True) 
-        if os.path.basename(f).lower() != 'index.html' 
-        and not f.startswith(('.github/', 'venv/', 'node_modules/')) # 排除常见目录
-    ]
+    """
+    主函数，扫描HTML文件，生成导航链接，并更新 index.html。
+    """
+    print("开始生成导航链接...")
+    base_dir = os.getcwd() # 获取当前工作目录，即仓库根目录
+    all_cards_html = []
 
-    if not html_files:
-        print("未找到用于生成导航的HTML文件 (已排除 index.html)。")
-        # 即使没有文件，也应该继续尝试更新index.html，以便清空旧的链接（如果适用）
-        # nav_links_html 将保持为空字符串
+    # 扫描仓库中所有的 HTML 文件，排除 index.html 和特定目录
+    # 使用 recursive=True 来扫描子目录
+    # 使用 os.path.join 来构建路径，确保跨平台兼容性
+    excluded_dirs = {'.git', '.github', 'venv', 'node_modules'} # 集合用于快速查找
 
-    # 对文件进行排序，可以按文件名或路径
-    html_files.sort()
+    for filepath_absolute in glob.glob(os.path.join(base_dir, '**', '*.html'), recursive=True):
+        # 转换为相对于仓库根目录的路径
+        relative_filepath = os.path.relpath(filepath_absolute, base_dir)
 
-    for filepath in html_files:
-        link_path = filepath.replace(os.path.sep, '/') # 确保URL路径使用 /
+        # 检查是否在排除目录中
+        path_parts = relative_filepath.split(os.sep)
+        if any(part in excluded_dirs for part in path_parts):
+            # print(f"跳过排除目录中的文件: {relative_filepath}")
+            continue
+            
+        # 排除 index.html 文件本身
+        if os.path.basename(relative_filepath).lower() == 'index.html':
+            # print(f"跳过导航文件自身: {relative_filepath}")
+            continue
 
-        # 从文件名获取一个简洁的标题用于卡片标题
-        card_main_title = os.path.splitext(os.path.basename(filepath))[0].replace('_', ' ').replace('-', ' ').title()
+        print(f"找到文件: {relative_filepath}")
+        title, desc = extract_details(filepath_absolute)
+        
+        # 将文件路径转换为URL友好的相对路径 (使用 /)
+        link_path = relative_filepath.replace(os.sep, '/')
+        
+        card_html = CARD_TEMPLATE.format(link_path=link_path, title=title, description=desc)
+        all_cards_html.append(card_html)
 
-        # 获取页面的详细标题和描述
-        _, file_description = get_html_details(filepath) # page_title_detail 变量未使用，但可以提取出来
+    if not all_cards_html:
+        print("未找到任何可供导航的 HTML 文件。")
+        # 如果没有卡片，nav_content 将是空字符串，会清空占位符区域
+        nav_content = ""
+    else:
+        print(f"共生成 {len(all_cards_html)} 个导航卡片。")
+        nav_content = "\n".join(all_cards_html)
 
-        nav_links_html += generate_card_html(card_main_title, link_path, file_description)
-
+    # 读取 index.html 的内容
+    index_html_path = os.path.join(base_dir, 'index.html')
     try:
-        with open('index.html', 'r', encoding='utf-8') as f:
-            index_content = f.read()
+        with open(index_html_path, 'r', encoding='utf-8') as file:
+            index_content_original = file.read()
     except FileNotFoundError:
-        print("错误: 未找到 index.html。请创建一个包含占位符的基础 index.html 文件。")
+        print(f"错误: 导航文件 '{index_html_path}' 未找到。请确保它存在于仓库根目录。")
         return
 
-    # --- 这是关键的修正 ---
-    placeholder = ""
-    # ----------------------
-
-    # 这个检查现在应该不会被触发，因为placeholder被正确设置了
-    if not placeholder.strip(): 
-        print("错误: placeholder 变量为空或仅包含空格。脚本无法继续。")
+    # 替换占位符
+    if NAV_PLACEHOLDER not in index_content_original:
+        print(f"错误: 在 '{index_html_path}' 中未找到占位符 '{NAV_PLACEHOLDER}'。")
+        print("请确保 index.html 文件中包含该占位符。")
         return
 
-    if placeholder not in index_content:
-        print(f"错误: 在 index.html 中未找到占位符 '{placeholder}'。")
-        print("请确保 index.html 文件中包含以下占位符，通常在一个 div 内部：")
-        print("") # 修正了这里显示的占位符
-        return
-
-    # 确保占位符前后的内容保持不变，只替换占位符本身
-    parts = index_content.split(placeholder)
-    if len(parts) == 2:
-        new_index_content = parts[0] + nav_links_html + parts[1]
-    else:
-        # 这种替换方式更安全，即使占位符出现多次，也只替换第一个
-        start_index = index_content.find(placeholder)
-        if start_index != -1:
-            print(f"警告: 占位符 '{placeholder}' 在 index.html 中可能出现多次或匹配不精确。将替换第一个找到的实例。")
-            new_index_content = index_content[:start_index] + nav_links_html + index_content[start_index + len(placeholder):]
-        else:
-            # 理论上，如果 placeholder in index_content 为真，这里不应该执行
-            print(f"错误: 无法在 index.html 中定位占位符 '{placeholder}' 进行替换，尽管它似乎存在。")
-            return
-
-    # 仅当内容发生变化时才写入文件
-    if new_index_content != index_content:
+    # 执行替换
+    # 为了确保只替换占位符，并且如果占位符内已有内容，这些内容会被完全替换
+    # 我们可以通过分割字符串来实现
+    before_placeholder, _, after_placeholder = index_content_original.partition(NAV_PLACEHOLDER)
+    new_index_content = before_placeholder + nav_content + after_placeholder
+    
+    # 只有当内容实际发生变化时才写入文件
+    if new_index_content != index_content_original:
         try:
-            with open('index.html', 'w', encoding='utf-8') as f:
-                f.write(new_index_content)
-            print("index.html 更新成功。")
+            with open(index_html_path, 'w', encoding='utf-8') as file:
+                file.write(new_index_content)
+            print(f"'{index_html_path}' 更新成功。")
         except Exception as e:
-            print(f"写入更新后的 index.html 时出错: {e}")
+            print(f"写入 '{index_html_path}' 时发生错误: {e}")
     else:
-        print("index.html 内容无变化，无需更新。") # 如果脚本执行到这里，说明它认为新旧内容相同
+        print(f"'{index_html_path}' 内容无变化，无需更新。")
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
