@@ -6,20 +6,29 @@
     <title>我的项目导航</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* 全局样式 */
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5; /* 淡雅的背景色 */
+            /* 鲜艳的渐变背景：从充满活力的绿色到清澈的蓝色 */
+            background: linear-gradient(135deg, #2AF598 0%, #009EFD 100%);
+            background-size: 200% 200%; /* 允许背景动画 */
             color: #333;
             line-height: 1.6;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             overflow-x: hidden; /* 防止水平滚动 */
+            animation: background-shift 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); /* 更平滑的背景渐变动画 */
+        }
+
+        /* 背景渐变动画 */
+        @keyframes background-shift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
         /* 容器样式 */
@@ -34,16 +43,21 @@
         .header {
             text-align: center;
             margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #e0e0e0;
-            position: relative; /* 用于背景动画 */
-            overflow: hidden; /* 隐藏溢出内容 */
-            padding-top: 50px;
-            padding-bottom: 50px;
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); /* 渐变背景 */
+            padding: 70px 20px; /* 增加内边距 */
+            background: rgba(255, 255, 255, 0.15); /* 半透明背景 */
+            backdrop-filter: blur(20px); /* 更强的磨砂玻璃效果 */
+            border-radius: 25px; /* 更大的圆角 */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* 边框 */
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.25); /* 更强的阴影 */
+            position: relative;
+            overflow: hidden;
             color: white;
-            border-radius: 15px; /* 圆角 */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: header-fade-slide-down 1s ease-out; /* 头部淡入下滑动画 */
+        }
+
+        @keyframes header-fade-slide-down {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .header::before {
@@ -53,66 +67,133 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-            animation: pulse-light 10s infinite ease-in-out;
-            opacity: 0.8;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+            animation: pulse-glow 12s infinite ease-in-out; /* 光晕脉冲动画 */
+            opacity: 0.9;
             z-index: 0;
         }
 
-        @keyframes pulse-light {
-            0% { transform: scale(0.8) rotate(0deg); opacity: 0.8; }
-            50% { transform: scale(1.2) rotate(180deg); opacity: 0.5; }
-            100% { transform: scale(0.8) rotate(360deg); opacity: 0.8; }
+        @keyframes pulse-glow {
+            0% { transform: scale(0.8) rotate(0deg); opacity: 0.9; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.6; }
+            100% { transform: scale(0.8) rotate(360deg); opacity: 0.9; }
         }
 
         .header h1 {
-            color: #ffffff; /* 白色标题 */
-            font-size: 3.5em; /* 更大标题 */
-            margin-bottom: 10px;
-            font-weight: 800; /* 更粗标题 */
-            letter-spacing: 1px;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-            position: relative; /* 确保在伪元素之上 */
+            color: #ffffff;
+            font-size: 4.5em; /* 更大标题 */
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-shadow: 4px 4px 12px rgba(0,0,0,0.5); /* 更强的文字阴影 */
+            position: relative;
             z-index: 1;
         }
 
         .header p {
-            color: #e0e0e0;
-            font-size: 1.2em;
+            color: #e8f8ff; /* 浅蓝色文字 */
+            font-size: 1.4em;
             position: relative;
             z-index: 1;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
         }
 
-        /* 卡片网格布局 */
-        .cards-grid {
-            display: grid;
-            /* 卡片列数：小屏幕1列，中等屏幕2列，大屏幕3列，更大屏幕4列 */
-            grid-template-columns: repeat(1, 1fr); 
+        /* 卡片区域容器 */
+        .card-area {
+            margin-bottom: 40px; /* 区域间距 */
+            animation: area-fade-in 1s ease-out forwards; /* 区域进入动画 */
+            opacity: 0; /* 初始隐藏 */
+        }
+
+        /* 区域进入动画 */
+        @keyframes area-fade-in {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* 为每个区域设置不同的动画延迟 */
+        .card-area:nth-child(1) { animation-delay: 0.5s; }
+        .card-area:nth-child(2) { animation-delay: 0.7s; }
+        .card-area:nth-child(3) { animation-delay: 0.9s; }
+
+
+        .area-title {
+            font-size: 2.2em; /* 区域标题大小 */
+            font-weight: 700;
+            color: #ffffff; /* 白色标题 */
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            padding-left: 10px; /* 标题左侧内边距 */
+        }
+
+        .area-description {
+            font-size: 1.1em; /* 区域描述大小 */
+            color: #e8f8ff; /* 浅蓝色文字 */
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+            margin-bottom: 25px;
+            padding-left: 10px; /* 描述左侧内边距 */
+        }
+
+        /* 卡片行布局 */
+        .cards-row {
+            display: flex;
+            overflow-x: auto; /* 允许水平滚动 */
+            padding-bottom: 20px; /* 滚动条下方留白 */
             gap: 25px; /* 卡片间距 */
-            margin-top: 40px;
+            -webkit-overflow-scrolling: touch; /* 移动端平滑滚动 */
+        }
+
+        /* 自定义滚动条样式 */
+        .cards-row::-webkit-scrollbar {
+            height: 10px;
+        }
+        .cards-row::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        .cards-row::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .cards-row::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
 
         /* 单个卡片样式 */
         .card {
-            background-color: #ffffff;
-            border-radius: 16px; /* 更圆润的圆角 */
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* 更精致的阴影 */
-            padding: 25px; /* 调整内边距 */
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-            display: flex; /* 使用flex布局来对齐图标和标题 */
-            align-items: center; /* 垂直居中对齐 */
+            flex-shrink: 0; /* 防止卡片被压缩 */
+            width: 280px; /* 固定卡片宽度 */
+            background-color: rgba(255, 255, 255, 0.2); /* 半透明背景 */
+            backdrop-filter: blur(10px); /* 磨砂玻璃效果 */
+            border-radius: 18px; /* 圆角 */
+            border: 1px solid rgba(255, 255, 255, 0.35); /* 边框 */
+            box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.15); /* 阴影 */
+            padding: 25px; /* 内边距 */
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease, background-color 0.4s ease; /* 过渡效果 */
+            display: flex;
+            flex-direction: column; /* 垂直布局图标和文字 */
+            align-items: center; /* 居中对齐 */
             text-decoration: none;
             color: inherit;
-            min-height: 100px; /* 卡片最小高度 */
+            min-height: 180px; /* 卡片最小高度 */
             position: relative;
             overflow: hidden;
-            border: 1px solid #e0e0e0;
+            animation: card-fade-in-pop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards; /* 卡片进入动画 */
+            opacity: 0; /* 初始隐藏 */
         }
 
+        /* 卡片进入动画 */
+        @keyframes card-fade-in-pop {
+            0% { opacity: 0; transform: scale(0.8) translateY(30px); }
+            70% { opacity: 1; transform: scale(1.05) translateY(-5px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        /* 为每个卡片设置不同的动画延迟 (在JS中动态设置) */
+
         .card:hover {
-            transform: translateY(-8px) scale(1.03); /* 悬浮时轻微上移并放大 */
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-            background-color: #f8faff; /* 悬浮时轻微变色 */
+            transform: translateY(-10px) scale(1.05) rotateZ(2deg); /* 悬浮时上移、放大和轻微旋转 */
+            box-shadow: 0 12px 45px rgba(0, 0, 0, 0.25); /* 更强的阴影 */
+            background-color: rgba(255, 255, 255, 0.35); /* 悬浮时更透明 */
         }
 
         .card::before {
@@ -122,7 +203,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, rgba(106,17,203,0.05) 0%, rgba(37,117,252,0.05) 100%);
+            /* 悬浮渐变叠加：与背景色调融合，更具流动感 */
+            background: linear-gradient(45deg, rgba(0,158,253,0.2) 0%, rgba(42,245,152,0.2) 100%); 
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 0;
@@ -133,77 +215,79 @@
         }
 
         .card-icon {
-            font-size: 2.5em; /* 图标大小 */
-            color: #6a11cb; /* 统一的图标颜色 */
-            margin-right: 20px; /* 图标和标题之间的间距 */
-            flex-shrink: 0; /* 防止图标被压缩 */
-            transition: transform 0.3s ease, color 0.3s ease;
+            font-size: 2.8em; /* 更小图标 */
+            color: #4A00B0; /* 鲜艳的图标颜色 (深紫色) */
+            margin-bottom: 15px; /* 图标和标题之间的间距 */
+            flex-shrink: 0;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), color 0.4s ease; /* 更流畅的过渡 */
             position: relative;
             z-index: 1;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.15);
         }
         
         .card:hover .card-icon {
-            transform: scale(1.1); /* 悬浮时图标放大 */
-            color: #2575fc; /* 悬浮时图标颜色变化 */
+            transform: scale(1.2) rotateY(10deg); /* 悬浮时图标放大并Y轴旋转 */
+            color: #FF4500; /* 悬浮时图标颜色变化 (橙红色) */
         }
 
         .card-title {
-            font-size: 1.2em; /* 调整标题字体大小 */
-            color: #343a40; /* 深色标题 */
-            margin: 0; /* 移除默认的margin */
-            font-weight: 700; /* 标题加粗 */
+            font-size: 1.1em; /* 调整标题字体大小 */
+            color: #2c3e50; /* 深色标题 */
+            margin: 0;
+            font-weight: 600; /* 稍细标题 */
             word-break: break-word;
             overflow-wrap: break-word;
+            text-align: center; /* 标题居中 */
             position: relative;
             z-index: 1;
+            text-shadow: 0.5px 0.5px 2px rgba(0,0,0,0.08);
         }
 
         /* 页脚样式 */
         .footer {
             text-align: center;
-            margin-top: auto; /* 将页脚推到底部 */
-            padding: 30px 0;
-            border-top: 1px solid #e0e0e0;
-            font-size: 0.9em;
-            color: #777;
-            background-color: #ffffff; /* 页脚背景色 */
+            margin-top: auto;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.1); /* 半透明页脚 */
+            backdrop-filter: blur(15px); /* 磨砂玻璃效果 */
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 1em;
+            color: #e8f8ff; /* 浅色文字 */
             width: 100%;
-            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
         }
 
         /* 响应式调整 */
-        @media (min-width: 640px) { /* sm */
-            .cards-grid {
-                grid-template-columns: repeat(2, 1fr);
+        @media (max-width: 768px) {
+            .header {
+                padding: 50px 15px;
             }
-        }
-        @media (min-width: 768px) { /* md */
-            .cards-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        @media (min-width: 1024px) { /* lg */
-            .cards-grid {
-                grid-template-columns: repeat(4, 1fr); /* 大屏幕上最多4列 */
-            }
-        }
-        @media (max-width: 639px) {
             .header h1 {
-                font-size: 2.5em;
+                font-size: 3.5em;
             }
             .header p {
+                font-size: 1.1em;
+            }
+            .area-title {
+                font-size: 1.8em;
+            }
+            .area-description {
                 font-size: 1em;
             }
+            .cards-row {
+                padding-bottom: 15px;
+            }
             .card {
-                flex-direction: row; /* 小屏幕确保图标和文字在一行 */
+                width: 250px; /* 移动端卡片宽度 */
                 padding: 20px;
+                min-height: 160px;
             }
             .card-icon {
-                font-size: 2em;
-                margin-right: 15px;
+                font-size: 2.5em;
+                margin-bottom: 10px;
             }
             .card-title {
-                font-size: 1.1em;
+                font-size: 1em;
             }
         }
     </style>
@@ -216,110 +300,26 @@
         </header>
 
         <main>
-            <div class="cards-grid" id="navigation-cards-container">
-                <!-- 
-                    卡片结构说明：
-                    - `href`: 链接到您的HTML文件路径。
-                    - `class="card group"`: 基本卡片样式和用于悬停效果的 Tailwind group 类。
-                    - `card-icon`: 图标容器。
-                    - `<i>` 标签: Font Awesome 图标。
-                        - `class`: 图标的 CSS 类。例如: `fas fa-book` (实心书本), `fas fa-lightbulb` (实心灯泡), `fas fa-code` (实心代码), `fas fa-chart-bar` (实心柱状图), `fas fa-pencil-alt` (实心铅笔), `fas fa-brain` (实心大脑), `fas fa-flask` (实心烧瓶), `fas fa-home` (实心家), `fas fa-laptop-code` (实心笔记本电脑和代码)。
-                        - 如何查找图标名称：访问 Font Awesome 官网 (https://fontawesome.com/v5/icons)，搜索关键词（英文），选择免费版图标，复制其类名。
-                    - `card-title`: 页面标题。
-                -->
-
-                <a href="html_content/personalnotes.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-book"></i> 
+            <div class="card-area">
+                <h2 class="area-title">学习与知识管理</h2>
+                <p class="area-description">高效学习方法、个人成长规划与笔记系统。</p>
+                <div class="cards-row" id="learning-knowledge-area">
                     </div>
-                    <h2 class="card-title">交互式个性化笔记系统指南 (含飞书)</h2>
-                </a>
+            </div>
 
-                <a href="html_content/0.1.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-brain"></i> 
+            <div class="card-area">
+                <h2 class="area-title">专业知识与技能</h2>
+                <p class="area-description">各领域专业知识、应试技巧与能力提升。</p>
+                <div class="cards-row" id="professional-skills-area">
                     </div>
-                    <h2 class="card-title">AI赋能个体成长导航</h2>
-                </a>
+            </div>
 
-                <a href="html_content/notes_collection/4.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-puzzle-piece"></i> 
+            <div class="card-area">
+                <h2 class="area-title">AI与技术探索</h2>
+                <p class="area-description">人工智能赋能、市场洞察与未来技术应用。</p>
+                <div class="cards-row" id="ai-tech-area">
                     </div>
-                    <h2 class="card-title">判断推理系统课 - 交互式学习应用</h2>
-                </a>
-
-                <a href="html_content/notes_collection/3.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-calculator"></i> 
-                    </div>
-                    <h2 class="card-title">数量关系系统课</h2>
-                </a>
-
-                <a href="html_content/notes_collection/1.5.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-chart-line"></i> 
-                    </div>
-                    <h2 class="card-title">经济知识学习 - 第五章</h2>
-                </a>
-
-                <a href="html_content/notes_collection/1.3.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-fist-raised"></i> 
-                    </div>
-                    <h2 class="card-title">毛泽东思想学习 - 第三章</h2>
-                </a>
-
-                <a href="html_content/notes_collection/2.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-comments"></i> 
-                    </div>
-                    <h2 class="card-title">言语理解与表达 知识点互动导航</h2>
-                </a>
-
-                <a href="html_content/notes_collection/5.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-chart-bar"></i> 
-                    </div>
-                    <h2 class="card-title">资料分析系统课 - 交互式Web应用</h2>
-                </a>
-
-                <a href="html_content/notes_collection/1.1.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-lightbulb"></i> 
-                    </div>
-                    <h2 class="card-title">马克思主义哲学学习</h2>
-                </a>
-
-                <a href="html_content/0.2.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-robot"></i> 
-                    </div>
-                    <h2 class="card-title">智赋未来：AI赋能普通人交互式探索</h2>
-                </a>
-
-                <a href="html_content/0.3.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-bullseye"></i> 
-                    </div>
-                    <h2 class="card-title">个人目标详细分析与行动计划</h2>
-                </a>
-
-                <a href="html_content/0.5.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-clipboard"></i> 
-                    </div>
-                    <h2 class="card-title">个性化高效笔记系统</h2>
-                </a>
-
-                <a href="html_content/0.4.html" class="card group">
-                    <div class="card-icon">
-                        <i class="fas fa-chart-pie"></i> 
-                    </div>
-                    <h2 class="card-title">个体能力提升市场深度洞察SPA</h2>
-                </a>
-                
-                </div>
+            </div>
         </main>
     </div>
 
@@ -328,8 +328,59 @@
     </footer>
 
     <script>
-        // 简单脚本，用于在页脚显示当前年份
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        // 定义所有卡片数据，包括链接、标题和图标
+        const allCardsData = [
+            { link: "html_content/personalnotes.html", title: "交互式个性化笔记系统指南 (含飞书)", icon: "fas fa-book" },
+            { link: "html_content/0.5.html", title: "个性化高效笔记系统", icon: "fas fa-clipboard" },
+            { link: "html_content/0.3.html", title: "个人目标详细分析与行动计划", icon: "fas fa-bullseye" },
+            { link: "html_content/0.1.html", title: "AI赋能个体成长导航", icon: "fas fa-brain" },
+            { link: "html_content/0.2.html", title: "智赋未来：AI赋能普通人交互式探索", icon: "fas fa-robot" },
+            { link: "html_content/0.4.html", title: "个体能力提升市场深度洞察SPA", icon: "fas fa-chart-pie" }
+        ];
+
+        // 将卡片数据分配到不同的区域
+        const categorizedCards = {
+            "learning-knowledge-area": [
+                allCardsData[0], // 交互式个性化笔记系统指南
+                allCardsData[1], // 个性化高效笔记系统
+                allCardsData[2], // 个人目标详细分析与行动计划
+                allCardsData[3],  // AI赋能个体成长导航
+                allCardsData[4], // 智赋未来：AI赋能普通人交互式探索
+                allCardsData[5]  // 个体能力提升市场深度洞察SPA
+            ],
+            "ai-tech-area": [
+
+            ]
+        };
+
+        // 渲染卡片到对应的区域
+        function renderCards() {
+            for (const areaId in categorizedCards) {
+                const areaContainer = document.getElementById(areaId);
+                if (areaContainer) {
+                    categorizedCards[areaId].forEach((cardData, index) => {
+                        const cardElement = document.createElement('a');
+                        cardElement.href = cardData.link;
+                        cardElement.className = 'card group';
+                        // 为每个卡片设置动画延迟，使其在区域内依次弹出
+                        cardElement.style.animationDelay = `${index * 0.1}s`; 
+                        cardElement.innerHTML = `
+                            <div class="card-icon">
+                                <i class="${cardData.icon}"></i> 
+                            </div>
+                            <h2 class="card-title">${cardData.title}</h2>
+                        `;
+                        areaContainer.appendChild(cardElement);
+                    });
+                }
+            }
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            renderCards(); // 渲染卡片
+        });
     </script>
 </body>
 </html>
