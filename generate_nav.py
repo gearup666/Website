@@ -80,7 +80,7 @@ def main():
         print("错误: 未找到 index.html。请创建一个包含占位符的基础 index.html 文件。")
         return
 
-    placeholder = "" # 已修正此处的占位符
+    placeholder = "" # 已修正此处的占位符为正确的HTML注释
     if placeholder not in index_content:
         print(f"错误: 在 index.html 中未找到占位符 '{placeholder}'。")
         return
