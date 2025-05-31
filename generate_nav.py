@@ -13,7 +13,7 @@ CARD_TEMPLATE = """
 """
 
 # 导航内容的占位符，必须与 index.html 中的占位符完全一致
-NAV_PLACEHOLDER = "" # <--- 已修正此行
+NAV_PLACEHOLDER = "" # <--- 这是正确的占位符
 
 def extract_details(html_filepath):
     """
