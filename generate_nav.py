@@ -13,12 +13,12 @@ CARD_TEMPLATE = """
 """
 
 # 导航内容的占位符，必须与 index.html 中的占位符完全一致
-NAV_PLACEHOLDER = """<!-- 示例卡片结构 (将被脚本替换):
+NAV_PLACEHOLDER = ""<!-- 示例卡片结构 (将被脚本替换):
 <a href="path/to/your_file.html" class="card">
     <h2 class="card-title">示例文件名</h2>
     <p class="card-description">这是从 meta 标签或 title 标签提取的描述信息。</p>
 </a>
--->"""
+-->""
 
 def extract_details(html_filepath):
     """
