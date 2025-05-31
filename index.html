@@ -295,29 +295,22 @@
 <body>
     <div class="container">
         <header class="header">
-            <h1>我的项目导航</h1>
-            <p>这里汇集了我的所有HTML项目和文档页面</p>
+            <h1>个人发展</h1>
+            <p>个人发展相关的静态网站合集</p>
         </header>
 
         <main>
             <div class="card-area">
-                <h2 class="area-title">学习与知识管理</h2>
-                <p class="area-description">高效学习方法、个人成长规划与笔记系统。</p>
-                <div class="cards-row" id="learning-knowledge-area">
+                <h2 class="area-title">个人成长规划</h2>
+                <p class="area-description">结合AI进行个人成长规划</p>
+                <div class="cards-row" id="AI-person-plan">
                     </div>
             </div>
 
             <div class="card-area">
-                <h2 class="area-title">专业知识与技能</h2>
-                <p class="area-description">各领域专业知识、应试技巧与能力提升。</p>
-                <div class="cards-row" id="professional-skills-area">
-                    </div>
-            </div>
-
-            <div class="card-area">
-                <h2 class="area-title">AI与技术探索</h2>
-                <p class="area-description">人工智能赋能、市场洞察与未来技术应用。</p>
-                <div class="cards-row" id="ai-tech-area">
+                <h2 class="area-title">搭建笔记系统</h2>
+                <p class="area-description">搭建全能、完善高效的笔记系统。</p>
+                <div class="cards-row" id="notes-system">
                     </div>
             </div>
         </main>
@@ -330,25 +323,25 @@
     <script>
         // 定义所有卡片数据，包括链接、标题和图标
         const allCardsData = [
-            { link: "html_content/personalnotes.html", title: "交互式个性化笔记系统指南 (含飞书)", icon: "fas fa-book" },
-            { link: "html_content/0.5.html", title: "个性化高效笔记系统", icon: "fas fa-clipboard" },
+            { link: "html_content/personalnotes.html", title: "个性化笔记系统搭建指南", icon: "fas fa-book" },
+            { link: "html_content/0.5.html", title: "个性化高效笔记系统总指南", icon: "fas fa-clipboard" },
             { link: "html_content/0.3.html", title: "个人目标详细分析与行动计划", icon: "fas fa-bullseye" },
             { link: "html_content/0.1.html", title: "AI赋能个体成长导航", icon: "fas fa-brain" },
             { link: "html_content/0.2.html", title: "智赋未来：AI赋能普通人交互式探索", icon: "fas fa-robot" },
-            { link: "html_content/0.4.html", title: "个体能力提升市场深度洞察SPA", icon: "fas fa-chart-pie" }
+            { link: "html_content/0.4.html", title: "个体能力提升数据报告", icon: "fas fa-chart-pie" }
         ];
 
         // 将卡片数据分配到不同的区域
         const categorizedCards = {
-            "learning-knowledge-area": [
-                allCardsData[0], // 交互式个性化笔记系统指南
-                allCardsData[1], // 个性化高效笔记系统
+            "AI-person-plan": [
                 allCardsData[2], // 个人目标详细分析与行动计划
                 allCardsData[3],  // AI赋能个体成长导航
                 allCardsData[4], // 智赋未来：AI赋能普通人交互式探索
                 allCardsData[5]  // 个体能力提升市场深度洞察SPA
             ],
-            "ai-tech-area": [
+            "notes-system": [
+                allCardsData[0], // 交互式个性化笔记系统指南
+                allCardsData[1], // 个性化高效笔记系统
 
             ]
         };
