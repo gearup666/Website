@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWGPC 3.0.0 项目结构可视化</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 3px solid #e9ecef;
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-tab:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: #007bff;
+        }
+        
+        .nav-tab.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #0056b3;
+        }
+        
+        .tab-content {
+            padding: 30px;
+            min-height: 600px;
+        }
+        
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .architecture-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .layer {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1200px;
+            border-left: 5px solid;
+        }
+        
+        .ui-layer { border-left-color: #28a745; }
+        .business-layer { border-left-color: #007bff; }
+        .data-layer { border-left-color: #ffc107; }
+        .hardware-layer { border-left-color: #dc3545; }
+        
+        .layer h3 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            color: #2c3e50;
+        }
+        
+        .modules {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .module {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .module:hover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.2);
+        }
+        
+        .module h4 {
+            color: #1976d2;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .module p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .file-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .file-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .file-card.core { border-left-color: #e74c3c; }
+        .file-card.module { border-left-color: #3498db; }
+        .file-card.model { border-left-color: #2ecc71; }
+        .file-card.config { border-left-color: #f39c12; }
+        
+        .file-card h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 1.2em;
+        }
+        
+        .file-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .info-tag {
+            background: #ecf0f1;
+            color: #34495e;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        
+        .data-flow {
+            position: relative;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flow-step {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .flow-step:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .flow-step::after {
+            content: '↓';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5em;
+            color: #3498db;
+        }
+        
+        .flow-step:last-child::after {
+            display: none;
+        }
+        
+        .flow-step h4 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        .flow-step p {
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+        
+        .code-variables {
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: auto;
+        }
+        
+        .variable {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+        }
+        
+        .variable-type {
+            color: #e67e22;
+            font-weight: bold;
+        }
+        
+        .variable-name {
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .variable-desc {
+            color: #95a5a6;
+            font-style: italic;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+            transition: color 0.3s ease;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active { background: #28a745; }
+        .status-inactive { background: #6c757d; }
+        .status-warning { background: #ffc107; }
+        
+        .hardware-visual {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .hardware-component {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .hardware-component:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .component-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 AWGPC 3.0.0 项目可视化分析</h1>
+            <p>任意波形发生器控制程序 - 液滴喷射打印系统</p>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('overview')">📊 项目概览</button>
+            <button class="nav-tab" onclick="showTab('architecture')">🏗️ 系统架构</button>
+            <button class="nav-tab" onclick="showTab('files')">📁 文件结构</button>
+            <button class="nav-tab" onclick="showTab('dataflow')">🔄 数据流程</button>
+            <button class="nav-tab" onclick="showTab('hardware')">⚡ 硬件接口</button>
+        </div>
+        
+        <div class="tab-content">
+            <!-- 项目概览 -->
+            <div id="overview" class="tab-pane active">
+                <h2>📋 项目概览</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
+                    <div class="layer">
+                        <h3>🎯 项目功能</h3>
+                        <ul style="line-height: 2; color: #555;">
+                            <li><strong>波形生成：</strong>生成自定义梯形波、正弦波、任意波形</li>
+                            <li><strong>图像处理：</strong>导入图像并转换为液滴点阵</li>
+                            <li><strong>打印控制：</strong>控制多个打印头精确喷射液滴</li>
+                            <li><strong>串口通信：</strong>与硬件设备进行实时通信</li>
+                            <li><strong>G代码生成：</strong>输出标准G代码用于设备控制</li>
+                        </ul>
+                    </div>
+                    <div class="layer">
+                        <h3>🔧 技术栈</h3>
+                        <ul style="line-height: 2; color: #555;">
+                            <li><strong>开发语言：</strong>C# (.NET Framework)</li>
+                            <li><strong>UI框架：</strong>Windows Forms</li>
+                            <li><strong>图表控件：</strong>System.Windows.Forms.DataVisualization.Charting</li>
+                            <li><strong>串口通信：</strong>System.IO.Ports.SerialPort</li>
+                            <li><strong>图像处理：</strong>System.Drawing</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="layer" style="margin-top: 30px;">
+                    <h3>📈 核心数据结构</h3>
+                    <div class="code-variables">
+                        <div class="variable">
+                            <span class="variable-type">byte[]</span> 
+                            <span class="variable-name">data</span> 
+                            <span class="variable-desc">// 串口数据包，存储波形参数和控制指令</span>
+                        </div>
+                        <div class="variable">
+                            <span class="variable-type">bool[,]</span> 
+                            <span class="variable-name">directGridMatrix</span> 
+                            <span class="variable-desc">// 液滴点阵矩阵，true表示需要喷射</span>
+                        </div>
+                        <div class="variable">
+                            <span class="variable-type">PrintHeadController</span> 
+                            <span class="variable-name">printHeadController</span> 
+                            <span class="variable-desc">// 打印头控制器，管理多个打印头</span>
+                        </div>
+                        <div class="variable">
+                            <span class="variable-type">ImageProcessingModule</span> 
+                            <span class="variable-name">imageProcessor</span> 
+                            <span class="variable-desc">// 图像处理模块，处理图像二值化等</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 系统架构 -->
+            <div id="architecture" class="tab-pane">
+                <h2>🏗️ 系统架构</h2>
+                <div class="architecture-diagram">
+                    <div class="layer ui-layer">
+                        <h3>🖥️ 用户界面层 (UI Layer)</h3>
+                        <div class="modules">
+                            <div class="module" onclick="showModal('form1-designer')">
+                                <h4>主窗体设计 (Form1.Designer.cs)</h4>
+                                <p>定义所有UI控件的布局和属性，包括选项卡、按钮、数值输入框等</p>
+                            </div>
+                            <div class="module" onclick="showModal('chart-display')">
+                                <h4>图表显示</h4>
+                                <p>实时显示生成的波形图表，支持缩放和交互</p>
+                            </div>
+                            <div class="module" onclick="showModal('image-preview')">
+                                <h4>图像预览</h4>
+                                <p>显示导入的图像、二值化结果和液滴点阵预览</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="layer business-layer">
+                        <h3>💼 业务逻辑层 (Business Logic Layer)</h3>
+                        <div class="modules">
+                            <div class="module" onclick="showModal('waveform-generation')">
+                                <h4>波形生成 (Form1.WaveformGeneration.cs)</h4>
+                                <p>计算波形参数，生成串口数据包，实时预览波形</p>
+                            </div>
+                            <div class="module" onclick="showModal('image-processing')">
+                                <h4>图像处理 (ImageProcessingModule.cs)</h4>
+                                <p>图像导入、二值化、转换为液滴点阵</p>
+                            </div>
+                            <div class="module" onclick="showModal('printhead-control')">
+                                <h4>打印头控制 (Form1.PrintHeadControl.cs)</h4>
+                                <p>管理多个打印头，计算喷射区域和模式</p>
+                            </div>
+                            <div class="module" onclick="showModal('gcode-generation')">
+                                <h4>G代码生成 (Form1.GCodeGeneration.cs)</h4>
+                                <p>将液滴点阵转换为标准G代码指令</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="layer data-layer">
+                        <h3>💾 数据模型层 (Data Model Layer)</h3>
+                        <div class="modules">
+                            <div class="module" onclick="showModal('data-models')">
+                                <h4>数据模型</h4>
+                                <p>MatrixPattern、DropletInfo、PrintRegion等数据结构</p>
+                            </div>
+                            <div class="module" onclick="showModal('motor-control')">
+                                <h4>电机控制 (Form1.MotorControl.cs)</h4>
+                                <p>控制移动平台的运动轨迹和定位</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="layer hardware-layer">
+                        <h3>⚡ 硬件接口层 (Hardware Interface Layer)</h3>
+                        <div class="modules">
+                            <div class="module" onclick="showModal('serial-communication')">
+                                <h4>串口通信</h4>
+                                <p>与CH340 USB转TTL模块通信，发送控制指令</p>
+                            </div>
+                            <div class="module" onclick="showModal('hardware-control')">
+                                <h4>硬件控制</h4>
+                                <p>控制打印头、电机等硬件设备的运行</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 文件结构 -->
+            <div id="files" class="tab-pane">
+                <h2>📁 文件结构分析</h2>
+                <input type="text" class="search-box" placeholder="搜索文件..." oninput="filterFiles(this.value)">
+                <div class="files-grid" id="files-container">
+                    <div class="file-card core" data-name="form1">
+                        <h4>📄 Form1.cs</h4>
+                        <div class="file-info">
+                            <span class="info-tag">核心文件</span>
+                            <span class="info-tag">2,089 行</span>
+                            <span class="info-tag">主窗体</span>
+                        </div>
+                        <p><strong>功能：</strong>主窗体类，包含窗体加载事件、选项卡切换逻辑、控件初始化等核心功能。</p>
+                        <p><strong>关键方法：</strong>Form1_Load(), tabControlImageProcess_SelectedIndexChanged()</p>
+                    </div>
+                    
+                    <div class="file-card core" data-name="form1designer">
+                        <h4>🎨 Form1.Designer.cs</h4>
+                        <div class="file-info">
+                            <span class="info-tag">UI设计</span>
+                            <span class="info-tag">2,600+ 行</span>
+                            <span class="info-tag">自动生成</span>
+                        </div>
+                        <p><strong>功能：</strong>窗体设计器生成的代码，定义所有UI控件的属性、位置和事件绑定。</p>
+                        <p><strong>主要控件：</strong>TabControl、NumericUpDown、PictureBox、Chart等</p>
+                    </div>
+                    
+                    <div class="file-card module" data-name="waveform">
+                        <h4>🌊 Form1.WaveformGeneration.cs</h4>
+                        <div class="file-info">
+                            <span class="info-tag">波形模块</span>
+                            <span class="info-tag">1,960 行</span>
+                            <span class="info-tag">核心算法</span>
+                        </div>
+                        <p><strong>功能：</strong>波形生成的核心逻辑，包括梯形波、正弦波、任意波形的计算和预览。</p>
+                        <p><strong>关键方法：</strong>CalculateAndPreview(), GenerateSinData(), ExtractDataAndStoreInArray()</p>
+                    </div>
+                    
+                    <div class="file-card module" data-name="printhead">
+                        <h4>🖨️ Form1.PrintHeadControl.cs</h4>
+                        <div class="file-info">
+                            <span class="info-tag">打印控制</span>
+                            <span class="info-tag">1,517 行</span>
+                            <span class="info-tag">硬件接口</span>
+                        </div>
+                        <p><strong>功能：</strong>打印头控制逻辑，管理多个打印头的喷射模式和区域分配。</p>
+                        <p><strong>关键方法：</strong>LoadMatrixDataToPrintHead(), DrawAllRegionDroplets()</p>
+                    </div>
+                    
+                    <div class="file-card module" data-name="imageprocessing">
+                        <h4>🖼️ ImageProcessingModule.cs</h4>
+                        <div class="file-info">
+                            <span class="info-tag">图像处理</span>
+                            <span class="info-tag">580 行</span>
+                            <span class="info-tag">算法模块</span>
+                        </div>
+                        <p><strong>功能：</strong>图像导入、二值化处理、转换为液滴点阵的算法实现。</p>
+                        <p><strong>关键方法：</strong>ProcessImageRow(), GetBytesPerPixel()</p>
+                    </div>
+                    
+                    <div class="file-card module" data-name="dropletgrid">
+                        <h4>💧 Form1.DropletGridControl.cs</h4>
+                        <div class="file-info">
+                            <span class="info-tag">液滴控制</span>
+                            <span class="info-tag">680 行</span>
+                            <span class="info-tag">交互模块</span>
+                        </div>
+                        <p><strong>功能：</strong>液滴网格的绘制和交互控制，实时预览液滴分布。</p>
+                        <p><strong>关键方法：</strong>DrawDirectGrid()</p>
+                    </div>
+                    
+                    <div class="file-card model" data-name="models">
+                        <h4>📊 数据模型文件</h4>
+                        <div class="file-info">
+                            <span class="info-tag">数据结构</span>
+                            <span class="info-tag">多文件</span>
+                            <span class="info-tag">核心数据</span>
+                        </div>
+                        <p><strong>包含：</strong>MatrixPattern.cs、DropletInfo.cs、PrintRegion.cs等数据模型类。</p>
+                        <p><strong>功能：</strong>定义系统中使用的主要数据结构和实体类。</p>
+                    </div>
+                    
+                    <div class="file-card module" data-name="gcode">
+                        <h4>⚙️ Form1.GCodeGeneration.cs</h4>
+                        <div class="file-info">
+                            <span class="info-tag">代码生成</span>
+                            <span class="info-tag">小文件</span>
+                            <span class="info-tag">输出模块</span>
+                        </div>
+                        <p><strong>功能：</strong>将液滴点阵数据转换为标准G代码，用于机器控制。</p>
+                        <p><strong>数据结构：</strong>GcodeGenerationData类</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 数据流程 -->
+            <div id="dataflow" class="tab-pane">
+                <h2>🔄 数据流程分析</h2>
+                <div class="data-flow">
+                    <div class="flow-step">
+                        <h4>1️⃣ 用户输入参数</h4>
+                        <p>用户在界面上设置波形参数（频率、电压、时间等）或导入图像文件。参数通过TextBox和NumericUpDown控件输入，触发相应的TextChanged事件。</p>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <h4>2️⃣ 参数验证与计算</h4>
+                        <p>系统验证输入参数的有效性，然后调用CalculateAndPreview()方法进行计算。波形参数被转换为字节数组存储在data[]中，图像被处理成bool矩阵。</p>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <h4>3️⃣ 实时预览更新</h4>
+                        <p>计算结果立即在Chart控件中显示波形预览，在PictureBox中显示液滴点阵分布。用户可以实时看到参数改变的效果。</p>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <h4>4️⃣ 打印头区域分配</h4>
+                        <p>系统将液滴点阵按物理区域分配给不同的打印头。LoadMatrixDataToPrintHead()方法计算每个打印头负责的区域和喷射模式。</p>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <h4>5️⃣ 串口数据发送</h4>
+                        <p>当用户点击"开始"按钮时，系统通过SerialPort.Write()方法将data[]数组发送到硬件设备。数据包包含完整的控制指令。</p>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <h4>6️⃣ 硬件执行控制</h4>
+                        <p>硬件设备接收指令后执行相应动作：生成波形信号、控制打印头喷射、移动打印平台等。系统可以实时监控执行状态。</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h3>🔗 关键数据传递路径</h3>
+                    <div class="code-variables">
+                        <div class="variable">
+                            <span class="variable-name">UI Events</span> → 
+                            <span class="variable-name">Parameter Validation</span> → 
+                            <span class="variable-name">CalculateAndPreview()</span>
+                        </div>
+                        <div class="variable">
+                            <span class="variable-name">Image Import</span> → 
+                            <span class="variable-name">ImageProcessingModule</span> → 
+                            <span class="variable-name">directGridMatrix[,]</span>
+                        </div>
+                        <div class="variable">
+                            <span class="variable-name">Matrix Data</span> → 
+                            <span class="variable-name">PrintHeadController</span> → 
+                            <span class="variable-name">Region Allocation</span>
+                        </div>
+                        <div class="variable">
+                            <span class="variable-name">data[] Array</span> → 
+                            <span class="variable-name">SerialPort</span> → 
+                            <span class="variable-name">Hardware Device</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 硬件接口 -->
+            <div id="hardware" class="tab-pane">
+                <h2>⚡ 硬件接口与通信</h2>
+                <div class="hardware-visual">
+                    <div class="hardware-component">
+                        <div class="component-icon">🔌</div>
+                        <h4>CH340 USB转TTL</h4>
+                        <p>串口通信模块</p>
+                        <div style="margin-top: 10px;">
+                            <span class="status-indicator status-active"></span>
+                            <small>通信协议</small>
+                        </div>
+                    </div>
+                    
+                    <div class="hardware-component">
+                        <div class="component-icon">🖨️</div>
+                        <h4>喷墨打印头</h4>
+                        <p>液滴喷射设备</p>
+                        <div style="margin-top: 10px;">
+                            <span class="status-indicator status-active"></span>
+                            <small>多头控制</small>
+                        </div>
+                    </div>
+                    
+                    <div class="hardware-component">
+                        <div class="component-icon">⚙️</div>
+                        <h4>步进电机</h4>
+                        <p>X/Y轴移动控制</p>
+                        <div style="margin-top: 10px;">
+                            <span class="status-indicator status-warning"></span>
+                            <small>位置控制</small>
+                        </div>
+                    </div>
+                    
+                    <div class="hardware-component">
+                        <div class="component-icon">📊</div>
+                        <h4>波形发生器</h4>
+                        <p>驱动信号生成</p>
+                        <div style="margin-top: 10px;">
+                            <span class="status-indicator status-active"></span>
+                            <small>信号输出</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h3>📡 通信协议</h3>
+                    <div class="layer">
+                        <h4>串口数据包结构 (128字节)</h4>
+                        <div class="code-variables">
+                            <div class="variable">
+                                <span class="variable-name">data[0] = 0xFF</span> 
+                                <span class="variable-desc">// 包头标识</span>
+                            </div>
+                            <div class="variable">
+                                <span class="variable-name">data[1]</span> 
+                                <span class="variable-desc">// 波形类型 (0x00=正弦波, 0x01=梯形波, 0x02=任意波)</span>
+                            </div>
+                            <div class="variable">
+                                <span class="variable-name">data[2-6]</span> 
+                                <span class="variable-desc">// 时间参数 (上升时间、维持时间、下降时间等)</span>
+                            </div>
+                            <div class="variable">
+                                <span class="variable-name">data[7-8]</span> 
+                                <span class="variable-desc">// 发生次数 (16位，低字节+高字节)</span>
+                            </div>
+                            <div class="variable">
+                                <span class="variable-name">data[9]</span> 
+                                <span class="variable-desc">// 触发模式 (内部/外部触发)</span>
+                            </div>
+                            <div class="variable">
+                                <span class="variable-name">data[10-15]</span> 
+                                <span class="variable-desc">// 电压控制参数</span>
+                            </div>
+                            <div class="variable">
+                                <span class="variable-name">data[32-126]</span> 
+                                <span class="variable-desc">// 自定义波形数据 (时间+电压对)</span>
+                            </div>
+                            <div class="variable">
+                                <span class="variable-name">data[127] = 0xFE</span> 
+                                <span class="variable-desc">// 包尾标识</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h3>🎛️ 控制状态</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <div class="layer">
+                            <h4>串口状态</h4>
+                            <p><span class="status-indicator status-active"></span>连接正常</p>
+                            <p><span class="status-indicator status-inactive"></span>数据发送中</p>
+                        </div>
+                        <div class="layer">
+                            <h4>打印头状态</h4>
+                            <p><span class="status-indicator status-active"></span>就绪</p>
+                            <p><span class="status-indicator status-warning"></span>喷射中</p>
+                        </div>
+                        <div class="layer">
+                            <h4>电机状态</h4>
+                            <p><span class="status-indicator status-inactive"></span>待机</p>
+                            <p><span class="status-indicator status-warning"></span>移动中</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 模态框 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        // 选项卡切换
+        function showTab(tabName) {
+            // 隐藏所有选项卡内容
+            const panes = document.querySelectorAll('.tab-pane');
+            panes.forEach(pane => pane.classList.remove('active'));
+            
+            // 移除所有选项卡的active类
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // 显示选中的选项卡内容
+            document.getElementById(tabName).classList.add('active');
+            
+            // 添加active类到选中的选项卡
+            event.target.classList.add('active');
+        }
+        
+        // 文件搜索过滤
+        function filterFiles(searchTerm) {
+            const cards = document.querySelectorAll('.file-card');
+            const term = searchTerm.toLowerCase();
+            
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name') || '';
+                const text = card.textContent.toLowerCase();
+                
+                if (name.includes(term) || text.includes(term)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        // 显示模态框
+        function showModal(type) {
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+            
+            let content = '';
+            
+            switch(type) {
+                case 'form1-designer':
+                    content = `
+                        <h2>🎨 Form1.Designer.cs 详细分析</h2>
+                        <h3>主要UI控件：</h3>
+                        <ul>
+                            <li><strong>tabControlImageProcess:</strong> 主选项卡控件，包含图像导入、二值化、打印区域等页面</li>
+                            <li><strong>chart1:</strong> 波形显示图表，支持实时更新和交互</li>
+                            <li><strong>dataGridView1:</strong> 自定义波形数据输入表格</li>
+                            <li><strong>pictureBoxRegionPrintSimulation:</strong> 打印区域模拟显示</li>
+                            <li><strong>numericUpDown控件群:</strong> 数值参数输入 (液滴大小、间距、区域数量等)</li>
+                        </ul>
+                        <h3>控件布局结构：</h3>
+                        <p>采用分层布局：GroupBox → TabControl → Panel → 具体控件</p>
+                        <p>总计超过200个UI控件，包括按钮、文本框、标签、图表等</p>
+                    `;
+                    break;
+                case 'waveform-generation':
+                    content = `
+                        <h2>🌊 波形生成模块详细分析</h2>
+                        <h3>核心方法：</h3>
+                        <ul>
+                            <li><strong>CalculateAndPreview():</strong> 计算波形参数并实时预览</li>
+                            <li><strong>GenerateSinData():</strong> 生成正弦波数据</li>
+                            <li><strong>ExtractDataAndStoreInArray():</strong> 提取自定义波形数据</li>
+                        </ul>
+                        <h3>支持的波形类型：</h3>
+                        <ul>
+                            <li><strong>梯形波:</strong> 可设置上升时间、维持时间、下降时间等5个参数</li>
+                            <li><strong>正弦波:</strong> 频率、幅度、偏移量、相位等参数</li>
+                            <li><strong>任意波形:</strong> 通过表格输入时间-电压对，最多支持18个点</li>
+                        </ul>
+                        <h3>数据包结构：</h3>
+                        <p>128字节数据包，包含包头(0xFF)、波形类型、参数、包尾(0xFE)</p>
+                    `;
+                    break;
+                case 'printhead-control':
+                    content = `
+                        <h2>🖨️ 打印头控制模块详细分析</h2>
+                        <h3>核心功能：</h3>
+                        <ul>
+                            <li><strong>多头管理:</strong> 支持最多6个打印头同时工作</li>
+                            <li><strong>区域分配:</strong> 将液滴点阵按区域分配给不同打印头</li>
+                            <li><strong>喷射模式:</strong> 计算每个打印头的具体喷射位置</li>
+                            <li><strong>实时模拟:</strong> 可视化显示打印过程</li>
+                        </ul>
+                        <h3>关键数据结构：</h3>
+                        <ul>
+                            <li><strong>PrintHeadController:</strong> 打印头控制器主类</li>
+                            <li><strong>PrintRegion:</strong> 打印区域数据</li>
+                            <li><strong>DropletInfo:</strong> 单个液滴信息</li>
+                        </ul>
+                        <h3>可视化功能：</h3>
+                        <p>支持缩放、平移、全屏查看，可实时显示大型点阵(支持百万点级别)</p>
+                    `;
+                    break;
+                case 'image-processing':
+                    content = `
+                        <h2>🖼️ 图像处理模块详细分析</h2>
+                        <h3>处理流程：</h3>
+                        <ul>
+                            <li><strong>图像导入:</strong> 支持常见图像格式(BMP、JPG、PNG等)</li>
+                            <li><strong>二值化处理:</strong> 将灰度图像转换为黑白二值图像</li>
+                            <li><strong>点阵转换:</strong> 将二值图像转换为液滴喷射点阵</li>
+                            <li><strong>参数调节:</strong> 液滴大小、间距、单位等可调</li>
+                        </ul>
+                        <h3>算法特点：</h3>
+                        <ul>
+                            <li><strong>多线程处理:</strong> 使用unsafe代码提高处理速度</li>
+                            <li><strong>内存优化:</strong> 采用位运算减少内存占用</li>
+                            <li><strong>实时预览:</strong> 处理过程中实时显示结果</li>
+                        </ul>
+                        <h3>输出格式：</h3>
+                        <p>bool[,]矩阵，true表示需要喷射液滴的位置</p>
+                    `;
+                    break;
+                default:
+                    content = '<h2>详细信息</h2><p>该模块的详细信息正在整理中...</p>';
+            }
+            
+            modalBody.innerHTML = content;
+            modal.style.display = 'block';
+        }
+        
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // 添加一些交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为模块添加点击效果
+            const modules = document.querySelectorAll('.module');
+            modules.forEach(module => {
+                module.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px) scale(1.02)';
+                });
+                
+                module.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+            
+            // 为硬件组件添加动画
+            const components = document.querySelectorAll('.hardware-component');
+            components.forEach((component, index) => {
+                setTimeout(() => {
+                    component.style.opacity = '0';
+                    component.style.transform = 'translateY(20px)';
+                    component.style.transition = 'all 0.6s ease';
+                    
+                    setTimeout(() => {
+                        component.style.opacity = '1';
+                        component.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 200);
+            });
+        });
+        
+        // ESC键关闭模态框
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
