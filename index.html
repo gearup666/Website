@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的导航主页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* 全局样式 */
         body {
@@ -13,13 +14,17 @@
             background-color: #f0f2f5; /* 淡雅的背景色 */
             color: #333;
             line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         /* 容器样式 */
         .container {
-            max-width: 1100px;
+            max-width: 1200px; /* 稍微加宽以容纳更多卡片 */
             margin: 30px auto;
             padding: 20px;
+            flex-grow: 1;
         }
 
         /* 头部样式 */
@@ -32,8 +37,9 @@
 
         .header h1 {
             color: #2c3e50; /* 深蓝灰色标题 */
-            font-size: 2.5em;
+            font-size: 2.8em; /* 稍大一点的标题 */
             margin-bottom: 10px;
+            font-weight: 700;
         }
 
         .header p {
@@ -44,65 +50,93 @@
         /* 卡片网格布局 */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 响应式列 */
-            gap: 25px; /* 卡片间距 */
+            /* 卡片列数：小屏幕1列，中等屏幕2列，大屏幕3列，更大屏幕4列 */
+            grid-template-columns: repeat(1, 1fr); 
+            gap: 20px; /* 卡片间距 */
         }
 
         /* 单个卡片样式 */
         .card {
             background-color: #ffffff;
-            border-radius: 10px; /* 圆角 */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* 更柔和的阴影 */
-            padding: 25px;
+            border-radius: 12px; /* 更圆润的圆角 */
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07); /* 更精致的阴影 */
+            padding: 20px; /* 调整内边距 */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            text-decoration: none; /* 移除卡片本身的下划线（如果整个卡片是链接） */
-            color: inherit; /* 继承文字颜色 */
+            display: flex; /* 使用flex布局来对齐图标和标题 */
+            align-items: center; /* 垂直居中对齐 */
+            text-decoration: none;
+            color: inherit;
+            min-height: 80px; /* 卡片最小高度 */
         }
 
         .card:hover {
-            transform: translateY(-8px); /* 悬浮时轻微上移 */
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12); /* 悬浮时更深的阴影 */
+            transform: translateY(-5px) scale(1.02); /* 悬浮时轻微上移并放大 */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            font-size: 1.8em; /* 图标大小 */
+            color: #007bff; /* 统一的图标颜色 */
+            margin-right: 15px; /* 图标和标题之间的间距 */
+            flex-shrink: 0; /* 防止图标被压缩 */
+        }
+        
+        .card-icon .fas { /* 确保 Font Awesome 图标正确显示 */
+            display: inline-block;
         }
 
         .card-title {
-            font-size: 1.4em;
-            color: #007bff; /* 鲜明的蓝色标题 */
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-        
-        .card-title a { /* 如果标题是链接 */
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .card-description {
-            font-size: 0.95em;
-            color: #4a4a4a; /* 深灰色描述文字 */
-            flex-grow: 1; /* 让描述占据多余空间，帮助对齐 */
-            margin-bottom: 0;
+            font-size: 1.1em; /* 调整标题字体大小 */
+            color: #343a40; /* 深色标题 */
+            margin: 0; /* 移除默认的margin */
+            font-weight: 600; /* 标题加粗 */
+            /* 允许标题换行 */
+            word-break: break-word;
+            overflow-wrap: break-word;
         }
 
         /* 页脚样式 */
         .footer {
             text-align: center;
-            margin-top: 60px;
-            padding: 20px 0;
+            margin-top: auto; /* 将页脚推到底部 */
+            padding: 25px 0;
             border-top: 1px solid #e0e0e0;
             font-size: 0.9em;
             color: #777;
+            background-color: #ffffff; /* 页脚背景色 */
+            width: 100%;
         }
 
         /* 响应式调整 */
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
-            }
+        @media (min-width: 640px) { /* sm */
             .cards-grid {
-                grid-template-columns: 1fr; /* 在小屏幕上单列显示 */
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 768px) { /* md */
+            .cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (min-width: 1024px) { /* lg */
+            .cards-grid {
+                grid-template-columns: repeat(4, 1fr); /* 大屏幕上最多4列 */
+            }
+        }
+        @media (max-width: 639px) {
+            .header h1 {
+                font-size: 2.2em;
+            }
+            .card {
+                flex-direction: row; /* 小屏幕确保图标和文字在一行 */
+                padding: 15px;
+            }
+            .card-icon {
+                font-size: 1.5em;
+                margin-right: 10px;
+            }
+            .card-title {
+                font-size: 1em;
             }
         }
     </style>
@@ -116,20 +150,14 @@
 
         <main>
             <div class="cards-grid" id="navigation-cards-container">
-<!-- 示例卡片结构 (将被脚本替换):
-<a href="path/to/your_file.html" class="card">
-    <h2 class="card-title">示例文件名</h2>
-    <p class="card-description">这是从 meta 标签或 title 标签提取的描述信息。</p>
-</a>
--->
-</div>
-            
+                mian
+                </div>
         </main>
-
-        <footer class="footer">
-            <p>&copy; <span id="currentYear"></span> 自动导航系统. All rights reserved.</p>
-        </footer>
     </div>
+
+    <footer class="footer">
+        <p>&copy; <span id="currentYear"></span> 自动导航系统. All rights reserved.</p>
+    </footer>
 
     <script>
         // 简单脚本，用于在页脚显示当前年份
