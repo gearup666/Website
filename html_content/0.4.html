@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个体能力提升市场深度洞察SPA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Visualization & Content Choices:
+        * Market Scope (Big Numbers): Goal: Inform. Method: Large text. Justification: Immediate impact for key stats.
+        * Goal Category Distribution (Donut Chart - Chart.js): Goal: Compare. Method: Donut. Justification: Show P_A_R_A-like breakdown of focus.
+        * Key Skill Segments (Bar Chart - Chart.js): Goal: Compare. Method: Horizontal Bar. Justification: Clear comparison of investment/focus in different skill domains.
+        * Learning Methodology (HTML/CSS Flow Diagram): Goal: Organize. Method: Styled divs/flexbox. Justification: Illustrate the note-centric learning process without SVG/Mermaid.
+        * Learning Investment Over Time (Line Chart - Chart.js): Goal: Change. Method: Line. Justification: Show hypothetical effort distribution across phases.
+        * Enabling Technologies (Stacked Bar Chart - Chart.js): Goal: Compare. Method: Stacked Bar. Justification: Show composition of tool types per learning area.
+        * SWOT Analysis (HTML/CSS Grid): Goal: Organize. Method: Styled divs in a grid. Justification: Standard clear presentation for SWOT.
+        * Skill Synergy/Future Profile (Bubble Chart - Chart.js): Goal: Relationships. Method: Bubble. Justification: Visualize interrelation and impact of diverse skills for the "polymath" concept.
+        * All Chart.js instances will use Canvas, include label wrapping and specified tooltip config. NO SVG/Mermaid used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #F8F4F0; /* Warm Off-White */
+            color: #4A4A4A; /* Dark Gray for primary text */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 550px; /* Max width for charts */
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px; /* Base height for mobile */
+            max-height: 380px;
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .chart-container {
+                height: 380px; /* Taller for tablets and desktops */
+                max-height: 450px;
+            }
+        }
+        .spa-card {
+            background-color: #FFFFFF; /* White card background */
+            border-radius: 12px; /* Rounded corners */
+            padding: 2rem; /* Spacing inside cards */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08); /* Subtle shadow */
+            margin-bottom: 2.5rem; /* Space between cards */
+        }
+        .section-heading {
+            font-size: 1.8rem; /* Slightly smaller than 2xl for a softer look */
+            font-weight: 600; /* Semibold */
+            color: #A0522D; /* Sienna - Accent Color 1 */
+            margin-bottom: 1.5rem;
+            text-align: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #D2B48C; /* Tan - Accent Color 4 */
+            display: inline-block;
+        }
+        .sub-heading {
+            font-size: 1.3rem;
+            font-weight: 500; /* Medium */
+            color: #778899; /* LightSlateGray - Accent Color 2 */
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .paragraph-text {
+            font-size: 0.95rem; /* Slightly smaller for more content */
+            line-height: 1.7;
+            color: #5a5a5a; /* Slightly lighter dark gray */
+            margin-bottom: 1rem;
+        }
+        .big-stat-number {
+            font-size: 2.8rem;
+            font-weight: 700; /* Bold */
+            color: #A0522D; /* Sienna */
+            text-align: center;
+        }
+        .big-stat-label {
+            font-size: 1rem;
+            color: #778899; /* LightSlateGray */
+            text-align: center;
+            margin-top: 0.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .nav-button {
+            background-color: #A0522D; /* Sienna */
+            color: #FFFFFF;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            margin: 0 0.25rem;
+        }
+        .nav-button:hover {
+            background-color: #804221; /* Darker Sienna */
+        }
+        /* Flowchart styles */
+        .flow-step {
+            background-color: #F8F4F0; /* Light background for steps */
+            border: 1px solid #D2B48C; /* Tan border */
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            color: #4A4A4A;
+        }
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: #778899; /* LightSlateGray */
+            align-self: center;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="py-8 text-center">
+        <h1 class="text-3xl md:text-4xl font-bold text-[#A0522D] tracking-tight">个体能力提升市场</h1>
+        <h2 class="text-xl md:text-2xl font-light text-[#778899]">深度洞察与发展策略</h2>
+        <p class="mt-3 text-sm text-gray-500">基于个人发展蓝图的趋势解读</p>
+    </header>
+    
+    <nav class="sticky top-0 z-50 bg-[#F8F4F0] bg-opacity-90 backdrop-blur-md shadow-sm py-3 mb-8">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <button onclick="scrollToSection('overview')" class="nav-button">市场概览</button>
+            <button onclick="scrollToSection('key-skills')" class="nav-button">核心技能</button>
+            <button onclick="scrollToSection('learning-trends')" class="nav-button">学习趋势</button>
+            <button onclick="scrollToSection('enabling-tech')" class="nav-button">赋能技术</button>
+            <button onclick="scrollToSection('market-dynamics')" class="nav-button">市场动态</button>
+            <button onclick="scrollToSection('future-outlook')" class="nav-button">未来展望</button>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-4">
+
+        <section id="overview" class="spa-card">
+            <div class="text-center mb-6"><h2 class="section-heading">市场概览：自我提升的宏伟蓝图</h2></div>
+            <p class="paragraph-text">
+                个体能力提升市场展现出强烈的多元化和深度化追求。基于对一份详尽个人成长计划的分析，我们观察到个体对于掌握跨领域知识和复合型技能的迫切需求。这不仅反映了对职业发展和个人价值实现的期望，也体现了对生活质量及综合素养全面提升的深刻向往。当前市场参与者倾向于制定一个包含众多子目标和多领域探索的长期发展规划。
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 my-8">
+                <div>
+                    <p class="big-stat-number" id="totalGoalsStat">100+</p>
+                    <p class="big-stat-label">规划目标总数</p>
+                </div>
+                <div>
+                    <p class="big-stat-number" id="coreDomainsStat">10+</p>
+                    <p class="big-stat-label">核心能力领域</p>
+                </div>
+                <div>
+                    <p class="big-stat-number" id="timeHorizonStat">1-2年</p>
+                    <p class="big-stat-label">主要目标周期</p>
+                </div>
+            </div>
+            <h3 class="sub-heading text-center">主要目标领域分布</h3>
+            <p class="paragraph-text text-center">
+                个体关注的领域广泛，从硬核的技术技能（如人工智能、全栈开发）到软技能（如人际沟通、个人成长心态塑造），再到专业应试（如英语、公考）和个人兴趣培养，构成了一个复杂的“能力矩阵”需求。下图展示了各主要目标领域的投入精力占比预估。
+            </p>
+            <div class="chart-container">
+                <canvas id="goalCategoriesChart"></canvas>
+            </div>
+        </section>
+
+        <section id="key-skills" class="spa-card">
+            <div class="text-center mb-6"><h2 class="section-heading">核心技能细分市场分析</h2></div>
+            <p class="paragraph-text">
+                在众多发展目标中，技术驱动型技能和面向未来的新兴领域占据了核心地位。这表明市场参与者清晰认识到技术变革对未来职业路径和个人竞争力的深远影响，并积极投入到相关能力的建设中。对“硬技能”的追求与对“软实力”的培养并行不悖，共同构成了现代个体能力版图的核心。
+            </p>
+            <h3 class="sub-heading text-center">重点投入技能领域的热度</h3>
+            <p class="paragraph-text text-center">
+                数据显示，在人工智能技术栈、全栈软件开发、数字艺术创作等领域的投入尤为显著。这些领域不仅技术含量高，且具有广泛的应用前景和创新潜力。同时，语言能力（特别是英语的深度应用）和专业应试类技能，作为基础性和门槛性能力，也获得了持续的关注。
+            </p>
+            <div class="chart-container" style="max-width: 700px;">
+                <canvas id="skillDomainsChart"></canvas>
+            </div>
+        </section>
+
+        <section id="learning-trends" class="spa-card">
+            <div class="text-center mb-6"><h2 class="section-heading">学习与发展趋势洞察</h2></div>
+            <p class="paragraph-text">
+                个体发展计划揭示了“终身学习”和“实践导向”的核心趋势。学习过程不再是线性的知识获取，而是理论学习、实践操作、系统笔记沉淀、复用与迭代优化的闭环。这种以笔记为中心的结构化学习方法，成为连接各个学习环节、固化知识经验、并支持长期按需调用的关键策略。
+            </p>
+            <h3 class="sub-heading text-center">笔记中心化学习流程模型</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center my-6 text-sm">
+                <div class="flow-step"><strong>1. 理论输入</strong><br>系统学习核心概念、方法论</div>
+                <div class="flow-arrow hidden md:block">➔</div>
+                <div class="flow-step"><strong>2. 实践操作</strong><br>项目练习，解决实际问题</div>
+                <div class="flow-arrow hidden md:block">➔</div>
+                <div class="flow-step"><strong>3. 笔记沉淀</strong><br>结构化记录过程、代码、SOP、心得</div>
+                <div class="flow-arrow hidden md:block">➔</div>
+                <div class="flow-step"><strong>4. 复用迭代</strong><br>笔记作为知识库，持续应用优化</div>
+            </div>
+            <h3 class="sub-heading text-center">各阶段学习投入强度变化（假设）</h3>
+            <p class="paragraph-text text-center">
+                下图模拟了在1-2年学习周期内，不同类型技能的学习投入强度可能的变化趋势。初期可能侧重基础和核心技术，中期深化应用，后期则可能转向综合提升和新领域探索。
+            </p>
+            <div class="chart-container">
+                <canvas id="learningEffortChart"></canvas>
+            </div>
+        </section>
+
+        <section id="enabling-tech" class="spa-card">
+            <div class="text-center mb-6"><h2 class="section-heading">赋能技术与工具采纳趋势</h2></div>
+            <p class="paragraph-text">
+                数字化工具在个体能力提升过程中扮演着至关重要的角色。从知识管理、编程开发到艺术创作，高效工具的运用是提升学习效率和产出质量的关键。报告显示，市场对笔记软件、AI辅助工具和专业开发环境的依赖程度较高，反映出对“工欲善其事，必先利其器”理念的认同。
+            </p>
+            <h3 class="sub-heading text-center">主要工具类型采纳度</h3>
+            <p class="paragraph-text text-center">
+                下图展示了在不同能力提升领域中，对各类赋能工具的采纳数量和组合情况的预估。知识管理工具是普适性需求，而专业领域的工具则更具针对性。
+            </p>
+            <div class="chart-container">
+                <canvas id="toolsAdoptionChart"></canvas>
+            </div>
+        </section>
+
+        <section id="market-dynamics" class="spa-card">
+            <div class="text-center mb-6"><h2 class="section-heading">个体发展市场动态 (SWOT分析)</h2></div>
+            <p class="paragraph-text">
+                个体在追求全面能力提升的宏伟蓝图中，既展现出巨大的内在潜力，也面临着外部环境的机遇与挑战。清晰的自我认知和动态的策略调整是确保目标平稳实现的关键因素。
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                <div class="p-5 rounded-lg shadow-md bg-[#E8F5E9]"> <h3 class="font-semibold text-lg text-[#2E7D32] mb-2">优势 (Strengths) 💪</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>目标明确且覆盖广泛，求知欲强，上进心驱动。</li>
+                        <li>对新兴技术和跨学科知识抱有浓厚学习兴趣。</li>
+                        <li>重视知识管理与系统化学习方法论的应用。</li>
+                        <li>具备前瞻性的长期发展规划意识。</li>
+                    </ul>
+                </div>
+                <div class="p-5 rounded-lg shadow-md bg-[#FFEBEE]"> <h3 class="font-semibold text-lg text-[#C62828] mb-2">劣势 (Weaknesses) ⚠️</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>计划过于宏大，可能导致执行力不足和阶段性拖延。</li>
+                        <li>多目标并行易分散精力，影响各领域深入程度。</li>
+                        <li>部分软技能（如人际交往）提升依赖持续实践和有效反馈。</li>
+                        <li>对失败、拒绝等负面反馈的内在恐惧可能阻碍行动。</li>
+                    </ul>
+                </div>
+                <div class="p-5 rounded-lg shadow-md bg-[#E3F2FD]"> <h3 class="font-semibold text-lg text-[#1565C0] mb-2">机遇 (Opportunities) 🚀</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>海量优质在线学习资源和活跃的专业社群支持。</li>
+                        <li>AI等智能化工具能显著提升学习与工作效率。</li>
+                        <li>就业市场对复合型、T型人才的需求日益增长。</li>
+                        <li>通过持续学习可快速适应行业动态和技术变革。</li>
+                    </ul>
+                </div>
+                <div class="p-5 rounded-lg shadow-md bg-[#FFFDE7]"> <h3 class="font-semibold text-lg text-[#F9A825] mb-2">挑战 (Threats) 🌪️</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>信息过载和选择多样性可能导致学习焦点难以集中。</li>
+                        <li>长期坚持的难度大，易因缺乏即时回报产生倦怠感。</li>
+                        <li>部分目标（如关键考试）存在明确的时间节点压力。</li>
+                        <li>缺乏有效的外部监督和反馈机制可能导致方向偏离。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="future-outlook" class="spa-card">
+            <div class="text-center mb-6"><h2 class="section-heading">未来展望：“全面发展型”人才崛起</h2></div>
+            <p class="paragraph-text">
+                个体能力提升不再局限于单一技能赛道，而是向着跨领域、多技能融合的“通才”或“T型人才”方向演进。这种趋势预示着未来社会对个体综合素质、适应能力和创新能力的更高要求。通过系统化规划和持续性投入，个体有望在快速变化的环境中构建可持续的核心竞争力。
+            </p>
+            <h3 class="sub-heading text-center">多元技能的协同增效潜力</h3>
+            <p class="paragraph-text text-center">
+                不同领域的技能并非孤立存在，而是能够相互促进，产生“1+1>2”的协同效应。例如，编程能力可以赋能艺术创作的效率与表现力，设计思维可以优化技术产品的用户体验，而强大的知识管理能力则支撑所有领域的学习与创新。这种跨界融合是未来个体核心竞争力的重要体现。
+            </p>
+            <div class="chart-container">
+                <canvas id="skillSynergyChart"></canvas>
+            </div>
+            <p class="paragraph-text mt-6 text-center">
+                最终目标是构建一个动态的、可进化的个人能力生态系统，能够灵活应对未知挑战，主动抓住未来机遇，实现个体价值的最大化。
+            </p>
+        </section>
+    </main>
+
+    <footer class="text-center mt-12 py-8 border-t border-[#D2B48C]">
+        <p class="text-sm text-gray-500">&copy; <span id="currentYear"></span> 个体能力提升市场洞察。保留所有权利。</p>
+        <p class="text-xs text-gray-400 mt-1">信息来源：基于“个人目标详细分析与行动计划”的深度解读和趋势研判。</p>
+    </footer>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Chart.js Global Configuration
+        Chart.defaults.font.family = "'Noto Sans SC', sans-serif";
+        Chart.defaults.color = '#4A4A4A'; // Default font color for charts
+
+        const CHART_PALETTE = {
+            accent1: '#A0522D', // Sienna
+            accent2: '#778899', // LightSlateGray
+            accent3: '#8FBC8F', // DarkSeaGreen
+            accent4: '#D2B48C', // Tan
+            accent5: '#B0A47F', // Muted Olive/Khaki
+            accent6: '#C0845E', // Muted Terracotta
+        };
+        
+        function wrapChartLabel(text, maxWidth = 16) {
+            if (typeof text !== 'string') return text;
+            if (text.length <= maxWidth) return text;
+
+            const words = text.split(''); // Split by character for Chinese
+            let lines = [];
+            let currentLine = "";
+
+            for (let i = 0; i < words.length; i++) {
+                if ((currentLine + words[i]).length > maxWidth && currentLine.length > 0) {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                } else {
+                    currentLine += words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        const commonTooltipCallbacks = {
+            title: function(tooltipItems) {
+                const item = tooltipItems[0];
+                if (!item || !item.chart || !item.chart.data || !item.chart.data.labels) return '';
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                  return label.join(''); // For Chinese, join directly
+                }
+                return label;
+            }
+        };
+        
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { 
+                        color: '#4A4A4A', 
+                        padding: 15,
+                        font: { size: 11 }
+                    }
+                },
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: 'rgba(0,0,0,0.75)',
+                    titleFont: { size: 13, weight: 'bold' },
+                    bodyFont: { size: 12 },
+                    padding: 10,
+                    callbacks: commonTooltipCallbacks
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#5a5a5a', font: { size: 10 } },
+                    grid: { display: false }
+                },
+                y: {
+                    ticks: { color: '#5a5a5a', font: { size: 10 } },
+                    grid: { color: '#E0E0E0', borderDash: [2, 4], drawBorder: false }
+                }
+            }
+        };
+
+        // 1. Goal Categories Chart (Donut)
+        const goalDataRaw = {
+            '技术技能': 30, '个人成长': 15, '语言学习': 10, 
+            '效率工具': 8, '艺术创作': 12, '职业发展': 15, '其他兴趣': 10
+        };
+        const goalLabels = Object.keys(goalDataRaw).map(l => wrapChartLabel(l, 8));
+        const goalValues = Object.values(goalDataRaw);
+        document.getElementById('totalGoalsStat').textContent = goalValues.reduce((a,b) => a+b, 0) + ' 项细分'; // Placeholder sum
+        document.getElementById('coreDomainsStat').textContent = goalLabels.length + ' 大类';
+        
+        new Chart(document.getElementById('goalCategoriesChart'), {
+            type: 'doughnut',
+            data: {
+                labels: goalLabels,
+                datasets: [{
+                    label: '目标领域分布',
+                    data: goalValues,
+                    backgroundColor: [
+                        CHART_PALETTE.accent1, CHART_PALETTE.accent2, CHART_PALETTE.accent3,
+                        CHART_PALETTE.accent4, CHART_PALETTE.accent5, CHART_PALETTE.accent6, '#BDB76B' // DarkKhaki
+                    ],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+            },
+            options: { ...commonChartOptions, cutout: '60%' }
+        });
+
+        // 2. Skill Domains Chart (Bar - Horizontal)
+        const skillDomainsRaw = {
+            'AI与机器学习': 90, '全栈开发': 85, '数字艺术': 75, 
+            'IT运维与智能家居': 70, '英语综合能力': 80, '科研与数据可视化': 65, '考试类技能': 78
+        };
+        new Chart(document.getElementById('skillDomainsChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(skillDomainsRaw).map(l => wrapChartLabel(l, 10)),
+                datasets: [{
+                    label: '重点投入热度指数',
+                    data: Object.values(skillDomainsRaw),
+                    backgroundColor: CHART_PALETTE.accent2 + 'CC', // Opacity
+                    borderColor: CHART_PALETTE.accent2,
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.7,
+                }]
+            },
+            options: {
+                ...commonChartOptions,
+                indexAxis: 'y',
+                scales: {
+                    x: { ...commonChartOptions.scales.x, beginAtZero: true, suggestedMax: 100, title: { display: true, text: '热度指数 (0-100)', font:{size:10} } },
+                    y: { ...commonChartOptions.scales.y, ticks: {...commonChartOptions.scales.y.ticks, font:{size:10}} }
+                },
+                plugins: { ...commonChartOptions.plugins, legend: { display: false } }
+            }
+        });
+        
+        // 3. Learning Effort Chart (Line)
+        new Chart(document.getElementById('learningEffortChart'), {
+            type: 'line',
+            data: {
+                labels: ['0-3月', '4-6月', '7-12月', '13-18月', '19-24月'].map(l => wrapChartLabel(l,8)),
+                datasets: [
+                    {
+                        label: '技术技能学习强度',
+                        data: [60, 75, 85, 80, 70],
+                        borderColor: CHART_PALETTE.accent1,
+                        backgroundColor: CHART_PALETTE.accent1 + '33',
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: '软技能素养提升强度',
+                        data: [40, 50, 65, 70, 75],
+                        borderColor: CHART_PALETTE.accent3,
+                        backgroundColor: CHART_PALETTE.accent3 + '33',
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }
+                ]
+            },
+            options: { 
+                ...commonChartOptions,
+                scales: {
+                    x: { ...commonChartOptions.scales.x, title: { display: true, text: '学习阶段', font:{size:10} } },
+                    y: { ...commonChartOptions.scales.y, beginAtZero: true, suggestedMax: 100, title: { display: true, text: '投入强度指数 (0-100)', font:{size:10} } }
+                }
+            }
+        });
+
+        // 4. Tools Adoption Chart (Stacked Bar)
+        new Chart(document.getElementById('toolsAdoptionChart'), {
+            type: 'bar',
+            data: {
+                labels: ['知识管理', '编程开发', '艺术创作', '效率办公', '硬件开发', '数据分析'].map(l => wrapChartLabel(l, 8)),
+                datasets: [
+                    { label: '核心工具', data: [3, 5, 4, 3, 2, 2], backgroundColor: CHART_PALETTE.accent2 },
+                    { label: '辅助工具', data: [4, 3, 3, 2, 3, 2], backgroundColor: CHART_PALETTE.accent4 },
+                    { label: 'AI赋能型', data: [2, 2, 3, 1, 1, 2], backgroundColor: CHART_PALETTE.accent6 }
+                ]
+            },
+            options: {
+                ...commonChartOptions,
+                scales: {
+                    x: { ...commonChartOptions.scales.x, stacked: true },
+                    y: { ...commonChartOptions.scales.y, stacked: true, beginAtZero: true, title: { display: true, text: '工具采纳数量 (估算)', font:{size:10} } }
+                },
+                 plugins: { ...commonChartOptions.plugins, tooltip: {...commonChartOptions.plugins.tooltip, mode: 'index', intersect: false } }
+            }
+        });
+
+        // 5. Skill Synergy Chart (Bubble)
+        new Chart(document.getElementById('skillSynergyChart'), {
+            type: 'bubble',
+            data: {
+                datasets: [
+                    { label: 'AI + 编程', data: [{x: 25, y: 35, r: 28}], backgroundColor: CHART_PALETTE.accent1 + 'B3'},
+                    { label: '设计 + 技术', data: [{x: 45, y: 65, r: 32}], backgroundColor: CHART_PALETTE.accent2 + 'B3'},
+                    { label: '知识管理 + 全领域', data: [{x: 65, y: 45, r: 38}], backgroundColor: CHART_PALETTE.accent3 + 'B3'},
+                    { label: '沟通 + 项目管理', data: [{x: 80, y: 75, r: 22}], backgroundColor: CHART_PALETTE.accent4 + 'B3'},
+                    { label: '硬件 + 软件创新', data: [{x: 35, y: 80, r: 25}], backgroundColor: CHART_PALETTE.accent5 + 'B3'}
+                ]
+            },
+            options: {
+                ...commonChartOptions,
+                scales: {
+                    x: { min: 0, max: 100, title: { display: true, text: '技术关联度', font:{size:10} }, grid: {borderColor: '#DDD'} },
+                    y: { min: 0, max: 100, title: { display: true, text: '创新潜力/市场需求', font:{size:10} }, grid: {borderColor: '#DDD'} }
+                },
+                plugins: {
+                    ...commonChartOptions.plugins,
+                    tooltip: {
+                        ...commonChartOptions.plugins.tooltip,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: 影响力 ${context.raw.r}`;
+                            },
+                             title: function() { return ''; } // No title for bubble tooltips
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
