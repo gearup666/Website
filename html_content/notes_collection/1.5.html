@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>经济知识学习 - 第五章</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'Inter', sans-serif;
+            line-height: 1.7;
+            color: #4A5568; /* Tailwind gray-700 */
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .accordion-content {
+            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.3s ease-in-out;
+            padding: 0 1.5rem; 
+        }
+        .accordion-item.active .accordion-content {
+            display: block;
+            max-height: 10000px; /* Increased max-height for potentially very long content */
+            padding: 1.5rem; 
+        }
+        .accordion-title {
+            cursor: pointer;
+        }
+        .tab-button.active {
+            border-color: #3B82F6; /* Tailwind blue-500 */
+            color: #2563EB; /* Tailwind blue-600 */
+            background-color: #EFF6FF; /* Tailwind blue-50 */
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .placeholder-block {
+            background-color: #FEF9C3; /* Tailwind yellow-100 */
+            border: 1px dashed #FDE047; /* Tailwind yellow-300 */
+            color: #A16207; /* Tailwind yellow-700 */
+            text-align: center;
+            padding: 2rem 1rem; 
+            margin: 1rem 0; 
+            border-radius: 0.5rem; 
+            font-style: italic;
+        }
+        .concept-card {
+            background-color: #F9FAFB; /* Tailwind gray-50 */
+            border-left: 4px solid #60A5FA; /* Tailwind blue-400 */
+            padding: 1rem; 
+            margin-bottom: 0.75rem; 
+            border-radius: 0.375rem; 
+        }
+        .concept-card strong, .concept-card .important-text {
+            color: #1E40AF; /* Tailwind blue-800 */
+            font-weight: 500;
+        }
+        .important-text {
+             color: #2563EB; /* Tailwind blue-600 */
+        }
+        .sub-accordion-item .sub-accordion-content {
+            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+            padding-left: 1rem; 
+        }
+        .sub-accordion-item.active .sub-accordion-content {
+            display: block;
+            max-height: 5000px; 
+        }
+        .sub-accordion-title {
+            cursor: pointer;
+            font-weight: 500;
+            color: #3B82F6; /* Tailwind blue-500 */
+            padding: 0.5rem 0;
+        }
+        .sub-accordion-title svg {
+            width: 1.25rem; 
+            height: 1.25rem; 
+            transition: transform 0.3s ease;
+        }
+        .sub-accordion-item.active .sub-accordion-title svg {
+            transform: rotate(90deg);
+        }
+        .formula-box {
+            background-color: #E0F2FE; /* Tailwind sky-100 */
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            margin: 0.5rem 0;
+            font-family: 'Courier New', Courier, monospace;
+            color: #075985; /* Tailwind sky-800 */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        th, td {
+            border: 1px solid #e2e8f0; /* Tailwind gray-300 */
+            padding: 0.5rem;
+            text-align: left;
+        }
+        th {
+            background-color: #EFF6FF; /* Tailwind blue-50 */
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-sky-100 via-blue-50 to-indigo-100 p-4 md:p-8 min-h-screen">
+    <div class="container mx-auto bg-white p-6 md:p-8 rounded-xl shadow-2xl max-w-6xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-500 pb-2">
+                第五章 经济知识
+            </h1>
+            <p class="text-gray-500 text-lg">基本原理、市场运行与宏观调控</p>
+        </header>
+
+        <div class="mb-8 border-b border-gray-300">
+            <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
+                <button class="tab-button text-sm md:text-base whitespace-nowrap py-3 px-3 md:py-4 md:px-4 border-b-2 font-medium border-transparent hover:text-blue-600 hover:border-blue-400 focus:outline-none rounded-t-md active" data-target="tabPoliticalEconomy">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1 md:mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" /><path d="M12 2.252A8.014 8.014 0 0117.748 12H12V2.252z" /></svg>
+                    政治经济学原理
+                </button>
+                <button class="tab-button text-sm md:text-base whitespace-nowrap py-3 px-3 md:py-4 md:px-4 border-b-2 font-medium border-transparent hover:text-blue-600 hover:border-blue-400 focus:outline-none rounded-t-md" data-target="tabCapitalism">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1 md:mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 2a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 2zM8.5 6.5a.75.75 0 00-1.5 0v7a.75.75 0 001.5 0v-7zm5 0a.75.75 0 00-1.5 0v7a.75.75 0 001.5 0v-7z" clip-rule="evenodd" /><path d="M3 7.25A2.25 2.25 0 015.25 5h9.5A2.25 2.25 0 0117 7.25v5.5A2.25 2.25 0 0114.75 15h-9.5A2.25 2.25 0 013 12.75v-5.5zM5.25 6.5a.75.75 0 00-.75.75v5.5c0 .414.336.75.75.75h9.5a.75.75 0 00.75-.75v-5.5a.75.75 0 00-.75-.75h-9.5z" /></svg>
+                    资本主义经济
+                </button>
+                <button class="tab-button text-sm md:text-base whitespace-nowrap py-3 px-3 md:py-4 md:px-4 border-b-2 font-medium border-transparent hover:text-blue-600 hover:border-blue-400 focus:outline-none rounded-t-md" data-target="tabIncomeDistribution">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1 md:mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.167A1.5 1.5 0 014.5 17h-1A1.5 1.5 0 012 15.5V10.5a1.5 1.5 0 011.5-1.5h1A1.5 1.5 0 016 10.5zm2.5-4a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm0-1.5a.5.5 0 01.5.5v1a.5.5 0 01-1 0v-1a.5.5 0 01.5-.5zM10 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zm1.5.167a.5.5 0 00-1 0v5.166a.5.5 0 001 0v-5.166zM15.5 6.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm0-1.5a.5.5 0 01.5.5v1a.5.5 0 01-1 0v-1a.5.5 0 01.5-.5zM18 10.5a1.5 1.5 0 11-3 0v6a1.5 1.5 0 013 0v-6zm-1.5.167a.5.5 0 00-1 0v5.166a.5.5 0 001 0v-5.166z" /></svg>
+                    收入分配
+                </button>
+                 <button class="tab-button text-sm md:text-base whitespace-nowrap py-3 px-3 md:py-4 md:px-4 border-b-2 font-medium border-transparent hover:text-blue-600 hover:border-blue-400 focus:outline-none rounded-t-md" data-target="tabMicroeconomics">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1 md:mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 001.414 1.414L9 9.414V12a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414l-3-3z" clip-rule="evenodd" /></svg>
+                    微观经济
+                </button>
+                <button class="tab-button text-sm md:text-base whitespace-nowrap py-3 px-3 md:py-4 md:px-4 border-b-2 font-medium border-transparent hover:text-blue-600 hover:border-blue-400 focus:outline-none rounded-t-md" data-target="tabMacroeconomics">
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1 md:mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9 6a1 1 0 012 0v2.586l1.707-1.707a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L9 7.586V6z" clip-rule="evenodd" /></svg>
+                    宏观经济
+                </button>
+                 <button class="tab-button text-sm md:text-base whitespace-nowrap py-3 px-3 md:py-4 md:px-4 border-b-2 font-medium border-transparent hover:text-blue-600 hover:border-blue-400 focus:outline-none rounded-t-md" data-target="tabEconomicBuzzwords">
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1 md:mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                    经济热词
+                </button>
+            </nav>
+        </div>
+
+
+        <div id="tabPoliticalEconomy" class="tab-content active">
+            <h2 class="text-3xl font-semibold mb-6 text-sky-600 border-l-4 border-sky-500 pl-3">第一节 政治经济学基本原理</h2>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>一、物质资料生产过程</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                    <p><strong>1. 含义：</strong>人类用自己的劳动改造自然并使之适合自身需要的实践活动。</p>
+                    <p><strong>2. 三要素：</strong>劳动者的劳动、劳动资料、劳动对象。</p>
+                    <p><strong>3. 四环节：</strong>生产 (决定性环节) → 分配 → 交换 → 消费 (最终目的和动力)。</p>
+                </div>
+            </div>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>二、商品及其基本属性</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                    <p><strong>(一) 含义：</strong>商品是用于<strong class="important-text">交换</strong>的<strong class="important-text">劳动产品</strong>。</p>
+                    <p><strong>(二) 商品的二因素 (矛盾统一体)：</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>使用价值：</strong>商品能满足人们某种需要的属性 (自然属性)。</li>
+                        <li><strong>价值：</strong>凝结在商品中的无差别的人类劳动 (社会属性)。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>三、劳动二重性</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                    <p>生产商品的劳动具有二重属性：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>具体劳动：</strong>特定形式下的劳动，创造<strong class="important-text">使用价值</strong>。</li>
+                        <li><strong>抽象劳动：</strong>无差别的一般人类劳动，创造<strong class="important-text">价值</strong>。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>四、货币</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                    <p><strong>(一) 内涵：</strong>从商品中分离出来固定充当<strong class="important-text">一般等价物</strong>的特殊商品。</p>
+                    <p><strong>(二) 货币的职能：</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>基本职能：</strong>价值尺度 (观念货币)、流通手段 (现实货币)。</li>
+                        <li><strong>其他职能：</strong>支付手段、贮藏手段、世界货币。</li>
+                    </ul>
+                    <div class="formula-box">
+                        <p><strong>(三) 货币流通规律：</strong> 流通中需要的货币量 = 商品价格总额 / 货币的流通速度</p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>五、价值规律</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                    <p>是商品经济的<strong class="important-text">基本规律</strong>。</p>
+                    <p><strong>1. 基本内容：</strong>商品的价值量由生产这种商品的<strong class="important-text">社会必要劳动时间</strong>决定；商品交换要以价值量为基础，实行<strong class="important-text">等价交换</strong>。</p>
+                    <p><strong>2. 表现形式：</strong>价格受供求关系影响围绕价值<strong class="important-text">上下波动</strong>。</p>
+                    <div class="placeholder-block my-4">
+                        <p class="font-medium text-lg">价格围绕价值波动示意图</p>
+                        <p class="text-sm">（横轴：时间/数量，纵轴：价格/价值。一条水平线代表价值，一条波浪线代表价格，围绕价值上下波动。波峰标注“供不应求，价格上涨”，波谷标注“供过于求，价格下跌”）</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tabCapitalism" class="tab-content">
+            <h2 class="text-3xl font-semibold mb-6 text-sky-600 border-l-4 border-sky-500 pl-3">第二节 资本主义经济制度及其运行</h2>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>一、资本与剩余价值</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                    <p><strong>(一) 资本：</strong>区分为不变资本 (C，以生产资料形式存在，不增殖价值) 和可变资本 (V，以劳动力形式存在，能创造更大价值)。剩余价值由可变资本产生。</p>
+                    <p><strong>(二) 剩余价值的生产过程：</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>本质和来源：</strong>雇佣工人在剩余劳动时间 (必要劳动时间之外) 创造的、被资本家无偿占有的超过劳动力价值的那部分价值。</li>
+                        <li><strong>剩余价值率 (m')：</strong> m' = 剩余价值(m) / 可变资本(V) = 剩余劳动时间 / 必要劳动时间。</li>
+                    </ul>
+                     <p><strong>(三) 剩余价值生产的两种方法：</strong></p>
+                     <ul class="list-disc list-inside ml-4">
+                        <li><strong>绝对剩余价值：</strong>必要劳动时间不变，通过延长工作日长度生产。</li>
+                        <li><strong>相对剩余价值：</strong>工作日长度不变，通过缩短必要劳动时间 (提高劳动生产率) 生产。个别资本家追逐超额剩余价值 (个别价值低于社会价值) 的结果。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>二、资本周转</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                     <p><strong>1. 资本的周转时间：</strong>产业资本一个循环周期持续的时间，是生产时间与流通时间的总和。</p>
+                     <p><strong>2. 资本的周转次数：</strong>一定时期内 (通常为一年) 资本所经历的周期循环的次数。资本周转速度与周转时间成反比，与周转次数成正比。</p>
+                </div>
+            </div>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>三、资本主义基本矛盾</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                    <p>生产社会化与生产资料资本主义私人占有形式之间的矛盾。</p>
+                    <p><strong>经济危机：</strong>实质是生产相对过剩的危机。周期性现象，一般包括危机、萧条、复苏和高涨四个阶段。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="tabIncomeDistribution" class="tab-content">
+            <h2 class="text-3xl font-semibold mb-6 text-sky-600 border-l-4 border-sky-500 pl-3">第三节 收入分配</h2>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>一、国民收入的分配</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                    <p><strong>1. 初次分配：</strong>依据<strong class="important-text">效率原则</strong>，按各生产要素在生产中贡献大小进行分配。</p>
+                    <p><strong>2. 再分配：</strong>政府对要素收入进行再次调节，主要由政府调控，维护社会公正。包括税收、社会保障 (社会保险、社会福利、社会优抚、社会救济)、政府转移支付等。</p>
+                </div>
+            </div>
+             <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>二、个人收入的分配</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                    <p>我国现阶段实行<strong class="important-text">按劳分配为主体、多种分配方式并存</strong>的分配制度。</p>
+                    <p><strong>(一) 按劳分配：</strong>在公有制经济中，按劳动数量和质量分配。</p>
+                    <p><strong>(二) 按劳分配以外的分配方式：</strong></p>
+                     <ul class="list-disc list-inside ml-4">
+                        <li><strong>按个体劳动者劳动成果分配。</strong></li>
+                        <li><strong>按生产要素分配：</strong>凭借对生产要素的所有权参与收益分配。
+                            <div class="overflow-x-auto mt-2">
+                                <table class="min-w-full">
+                                    <thead>
+                                        <tr><th>类别</th><th>对应形式</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>按资本要素分配</td><td>储蓄存款利息、股息、股票转让所得、债券利息、私营企业主的税后利润</td></tr>
+                                        <tr><td>按土地要素分配</td><td>土地、房屋的租金和转让金</td></tr>
+                                        <tr><td>按管理要素分配</td><td>企业管理人凭借管理才能和贡献参与分配</td></tr>
+                                        <tr><td>按劳动要素分配</td><td>在私营、外企中劳动者获得的工资、奖金、津贴收入</td></tr>
+                                        <tr><td>按信息要素分配</td><td>提供市场信息、管理方案的收入</td></tr>
+                                        <tr><td>按技术要素分配</td><td>技术入股、专利使用、技术转让的收入</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="tabMicroeconomics" class="tab-content">
+            <h2 class="text-3xl font-semibold mb-6 text-sky-600 border-l-4 border-sky-500 pl-3">第四节 微观经济</h2>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>一、现代企业制度</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                    <p><strong>(一) 含义：</strong>以市场经济为基础，以企业法人制度为主体，以<strong class="important-text">公司制度为核心</strong>，以产权清晰、权责明确、政企分开、管理科学为条件的新型企业制度。</p>
+                    <p><strong>(二) 典型形式：</strong>公司制 (有限责任公司和股份有限公司)。</p>
+                    <p><strong>(三) 法人治理结构：</strong>股东会 (最高权力机构)、董事会 (决策机构和法人代表)、监事会 (监督机构)、经理机构 (经营管理)。</p>
+                </div>
+            </div>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>二、市场机制</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-3">
+                    <p><strong>(一) 构成：</strong>价格机制、供求机制、竞争机制等。</p>
+                    <p><strong>(二) 需求 (Demand)：</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>定义：</strong>一定时期、既定价格水平下，消费者愿意并且能够购买的商品数量。</li>
+                        <li><strong>影响因素：</strong>价格、偏好、收入、相关商品价格 (替代品、互补品)、价格预期。</li>
+                        <li><strong>需求曲线：</strong>一般情况下，需求量与价格成反向变动。</li>
+                        <div class="placeholder-block my-2 text-sm">果汁的需求曲线图示 (价格越高，需求量越小)</div>
+                        <li><strong>需求价格弹性：</strong>需求量变动对价格变动的反应程度。
+                            <ul class="list-circle list-inside ml-4">
+                                <li>富有弹性 (Ed > 1)：高档耐用品 (汽车、金银首饰)。</li>
+                                <li>缺乏弹性 (Ed < 1)：生活必需品 (米面油)。</li>
+                                <li>单位弹性 (Ed = 1)。</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>(三) 供给 (Supply)：</strong></p>
+                     <ul class="list-disc list-inside ml-4">
+                        <li><strong>定义：</strong>一定时期、既定价格水平下，生产者愿意并且能够生产的商品数量。</li>
+                        <li><strong>影响因素：</strong>产品成本、商品价格、生产技术、相关商品价格、政府政策。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>三、市场失灵</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                    <p>由于市场机制不能充分发挥作用而导致的资源配置缺乏效率或失当。原因：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>垄断：</strong>生产者非价格接受者，资源不能自由流动。</li>
+                        <li><strong>外部性：</strong>经济活动对他人造成影响但未付出代价或得到利益。
+                            <ul class="list-circle list-inside ml-4">
+                                <li>外部经济 (正外部性)：带来好处但未得补偿。</li>
+                                <li>外部不经济 (负外部性)：带来危害但未支付成本。</li>
+                            </ul>
+                        </li>
+                        <li><strong>信息不对称：</strong>买卖双方掌握信息量不一样。</li>
+                        <li><strong>公共物品：</strong>具有非排他性和非竞争性。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>四、竞争类型</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600">
+                    <div class="overflow-x-auto">
+                        <table>
+                            <thead><tr><th>市场类型</th><th>厂商数目</th><th>产品差别</th><th>价格控制程度</th><th>进出难易</th><th>举例</th></tr></thead>
+                            <tbody>
+                                <tr><td>完全竞争</td><td>很多</td><td>完全无差别</td><td>没有</td><td>很容易</td><td>农产品</td></tr>
+                                <tr><td>垄断竞争</td><td>较多</td><td>有差别</td><td>有一些</td><td>比较容易</td><td>轻工产品、零售业</td></tr>
+                                <tr><td>寡头垄断</td><td>几个</td><td>有差别或无差别</td><td>相当程度</td><td>比较困难</td><td>石油、通讯</td></tr>
+                                <tr><td>完全垄断</td><td>唯一</td><td>唯一产品</td><td>很大(常受管制)</td><td>很困难</td><td>公用事业(水电)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="tabMacroeconomics" class="tab-content">
+            <h2 class="text-3xl font-semibold mb-6 text-sky-600 border-l-4 border-sky-500 pl-3">第五节 宏观经济</h2>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>一、宏观调控概述</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-2">
+                    <p><strong>1. 原因：</strong>市场经济固有缺陷 (自发性、盲目性、滞后性)。</p>
+                    <p><strong>2. 目标：</strong>促进经济增长、增加就业、稳定物价、保持国际收支平衡。</p>
+                    <p><strong>3. 手段：</strong>经济手段、法律手段、行政手段。</p>
+                </div>
+            </div>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>二、失业、通货膨胀与通货紧缩</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-3">
+                    <p><strong>(一) 失业类型：</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>周期性失业 (总需求减少)</li>
+                        <li>摩擦性失业 (劳动力正常流动)</li>
+                        <li>结构性失业 (经济结构、技能要求变动)</li>
+                        <li>技术性失业 (科技进步引发)</li>
+                        <li>季节性失业 (行业生产时间性变动)</li>
+                    </ul>
+                    <p><strong>(二) 通货膨胀 (Inflation)：</strong></p>
+                     <ul class="list-disc list-inside ml-4">
+                        <li><strong>定义：</strong>社会总需求大于社会总供给，物价持续上涨，纸币持续贬值。</li>
+                        <li><strong>危害：</strong>物价上涨，纸币贬值，经济秩序混乱，生活水平下降，影响社会稳定。</li>
+                        <li><strong>菲利普斯曲线：</strong>表示通货膨胀率与失业率之间存在负相关关系 (短期)。</li>
+                        <div class="placeholder-block my-2 text-sm">菲利普斯曲线图示 (通胀率高则失业率低，反之亦然)</div>
+                    </ul>
+                    <p><strong>(三) 通货紧缩 (Deflation)：</strong>货币供应量少于流通领域实际需求，货币升值，商品和劳务价格总水平持续下跌。</p>
+                </div>
+            </div>
+            <div class="accordion-item bg-sky-50 p-4 rounded-lg mb-4 shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="accordion-title text-xl font-semibold text-sky-700 flex justify-between items-center">
+                    <span>三、财政政策和货币政策</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-3 text-sky-600 space-y-3">
+                    <p><strong>(一) 财政政策：</strong>政府通过调节财政收支总量影响总需求。</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>财政收入：</strong>税 (主要)、利、债、费。
+                            <div class="placeholder-block my-2 text-sm">拉弗曲线图示 (税率与税收收入的倒U型关系)</div>
+                        </li>
+                        <li><strong>财政支出：</strong>购买性支出 (政府购买商品劳务)、转移性支出 (社会福利等)。</li>
+                        <li><strong>类型：</strong>
+                            <ul class="list-circle list-inside ml-4">
+                                <li><strong>扩张性 (经济衰退时)：</strong>增支、增补、减税。</li>
+                                <li><strong>紧缩性 (经济过热时)：</strong>减支、减补、增税。</li>
+                            </ul>
+                        </li>
+                    </ul>
+                     <p><strong>(二) 货币政策：</strong>中央银行调节货币供应量和信贷量。</p>
+                     <ul class="list-disc list-inside ml-4">
+                        <li><strong>手段：</strong>利率、再贴现率、存款准备金率、公开市场业务 (买卖有价证券)。</li>
+                        <li><strong>类型：</strong>
+                            <ul class="list-circle list-inside ml-4">
+                                <li><strong>扩张性/积极 (经济衰退时)：</strong>三降 (存准率、再贴现率、利率)、一买进 (有价证券)。</li>
+                                <li><strong>紧缩性/消极 (经济过热时)：</strong>三提 (存准率、再贴现率、利率)、一出售 (有价证券)。</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="tabEconomicBuzzwords" class="tab-content">
+            <h2 class="text-3xl font-semibold mb-6 text-sky-600 border-l-4 border-sky-500 pl-3">第六节 经济热词</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="concept-card"><strong>边际效用：</strong>消费者增加一单位商品消费所得到的效用增量。边际效用递减规律：随消费增加，边际效用递减。</div>
+                <div class="concept-card"><strong>机会成本：</strong>生产者放弃的使用相同生产要素在其他用途中可能得到的最高收入。</div>
+                <div class="concept-card"><strong>沉没成本：</strong>已发生且无法由现在或未来决策改变的成本。</div>
+                <div class="concept-card"><strong>规模经济：</strong>扩大生产规模引起经济效益增加。反之为规模不经济。</div>
+                <div class="concept-card"><strong>刘易斯拐点：</strong>劳动力从过剩向短缺的转折点，“人口红利”逐渐消失。</div>
+                <div class="concept-card"><strong>IPO (首次公开募股)：</strong>企业首次向公众出售股份。</div>
+                <div class="concept-card"><strong>CPI (消费者物价指数)：</strong>反映与居民生活相关的商品及劳务价格变动指标，观察通胀水平。CPI > 3% 为通胀，> 5% 为严重通胀。</div>
+                <div class="concept-card"><strong>PPI (生产者物价指数)：</strong>衡量商品在不同生产阶段的价格变化。PPI影响CPI。</div>
+                <div class="concept-card"><strong>基尼系数：</strong>衡量收入分配差距，0-1之间，0.4为警戒线。</div>
+                <div class="concept-card"><strong>恩格尔系数：</strong>食品支出总额占个人消费支出总额的比重。系数越低，生活水平越高。</div>
+                <div class="concept-card"><strong>财产性收入：</strong>家庭拥有的动产、不动产获得的收入 (利息、租金、红利等)。</div>
+                <div class="concept-card"><strong>“黑天鹅”事件：</strong>难以预测、不寻常、通常引起连锁负面反应的小概率事件。</div>
+                <div class="concept-card"><strong>“灰犀牛”事件：</strong>常见但易被忽视的风险，发生概率大。</div>
+                <div class="concept-card"><strong>GDP (国内生产总值)：</strong>一定时期内，一国或地区经济中生产的全部最终产品和劳务的价值 (地域概念)。</div>
+                <div class="concept-card"><strong>GNP (国民生产总值)：</strong>一定时期内，一国或地区所有常驻机构单位收入初次分配的最终成果 (国民概念)。</div>
+                <div class="concept-card"><strong>汇率与进出口：</strong>汇率是两种货币兑换比率。本币升值利于进口，贬值利于出口。贸易顺差 (出口 > 进口)，贸易逆差 (进口 > 出口)。</div>
+            </div>
+        </div>
+        
+        <footer class="mt-12 text-center text-sm text-gray-400">
+            <p>经济知识学习资料</p>
+        </footer>
+    </div>
+
+    <script>
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const accordionItems = document.querySelectorAll('.accordion-item');
+
+        // Tab functionality
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.dataset.target;
+                
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active', 'text-blue-600', 'border-blue-500', 'bg-blue-50');
+                    btn.classList.add('border-transparent', 'hover:text-blue-600', 'hover:border-blue-400');
+                });
+                button.classList.add('active', 'text-blue-600', 'border-blue-500', 'bg-blue-50');
+                button.classList.remove('border-transparent');
+
+                tabContents.forEach(content => {
+                    if (content.id === targetId) {
+                        content.classList.add('active');
+                    } else {
+                        content.classList.remove('active');
+                    }
+                });
+            });
+        });
+        
+        // Accordion functionality
+        accordionItems.forEach(item => {
+            const title = item.querySelector('.accordion-title');
+            const content = item.querySelector('.accordion-content');
+            const icon = title.querySelector('svg');
+
+            title.addEventListener('click', () => {
+                const parentTab = title.closest('.tab-content');
+                if (parentTab) {
+                    parentTab.querySelectorAll('.accordion-item.active').forEach(openItem => {
+                        if (openItem !== item) {
+                            openItem.classList.remove('active');
+                             const openIcon = openItem.querySelector('.accordion-title svg');
+                            if (openIcon) openIcon.style.transform = 'rotate(0deg)';
+                        }
+                    });
+                }
+                
+                const isActive = item.classList.toggle('active');
+                if (isActive) {
+                    if (icon) icon.style.transform = 'rotate(180deg)';
+                } else {
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

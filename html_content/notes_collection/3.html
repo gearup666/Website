@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数量关系系统课</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Visualization & Content Choices: 
+        Report Info: Course structure and content. Goal: Learning & Practice. Presentation: Sections for each topic with clear text for concepts/formulas (using enhanced formula styling and step-by-step explanations). Examples and exercises with toggleable solutions/answers featuring detailed calculation breakdowns. Interaction: Click-based navigation, show/hide toggles. Justification: Direct and focused learning experience with enhanced clarity for mathematical processes. Library/Method: HTML/CSS for text and enhanced formula layout. JavaScript for interactivity.
+        Formulas like C(n,m) will be text representations with clear step-by-step calculation.
+        Graphs in "Function Problems" will be described textually.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif; 
+        }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .solution, .answer { display: none; margin-top: 8px; padding: 12px; background-color: #e0f2f1; border-left: 4px solid #00796b; border-radius: 4px; }
+        .formula-block { 
+            font-family: 'Courier New', Courier, monospace; 
+            background-color: #f3f4f6; 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            display: block; 
+            margin: 8px 0; 
+            line-height: 1.6;
+            border: 1px solid #d1d5db;
+        }
+        .formula-inline {
+            font-family: 'Courier New', Courier, monospace; 
+            background-color: #f3f4f6; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            display: inline-block;
+        }
+        .step { margin-bottom: 8px; }
+        .step-label { font-weight: bold; color: #004d40; }
+        .collapsible-header { cursor: pointer; }
+        #sidebar {
+            min-width: 280px; 
+            max-width: 320px;
+        }
+        #sidebar button, #sidebar .sidebar-category {
+            white-space: normal; 
+            word-break: break-word; 
+            text-align: left; 
+        }
+        .example { margin-bottom: 20px; }
+    </style>
+</head>
+<body class="bg-amber-50 text-stone-800 flex flex-col md:flex-row min-h-screen">
+
+    <aside id="sidebar" class="bg-teal-700 text-white p-5 space-y-4 overflow-y-auto md:h-screen md:sticky md:top-0">
+        <h1 class="text-2xl font-bold mb-6 border-b pb-2 border-teal-500">数量关系系统课</h1>
+        
+        <div class="sidebar-category">
+            <h2 class="text-xl font-semibold mb-2 text-amber-300">引言与学习策略</h2>
+            <button onclick="showContent('intro')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">课程引言</button>
+        </div>
+
+        <div class="sidebar-category">
+            <h2 class="text-xl font-semibold mb-2 text-amber-300">第一章: 解题技巧</h2>
+            <button onclick="showContent('tech_dauru')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">代入排除法</button>
+            <button onclick="showContent('tech_shuzi')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">数字特性法</button>
+            <button onclick="showContent('tech_fangcheng')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">方程法</button>
+        </div>
+
+        <div class="sidebar-category">
+            <h2 class="text-xl font-semibold mb-2 text-amber-300">第二章: 经典题型</h2>
+            <button onclick="showContent('classic_budingfangcheng')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">不定方程(组)</button>
+            <button onclick="showContent('classic_gongcheng')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">工程问题</button>
+            <button onclick="showContent('classic_xingcheng')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">行程问题</button>
+            <button onclick="showContent('classic_pailiezuhe')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">排列组合</button>
+            <button onclick="showContent('classic_gailv')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">概率问题</button>
+            <button onclick="showContent('classic_jingjilirun')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">经济利润问题</button>
+            <button onclick="showContent('classic_zuizhi')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">最值问题</button>
+            <button onclick="showContent('classic_rongchi')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">容斥原理</button>
+            <button onclick="showContent('classic_jihe')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">几何问题</button>
+        </div>
+        
+        <div class="sidebar-category">
+            <h2 class="text-xl font-semibold mb-2 text-amber-300">第三章: 自学提高篇</h2>
+            <button onclick="showContent('adv_niuchicao')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">牛吃草问题</button>
+            <button onclick="showContent('adv_xunhuanzhouqi')" class="w-full text-left py-2 px-3 hover:bg-teal-600 rounded-md transition duration-150">循环周期问题</button>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-6 md:p-10 bg-white overflow-y-auto">
+        <section id="intro" class="content-section active">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">课程引言与学习策略</h2>
+            <div class="space-y-4 text-lg">
+                <p>很高兴能和大家一起学习《数量关系》这一模块。这是公务员考试中难度较大但非常关键的部分。历年教学经验表明，行测高分的同学，在数量关系模块通常都有很好的成绩。</p>
+                <p><strong>数量关系考什么？</strong> 大家可能认为类似小学奥数题，这有一定道理，但不完全准确。它与奥数有重合，但更具自身特点。公务员考试的数量题目，从大类上可分为20余类，细分题型则上百种。每年考试会从中挑选题目，并可能出现新题型。因此，仅做三五套真题是远远不够的。</p>
+                <p><strong>数量关系怎么学？</strong> 尽管难度大，但并非无技巧规律可循。要拿到60-70%的正确率是完全可能的。这需要我们：</p>
+                <ul class="list-disc list-inside ml-4 space-y-1">
+                    <li>建立正确的做题策略。</li>
+                    <li>掌握各种做题方法和秒杀技巧。</li>
+                    <li>识别并做对简单题（约占50%）。例如，10道题中力保5道简单题全对。</li>
+                    <li>重点掌握高频考点，如工程问题、行程问题、经济利润问题、排列组合与概率等。</li>
+                </ul>
+                <p><strong>答题策略：</strong></p>
+                <ul class="list-disc list-inside ml-4 space-y-1">
+                    <li>不建议将数量关系放在最前面做，难题可能影响心态。</li>
+                    <li>若放在最后，务必确保留出5-10分钟时间。简单题性价比高，不应放弃。</li>
+                </ul>
+                 <p><strong>参考资料与刷题：</strong></p>
+                <ul class="list-disc list-inside ml-4 space-y-1">
+                    <li>本讲义内容已足够作为教材，请务必做好课堂笔记。</li>
+                    <li>刷题顺序：本省近五年真题 → 国考近五年真题 → 联考近五年真题。</li>
+                    <li>刷题原则：做真题，不做模拟题；简单题务必做会并熟练应用技巧；难题尽力理解，若不懂不要钻牛角尖，很多难题出现频率极低。</li>
+                </ul>
+                <p class="mt-4 font-semibold">相信自己，我们能赢！</p>
+            </div>
+        </section>
+
+        <section id="tech_dauru" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">代入排除法</h2>
+            <p class="mb-4 text-lg">代入排除法是将答案选项代入题目条件进行验证，与题意不符的选项即可排除，最终得出正确答案。这是数量关系中的第一大法。</p>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">优先使用代入排除的题型：</h3>
+            <ul class="list-disc list-inside ml-4 mb-4 space-y-1 text-lg">
+                <li>多位数问题、余数问题、年龄问题、不定方程等。</li>
+                <li>无从正面下手的题目，可以考虑代入排除。</li>
+            </ul>
+            <div class="example p-4 border border-stone-300 rounded-lg shadow-sm">
+                <h4 class="text-xl font-semibold mb-2 text-stone-700">【例1】（源自讲义）</h4>
+                <p class="mb-2">四人年龄为相邻的自然数列且最年长者不超过30岁，四人年龄之乘积能被2700整除且不能被81整除。则四人中最年长者多少岁?</p>
+                <p class="mb-2">A. 30 B. 29 C. 28 D. 27</p>
+                <button onclick="toggleSolution(this)" class="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition duration-150 text-sm">显示/隐藏解析</button>
+                <div class="solution">
+                    <p class="step"><span class="step-label">核心思路：</span> 将选项代入，验证是否满足题目给定的所有条件。</p>
+                    <p class="step"><span class="step-label">条件分析：</span></p>
+                    <ul class="list-decimal list-inside ml-4">
+                        <li>年龄为相邻自然数。</li>
+                        <li>最年长者 ≤ 30岁。</li>
+                        <li>年龄乘积能被2700整除 (<span class="formula-inline">2700 = 3^3 × 2^2 × 5^2</span>)。</li>
+                        <li>年龄乘积不能被81整除 (<span class="formula-inline">81 = 3^4</span>)。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">逐项代入验证 (建议从中间或特征选项开始)：</span></p>
+                    <p class="step"><span class="step-label">尝试 C. 28岁：</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>四人年龄为：25, 26, 27, 28。</li>
+                        <li>乘积 P = 25 × 26 × 27 × 28。</li>
+                        <li>分解质因数：
+                            <br><span class="formula-inline">25 = 5^2</span>
+                            <br><span class="formula-inline">26 = 2 × 13</span>
+                            <br><span class="formula-inline">27 = 3^3</span>
+                            <br><span class="formula-inline">28 = 2^2 × 7</span>
+                        </li>
+                        <li>所以 P = <span class="formula-inline">5^2 × (2 × 13) × 3^3 × (2^2 × 7) = 2^(1+2) × 3^3 × 5^2 × 7 × 13 = 2^3 × 3^3 × 5^2 × 7 × 13</span>。</li>
+                        <li>验证整除2700： P / 2700 = <span class="formula-inline">(2^3 × 3^3 × 5^2 × 7 × 13) / (3^3 × 2^2 × 5^2) = 2^(3-2) × 3^(3-3) × 5^(2-2) × 7 × 13 = 2^1 × 1 × 1 × 7 × 13 = 2 × 7 × 13 = 182</span>。能整除。</li>
+                        <li>验证不能整除81：乘积P中，因子3的最高次幂是 <span class="formula-inline">3^3</span>。而 <span class="formula-inline">81 = 3^4</span>。因为 <span class="formula-inline">3^3</span> 不能被 <span class="formula-inline">3^4</span> 整除，所以P不能被81整除。</li>
+                        <li>结论：选项C满足所有条件。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">尝试 A. 30岁：</span></p>
+                     <ul class="list-disc list-inside ml-4">
+                        <li>四人年龄为：27, 28, 29, 30。</li>
+                        <li>乘积中包含 <span class="formula-inline">27 = 3^3</span> 和 <span class="formula-inline">30 = 3 × 10</span>。因此乘积中因子3的至少有 <span class="formula-inline">3^3 × 3 = 3^4</span>。</li>
+                        <li>所以乘积能被 <span class="formula-inline">3^4 = 81</span> 整除。这与条件“不能被81整除”矛盾。排除A。</li>
+                    </ul>
+                    <p class="mt-2"><strong>最终答案：C</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tech_shuzi" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">数字特性法</h2>
+            <p class="mb-4 text-lg">数字特性的应用，其实是一种特殊的代入排除。包括奇偶性、整除特性、倍数特性。</p>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">1. 奇偶性</h3>
+            <ul class="list-disc list-inside ml-4 mb-2 space-y-1">
+                <li><span class="formula-inline">奇数 ± 奇数 = 偶数</span>; <span class="formula-inline">偶数 ± 偶数 = 偶数</span>; <span class="formula-inline">奇数 ± 偶数 = 奇数</span></li>
+                <li><span class="formula-inline">奇数 × 奇数 = 奇数</span>; <span class="formula-inline">奇数 × 偶数 = 偶数</span>; <span class="formula-inline">偶数 × 偶数 = 偶数</span></li>
+                <li><strong>和差同性：</strong>任意两数的和与差的奇偶性相同。</li>
+            </ul>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">2. 整除特性</h3>
+            <p class="mb-2 text-lg">核心思想：利用数字能被特定数整除的规律来简化判断或缩小选项范围。</p>
+            <ul class="list-disc list-inside ml-4 mb-2 space-y-1">
+                <li><strong>被2整除：</strong> 末位数字为0, 2, 4, 6, 8。</li>
+                <li><strong>被5整除：</strong> 末位数字为0或5。</li>
+                <li><strong>被4整除：</strong> 末两位数字组成的数能被4整除。</li>
+                <li><strong>被25整除：</strong> 末两位数字组成的数为00, 25, 50, 75。</li>
+                <li><strong>被3整除：</strong> 各位数字之和能被3整除。</li>
+                <li><strong>被9整除：</strong> 各位数字之和能被9整除。</li>
+            </ul>
+             <div class="example p-4 border border-stone-300 rounded-lg shadow-sm mt-4">
+                <h4 class="text-xl font-semibold mb-2 text-stone-700">【例4-整除】（源自讲义）</h4>
+                <p class="mb-2">一个四位数“□□□□”分别能被15、12和10除尽,且被这三个数除尽时所得的三个商的和为1365,问四位数“□□□□”中四个数字的和是多少?</p>
+                <p class="mb-2">A. 17 B. 16 C. 15 D. 14</p>
+                <button onclick="toggleSolution(this)" class="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition duration-150 text-sm">显示/隐藏解析</button>
+                <div class="solution">
+                    <p class="step"><span class="step-label">核心思路：</span> 利用整除特性确定数字特征，再结合题目等式求解。</p>
+                    <p class="step"><span class="step-label">步骤1: 分析整除条件</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>能被10除尽：说明四位数末位是0。</li>
+                        <li>能被15除尽：说明能被3和5除尽。结合末位为0，被5整除已满足。所以各位数字之和能被3整除。</li>
+                        <li>能被12除尽：说明能被3和4除尽。被3整除同上。末两位能被4整除。</li>
+                        <li>综合：该四位数是10, 12, 15的公倍数。它们的最小公倍数是 LCM(10, 12, 15) = LCM(2×5, 2²×3, 3×5) = <span class="formula-inline">2² × 3 × 5 = 60</span>。所以该四位数是60的倍数。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤2: 设未知数列方程</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>设该四位数为 N。</li>
+                        <li>根据题意：<span class="formula-block">N/15 + N/12 + N/10 = 1365</span></li>
+                        <li>通分 (分母取60)：
+                            <br><span class="formula-inline">(4N)/60 + (5N)/60 + (6N)/60 = 1365</span>
+                            <br><span class="formula-inline">(4N + 5N + 6N) / 60 = 1365</span>
+                            <br><span class="formula-inline">15N / 60 = 1365</span>
+                            <br><span class="formula-inline">N / 4 = 1365</span>
+                        </li>
+                        <li>解得 N：<span class="formula-inline">N = 1365 × 4 = 5460</span>。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤3: 计算数字之和</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>四位数为5460。</li>
+                        <li>四个数字的和 = <span class="formula-inline">5 + 4 + 6 + 0 = 15</span>。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">快速技巧 (结合选项)：</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>已知四位数N能被15整除，则N必能被3整除。</li>
+                        <li>根据整除特性，N的各位数字之和也必须能被3整除。</li>
+                        <li>观察选项：A.17 (非3的倍数), B.16 (非3的倍数), C.15 (3的倍数), D.14 (非3的倍数)。</li>
+                        <li>仅选项C满足此条件，因此若题目设计严谨且为单选，可快速定位。</li>
+                    </ul>
+                    <p class="mt-2"><strong>最终答案：C</strong></p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="tech_fangcheng" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">方程法</h2>
+            <p class="mb-4 text-lg">方程法是数量关系最重要的核心方法之一。应用范围广泛，如和差倍比问题、鸡兔同笼、盈亏问题、工程问题、经济利润问题、行程问题等。</p>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">设未知数的原则：</h3>
+            <ul class="list-disc list-inside ml-4 mb-4 space-y-1 text-lg">
+                <li>在同等情况下，优先设所求的量。</li>
+                <li>设中间变量、份数（尤其当题目中出现分数、百分数、比例倍数特征时，巧妙设份数可以简化计算）。</li>
+                <li>优先设小不设大，以避免负数或复杂系数。</li>
+            </ul>
+             <div class="example p-4 border border-stone-300 rounded-lg shadow-sm">
+                <h4 class="text-xl font-semibold mb-2 text-stone-700">【例1】（源自讲义）</h4>
+                <p class="mb-2">某餐厅设有可坐12人和可坐10人两种规格的餐桌共28张, 最多可容纳332人同时就餐, 问该餐厅有几张10人桌?</p>
+                <p class="mb-2">A. 2 B. 4 C. 6 D. 8</p>
+                <button onclick="toggleSolution(this)" class="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition duration-150 text-sm">显示/隐藏解析</button>
+                <div class="solution">
+                    <p class="step"><span class="step-label">核心思路：</span> 根据题目中的等量关系设未知数并列方程求解。</p>
+                    <p class="step"><span class="step-label">步骤1: 设未知数</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>题目问“有几张10人桌”，所以优先设10人桌的数量为 x 张。</li>
+                        <li>餐桌共28张，则12人桌的数量为 (28 - x) 张。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤2: 根据容纳人数列方程</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>10人桌容纳人数：<span class="formula-inline">10x</span></li>
+                        <li>12人桌容纳人数：<span class="formula-inline">12(28 - x)</span></li>
+                        <li>总容纳人数为332人，所以方程为：
+                            <br><span class="formula-block">10x + 12(28 - x) = 332</span>
+                        </li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤3: 解方程</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><span class="formula-inline">10x + 12 × 28 - 12x = 332</span></li>
+                        <li><span class="formula-inline">10x + 336 - 12x = 332</span></li>
+                        <li><span class="formula-inline">336 - 2x = 332</span></li>
+                        <li><span class="formula-inline">2x = 336 - 332</span></li>
+                        <li><span class="formula-inline">2x = 4</span></li>
+                        <li><span class="formula-inline">x = 2</span></li>
+                    </ul>
+                     <p class="step"><span class="step-label">步骤4: 检验与作答</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>10人桌有2张，则12人桌有 28 - 2 = 26张。</li>
+                        <li>容纳人数 = 10×2 + 12×26 = 20 + 312 = 332人。符合题意。</li>
+                    </ul>
+                    <p class="mt-2"><strong>最终答案：A</strong> (10人桌有2张)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="classic_budingfangcheng" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">不定方程(组)</h2>
+            <p class="mb-4 text-lg">未知数的个数多于独立方程的个数，且未知数常有整数（尤指正整数）限制的方程或方程组。</p>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">解析技巧：</h3>
+            <ul class="list-disc list-inside ml-4 mb-4 space-y-1 text-lg">
+                <li><strong>限制性不定方程 (未知数为正整数):</strong> ①奇偶特性 ②因子倍数 ③尾数法 ④代入排除。</li>
+                <li><strong>非限制性不定方程:</strong> ①整体替换 ②赋0法。</li>
+            </ul>
+             <div class="example p-4 border border-stone-300 rounded-lg shadow-sm">
+                <h4 class="text-xl font-semibold mb-2 text-stone-700">【例1】（源自讲义）</h4>
+                <p class="mb-2">甲、乙两种笔的单价分别为7元、3元, 某小学用60元钱买这两种笔作为学科竞赛一、二等奖奖品。钱恰好用完, 则这两种笔最多可买的支数是?</p>
+                <p class="mb-2">A. 12 B. 13 C. 16 D. 18</p>
+                <button onclick="toggleSolution(this)" class="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition duration-150 text-sm">显示/隐藏解析</button>
+                <div class="solution">
+                    <p class="step"><span class="step-label">核心思路：</span> 列出不定方程，利用整除特性和题目要求（最多支数）来求解。</p>
+                    <p class="step"><span class="step-label">步骤1: 设未知数列方程</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>设甲种笔（7元/支）买 x 支，乙种笔（3元/支）买 y 支。</li>
+                        <li>根据题意，x 和 y 都是非负整数 (可以为0，如果允许只买一种)。</li>
+                        <li>总花费方程：<span class="formula-block">7x + 3y = 60</span></li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤2: 利用数字特性分析</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>将方程改写为 <span class="formula-inline">3y = 60 - 7x</span>。</li>
+                        <li>因为60是3的倍数，3y也是3的倍数，所以 <span class="formula-inline">60 - 7x</span> 必须是3的倍数。</li>
+                        <li>这意味着 <span class="formula-inline">7x</span> 除以3的余数必须和60除以3的余数相同。60能被3整除，余0。</li>
+                        <li>所以 <span class="formula-inline">7x</span> 必须能被3整除。</li>
+                        <li>因为7和3互质（没有除1以外的公因子），所以 x 必须是3的倍数。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤3: 枚举x的可能值并求解y (目标：x+y 最大)</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>要使总支数 (x+y) 最多，应尽量多买单价较低的乙种笔，即让y尽可能大，对应x尽可能小。</li>
+                        <li><strong>当 x = 0 (最小的3的倍数，非负):</strong>
+                            <br><span class="formula-inline">7(0) + 3y = 60 => 3y = 60 => y = 20</span>。
+                            <br>总支数 = x + y = 0 + 20 = 20 支。
+                        </li>
+                        <li><strong>当 x = 3 (下一个3的倍数):</strong>
+                            <br><span class="formula-inline">7(3) + 3y = 60 => 21 + 3y = 60 => 3y = 39 => y = 13</span>。
+                            <br>总支数 = x + y = 3 + 13 = 16 支。
+                        </li>
+                        <li><strong>当 x = 6:</strong>
+                            <br><span class="formula-inline">7(6) + 3y = 60 => 42 + 3y = 60 => 3y = 18 => y = 6</span>。
+                            <br>总支数 = x + y = 6 + 6 = 12 支。
+                        </li>
+                        <li><strong>当 x = 9:</strong>
+                            <br><span class="formula-inline">7(9) + 3y = 60 => 63 + 3y = 60</span>。此时 <span class="formula-inline">3y = -3</span>，y为负数，不合题意。所以x不能再增大了。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤4: 确定最大支数</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>比较所有有效情况的总支数：20支、16支、12支。</li>
+                        <li>最大值为20支。但观察选项，没有20。这通常意味着题目隐含“两种笔都必须购买”或者奖品设置至少需要一定数量的某种笔。如果题目允许只买一种，20是答案。</li>
+                        <li>如果默认两种笔都要买 (x>0, y>0)，则最大支数是16支。</li>
+                        <li>考虑到题目是“一、二等奖奖品”，通常意味着两种奖品都会有。</li>
+                    </ul>
+                    <p class="mt-2"><strong>最终答案：C (16支)</strong> (在x,y为正整数的前提下，或者根据选项反推)</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="classic_gongcheng" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">工程问题</h2>
+            <p class="mb-4 text-lg">核心公式：<span class="formula-block">工作总量 (W) = 工作效率 (P) × 工作时间 (T)</span></p>
+            <p class="mb-4 text-lg">常用方法：赋值法（赋工作总量为时间的公倍数，或赋效率为特定值）、方程法。</p>
+            <div class="example p-4 border border-stone-300 rounded-lg shadow-sm">
+                <h4 class="text-xl font-semibold mb-2 text-stone-700">【例1】（源自讲义）</h4>
+                <p class="mb-2">甲乙两个工程队负责高校的自来水管道改造, 如果由甲队或者乙队单独完成, 分别需要20天和30天时间, 实际工作中一开始由甲队单独施工, 10天后乙队加入, 问工程从开始到结束共需要多少天?</p>
+                <p class="mb-2">A. 15 B. 16 C. 18 D. 25</p>
+                <button onclick="toggleSolution(this)" class="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition duration-150 text-sm">显示/隐藏解析</button>
+                <div class="solution">
+                    <p class="step"><span class="step-label">核心思路：</span> 赋值工作总量，计算各自效率，然后分阶段计算时间。</p>
+                    <p class="step"><span class="step-label">步骤1: 赋值工作总量和计算效率</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>甲单独完成需20天，乙单独完成需30天。</li>
+                        <li>取20和30的最小公倍数作为工作总量 W。LCM(20, 30) = 60。
+                            <br>设工作总量 W = 60 (单位)。
+                        </li>
+                        <li>甲的工作效率 P<sub>甲</sub> = W / T<sub>甲</sub> = <span class="formula-inline">60 / 20 = 3</span> (单位/天)。</li>
+                        <li>乙的工作效率 P<sub>乙</sub> = W / T<sub>乙</sub> = <span class="formula-inline">60 / 30 = 2</span> (单位/天)。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤2: 计算甲单独施工完成的工作量</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>甲队单独施工10天。</li>
+                        <li>完成的工作量 W<sub>甲单独</sub> = P<sub>甲</sub> × 10天 = <span class="formula-inline">3 × 10 = 30</span> (单位)。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤3: 计算剩余工作量</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>剩余工作量 W<sub>剩余</sub> = W - W<sub>甲单独</sub> = <span class="formula-inline">60 - 30 = 30</span> (单位)。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤4: 计算甲乙合作完成剩余工作量所需时间</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>乙队加入后，甲乙合作。合作效率 P<sub>合作</sub> = P<sub>甲</sub> + P<sub>乙</sub> = <span class="formula-inline">3 + 2 = 5</span> (单位/天)。</li>
+                        <li>合作所需时间 T<sub>合作</sub> = W<sub>剩余</sub> / P<sub>合作</sub> = <span class="formula-inline">30 / 5 = 6</span> (天)。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤5: 计算总时间</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>工程从开始到结束共需要的天数 = 甲单独施工天数 + 甲乙合作天数
+                            <br>= <span class="formula-inline">10天 + 6天 = 16天</span>。
+                        </li>
+                    </ul>
+                    <p class="mt-2"><strong>最终答案：B</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="classic_xingcheng" class="content-section">
+          <h2 class="text-3xl font-bold mb-6 text-teal-700">行程问题</h2>
+          <p class="mb-4 text-lg">核心公式：<span class="formula-block">路程 (S) = 速度 (v) × 时间 (t)</span></p>
+          <h3 class="text-2xl font-semibold mb-3 text-sky-700">常用推论与模型：</h3>
+          <ul class="list-disc list-inside ml-4 mb-4 space-y-1 text-lg">
+              <li><strong>等距离平均速度：</strong> 若两段等长路程速度分别为 v1, v2，则平均速度 <span class="formula-inline">v_avg = (2 × v1 × v2) / (v1 + v2)</span>。</li>
+              <li><strong>流水行船：</strong>
+                  <br><span class="formula-inline">顺流速度 (v<sub>顺</sub>) = 船速 (v<sub>船</sub>) + 水速 (v<sub>水</sub>)</span>
+                  <br><span class="formula-inline">逆流速度 (v<sub>逆</sub>) = 船速 (v<sub>船</sub>) - 水速 (v<sub>水</sub>)</span>
+                  <br><span class="formula-inline">v<sub>船</sub> = (v<sub>顺</sub> + v<sub>逆</sub>) / 2</span>
+                  <br><span class="formula-inline">v<sub>水</sub> = (v<sub>顺</sub> - v<sub>逆</sub>) / 2</span>
+              </li>
+              <li><strong>相遇问题 (相向而行)：</strong> 相遇路程 (通常为两地距离S) = 速度和 (v1+v2) × 相遇时间 (t<sub>相遇</sub>)。</li>
+              <li><strong>追及问题 (同向而行)：</strong> 追及路程 (初始距离差S) = 速度差 (|v1-v2|) × 追及时间 (t<sub>追及</sub>)。</li>
+          </ul>
+           <div class="example p-4 border border-stone-300 rounded-lg shadow-sm">
+              <h4 class="text-xl font-semibold mb-2 text-stone-700">【例7-相遇】（源自讲义）</h4>
+              <p class="mb-2">已知A、B两地相距600千米。甲、乙两车同时从A、B两地相向而行,3小时相遇。若甲的速度是乙的1.5倍,则甲的速度是?</p>
+              <p class="mb-2">A. 80千米/小时 B. 90千米/小时 C. 100千米/小时 D. 120千米/小时</p>
+              <button onclick="toggleSolution(this)" class="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition duration-150 text-sm">显示/隐藏解析</button>
+              <div class="solution">
+                  <p class="step"><span class="step-label">核心思路：</span> 利用相遇问题的公式和速度关系列方程求解。</p>
+                  <p class="step"><span class="step-label">步骤1: 计算速度和</span></p>
+                  <ul class="list-disc list-inside ml-4">
+                      <li>两车相向而行，相遇时共同走过的路程等于两地距离 S = 600 km。</li>
+                      <li>相遇时间 t<sub>相遇</sub> = 3 小时。</li>
+                      <li>速度和 (v<sub>甲</sub> + v<sub>乙</sub>) = S / t<sub>相遇</sub> = <span class="formula-inline">600 km / 3 h = 200 km/h</span>。</li>
+                  </ul>
+                  <p class="step"><span class="step-label">步骤2: 设未知数并根据速度关系列方程</span></p>
+                  <ul class="list-disc list-inside ml-4">
+                      <li>设乙的速度为 v<sub>乙</sub> km/h。</li>
+                      <li>则甲的速度 v<sub>甲</sub> = 1.5 × v<sub>乙</sub> km/h。</li>
+                      <li>代入速度和的表达式：
+                          <br><span class="formula-block">1.5 × v<sub>乙</sub> + v<sub>乙</sub> = 200</span>
+                      </li>
+                  </ul>
+                  <p class="step"><span class="step-label">步骤3: 解方程求速度</span></p>
+                  <ul class="list-disc list-inside ml-4">
+                      <li><span class="formula-inline">2.5 × v<sub>乙</sub> = 200</span></li>
+                      <li>v<sub>乙</sub> = <span class="formula-inline">200 / 2.5 = 2000 / 25 = 80</span> km/h。</li>
+                      <li>所以，乙的速度是 80 km/h。</li>
+                      <li>甲的速度 v<sub>甲</sub> = 1.5 × 80 = <span class="formula-inline">120</span> km/h。</li>
+                  </ul>
+                  <p class="mt-2"><strong>最终答案：D</strong></p>
+              </div>
+          </div>
+        </section>
+        
+        <section id="classic_pailiezuhe" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">排列组合</h2>
+            <p class="mb-4 text-lg">排列(Permutation, A或P)：从n个不同元素中取出m个，按一定顺序排列。与顺序有关。</p>
+            <p class="mb-2 text-lg">组合(Combination, C)：从n个不同元素中取出m个，并成一组。与顺序无关。</p>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">基本公式：</h3>
+            <ul class="list-disc list-inside ml-4 mb-2 space-y-1 text-lg">
+                <li>排列数公式：<span class="formula-block">A(n,m) = n × (n-1) × ... × (n-m+1) = n! / (n-m)!</span></li>
+                <li>组合数公式：<span class="formula-block">C(n,m) = A(n,m) / m! = n! / (m! × (n-m)!)</span></li>
+                 <li>常用性质：<span class="formula-inline">C(n,m) = C(n, n-m)</span>, <span class="formula-inline">C(n,0) = 1</span>, <span class="formula-inline">C(n,n) = 1</span></li>
+            </ul>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">常用方法：</h3>
+            <ul class="list-disc list-inside ml-4 mb-4 space-y-1 text-lg">
+                <li><strong>捆绑法：</strong>处理“元素相邻”问题。将相邻元素视为一个整体参与排列，再考虑捆绑体内部的排列。</li>
+                <li><strong>插空法：</strong>处理“元素不相邻”问题。先排列其他元素形成空位，再将要求不相邻的元素插入这些空位。</li>
+                <li><strong>插板法：</strong>处理“相同物品分配给不同对象，每对象至少一个”的问题。N个相同物品分给M个不同对象，每对象至少1个，方法数为 <span class="formula-inline">C(N-1, M-1)</span>。（想象N个物品有N-1个空隙，插入M-1块隔板）。</li>
+                <li><strong>错位排列 (D<sub>n</sub>)：</strong> N个元素均不在其对应位置的排列数。
+                    <br><span class="formula-inline">D<sub>2</sub> = 1</span> (如：AB，错位BA)
+                    <br><span class="formula-inline">D<sub>3</sub> = 2</span> (如：ABC，错位BCA, CAB)
+                    <br><span class="formula-inline">D<sub>4</sub> = 9</span>
+                    <br><span class="formula-inline">D<sub>5</sub> = 44</span>
+                </li>
+            </ul>
+        </section>
+
+        <section id="classic_gailv" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">概率问题</h2>
+            <p class="mb-4 text-lg">古典概率（等可能事件概率）P(A) = <span class="formula-block">满足事件A条件的情况数 / 总的基本情况数</span></p>
+             <div class="example p-4 border border-stone-300 rounded-lg shadow-sm">
+                <h4 class="text-xl font-semibold mb-2 text-stone-700">【例2】（源自讲义）</h4>
+                <p class="mb-2">小王从编号分别为1、2、3、4、5的5本书中随机抽出3本, 那么这三本书的编号恰好为相邻三个整数的概率为:</p>
+                <p class="mb-2">A. 1/2 B. 2/5 C. 3/10 D. 3/5</p>
+                <button onclick="toggleSolution(this)" class="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition duration-150 text-sm">显示/隐藏解析</button>
+                <div class="solution">
+                    <p class="step"><span class="step-label">核心思路：</span> 分别计算总的抽取情况数和满足条件的情况数，然后求比值。</p>
+                    <p class="step"><span class="step-label">步骤1: 计算总的抽取情况数</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>从5本不同的书中随机抽出3本，不考虑顺序，是组合问题。</li>
+                        <li>总情况数 = C(5,3) = <span class="formula-inline">(5 × 4 × 3) / (3 × 2 × 1) = 5 × 2 × 1 / 1 = 10</span> 种。
+                        <br>(计算过程: C(5,3) = 5! / (3! * (5-3)!) = 5! / (3! * 2!) = (5 × 4 × 3 × 2 × 1) / ((3 × 2 × 1) × (2 × 1)) = 120 / (6 × 2) = 120 / 12 = 10)
+                        </li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤2: 计算满足条件（编号恰好为相邻三个整数）的情况数</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>列举所有可能的相邻三个整数组合：
+                            <ul>
+                                <li>{1, 2, 3}</li>
+                                <li>{2, 3, 4}</li>
+                                <li>{3, 4, 5}</li>
+                            </ul>
+                        </li>
+                        <li>满足条件的情况共有 3 种。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤3: 计算概率</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>概率 P = (满足条件的情况数) / (总的情况数) = <span class="formula-inline">3 / 10</span>。</li>
+                    </ul>
+                    <p class="mt-2"><strong>最终答案：C</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="classic_jingjilirun" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">经济利润问题</h2>
+            <p class="mb-4 text-lg">核心公式：</p>
+            <ul class="list-disc list-inside ml-4 mb-4 space-y-1 text-lg">
+                <li><span class="formula-block">利润 = 售价 - 成本</span></li>
+                <li><span class="formula-block">利润率 = 利润 / 成本 = (售价 - 成本) / 成本</span></li>
+                <li><span class="formula-block">售价 = 成本 × (1 + 利润率)</span></li>
+                <li><span class="formula-block">成本 = 售价 / (1 + 利润率)</span> (注意：此处的利润率是基于成本计算的)</li>
+                <li>若题目指明“利润为售价的X%”，则：<span class="formula-inline">利润 = 售价 × X%</span>，此时 <span class="formula-inline">成本 = 售价 × (1 - X%)</span></li>
+            </ul>
+        </section>
+
+        <section id="classic_zuizhi" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">最值问题</h2>
+            <p class="mb-4 text-lg">包括最不利构造（“至少...才能保证...”）、数列构造（“最多/最少”）等。</p>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">1. 最不利构造 (抽屉原理应用)</h3>
+            <p class="mb-2 text-lg">题型特征：“至少...才能保证...”</p>
+            <p class="mb-4 text-lg">解题方法：考虑最差、最倒霉的情况（即每种可能的情况都尽量不满足目标，但又不能违反规则），然后在此基础上 +1。</p>
+            
+            <div class="example p-4 border border-stone-300 rounded-lg shadow-sm">
+                <h4 class="text-xl font-semibold mb-2 text-stone-700">【例2-最不利构造】（源自讲义）</h4>
+                <p class="mb-2">某单位组织党员参加党史、党风廉政建设、科学发展观和业务能力四项培训, 要求每名党员参加且只参加其中的两项。无论如何安排, 都有至少5名党员参加的培训完全相同。问该单位至少有多少名党员?</p>
+                <p class="mb-2">A. 17 B. 21 C. 25 D. 29</p>
+                <button onclick="toggleSolution(this)" class="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition duration-150 text-sm">显示/隐藏解析</button>
+                <div class="solution">
+                    <p class="step"><span class="step-label">核心思路：</span> 运用抽屉原理，考虑最不利情况。</p>
+                    <p class="step"><span class="step-label">步骤1: 确定“抽屉”的种类和数量</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>党员从4项培训中选择参加2项，不同的培训组合方案数即为“抽屉”的种类数。</li>
+                        <li>组合数 = C(4,2) = <span class="formula-inline">(4 × 3) / (2 × 1) = 6</span> 种不同的培训组合。
+                            <br>(这6种组合分别是：{党史,党廉}, {党史,科发}, {党史,业务}, {党廉,科发}, {党廉,业务}, {科发,业务})
+                        </li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤2: 应用最不利原则</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>题目要求“无论如何安排，都有至少5名党员参加的培训完全相同”。</li>
+                        <li>考虑最不利的情况：为了尽量避免有5名党员参加相同的培训组合，我们让每种培训组合的人数都尽可能多，但又不超过4人（即5-1人）。</li>
+                        <li>如果每1种培训组合都恰好有4名党员，那么总的党员人数为：
+                            <br><span class="formula-inline">6种组合 × 4人/组合 = 24名党员</span>。
+                        </li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤3: 加1确保条件满足</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>在上述24名党员的基础上，只要再增加1名党员，无论这位党员选择哪种培训组合，该组合的人数都将达到 (4+1)=5人。</li>
+                        <li>因此，至少需要的党员人数 = <span class="formula-inline">24 + 1 = 25</span> 名。</li>
+                    </ul>
+                    <p class="mt-2"><strong>最终答案：C</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="classic_rongchi" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">容斥原理</h2>
+            <p class="mb-4 text-lg">用于计算满足多个条件集合的并集或交集元素个数。</p>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">两集合容斥原理：</h3>
+            <p class="mb-2 text-lg">对于集合A和B：</p>
+            <ul class="list-disc list-inside ml-4 mb-2 space-y-1 text-lg">
+                <li>满足A或B中至少一个条件的元素个数：<span class="formula-block">|A ∪ B| = |A| + |B| - |A ∩ B|</span></li>
+                <li>其中：
+                    <br><span class="formula-inline">|A ∪ B|</span>: A或B中至少一个发生的元素个数 (并集)
+                    <br><span class="formula-inline">|A|</span>: 满足条件A的元素个数
+                    <br><span class="formula-inline">|B|</span>: 满足条件B的元素个数
+                    <br><span class="formula-inline">|A ∩ B|</span>: 同时满足条件A和B的元素个数 (交集)
+                </li>
+                 <li>韦恩图表示：总数 = (仅A) + (仅B) + (A且B) + (非A且非B)</li>
+            </ul>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">三集合容斥原理：</h3>
+            <p class="mb-2 text-lg">对于集合A, B, C：</p>
+            <ul class="list-disc list-inside ml-4 mb-4 space-y-1 text-lg">
+                <li>满足A, B, C中至少一个条件的元素个数：
+                <br><span class="formula-block">|A ∪ B ∪ C| = |A| + |B| + |C| - (|A ∩ B| + |A ∩ C| + |B ∩ C|) + |A ∩ B ∩ C|</span>
+                </li>
+                <li>韦恩图表示（常用变形）：
+                <br>总数 = (只满足一个条件的) + (只满足两个条件的) + (满足三个条件的) + (三个都不满足的)
+                <br>或者：
+                <br>总数 = |A|+|B|+|C| - (只满足AB + 只满足AC + 只满足BC) - 2×|A∩B∩C| + (三个都不满足的)
+                <br>总数 = |A|+|B|+|C| - (|A∩B|+|A∩C|+|B∩C|) + |A∩B∩C| + (三个都不满足的)
+                </li>
+            </ul>
+        </section>
+        
+        <section id="classic_jihe" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">几何问题</h2>
+            <p class="mb-4 text-lg">考察常用几何图形的周长、面积、体积计算公式及性质。</p>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">常用公式举例：</h3>
+            <ul class="list-disc list-inside ml-4 mb-4 space-y-1 text-lg">
+                <li><strong>n边形内角和：</strong> <span class="formula-inline">(n-2) × 180°</span> (n为边数)</li>
+                <li><strong>n边形外角和：</strong> 恒为 <span class="formula-inline">360°</span></li>
+                <li><strong>正方形：</strong> 边长a; 周长 <span class="formula-inline">4a</span>; 面积 <span class="formula-inline">a²</span></li>
+                <li><strong>长方形：</strong> 长a, 宽b; 周长 <span class="formula-inline">2(a+b)</span>; 面积 <span class="formula-inline">ab</span></li>
+                <li><strong>圆：</strong> 半径R, 直径D; 周长 <span class="formula-inline">2πR = πD</span>; 面积 <span class="formula-inline">πR²</span></li>
+                <li><strong>三角形：</strong> 底a, 高h; 面积 <span class="formula-inline">(1/2)ah</span></li>
+                <li><strong>长方体：</strong> 长a, 宽b, 高c; 体积 <span class="formula-inline">abc</span>; 表面积 <span class="formula-inline">2(ab+ac+bc)</span></li>
+                <li><strong>正方体：</strong> 棱长a; 体积 <span class="formula-inline">a³</span>; 表面积 <span class="formula-inline">6a²</span></li>
+                <li><strong>圆柱体：</strong> 底面半径R, 高h; 侧面积 <span class="formula-inline">2πRh</span>; 表面积 <span class="formula-inline">2πRh + 2πR²</span>; 体积 <span class="formula-inline">πR²h</span></li>
+                <li><strong>圆锥体：</strong> 底面半径R, 高h; 体积 <span class="formula-inline">(1/3)πR²h</span></li>
+            </ul>
+            <div class="example p-4 border border-stone-300 rounded-lg shadow-sm">
+                <h4 class="text-xl font-semibold mb-2 text-stone-700">【例1】（源自讲义）</h4>
+                <p class="mb-2">某单位准备扩建一矩形花圃,若将矩形花圃的长和宽各增加4米, 则新矩形花圃的面积比原来的面积增加了40平方米。那么, 原矩形花圃的周长是多少?</p>
+                <p class="mb-2">A. 12米 B. 24米 C. 32米 D. 40米</p>
+                <button onclick="toggleSolution(this)" class="bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition duration-150 text-sm">显示/隐藏解析</button>
+                <div class="solution">
+                    <p class="step"><span class="step-label">核心思路：</span> 设原长宽，根据面积变化列方程求解。</p>
+                    <p class="step"><span class="step-label">步骤1: 设未知数</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>设原矩形花圃的长为 L 米，宽为 W 米。</li>
+                        <li>原面积 S<sub>原</sub> = <span class="formula-inline">L × W</span>。</li>
+                        <li>原周长 C<sub>原</sub> = <span class="formula-inline">2(L + W)</span>。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤2: 表示新矩形的长、宽和面积</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>新矩形的长 L<sub>新</sub> = <span class="formula-inline">L + 4</span> 米。</li>
+                        <li>新矩形的宽 W<sub>新</sub> = <span class="formula-inline">W + 4</span> 米。</li>
+                        <li>新面积 S<sub>新</sub> = L<sub>新</sub> × W<sub>新</sub> = <span class="formula-inline">(L + 4)(W + 4)</span>。</li>
+                        <li>展开新面积：S<sub>新</sub> = <span class="formula-inline">LW + 4L + 4W + 16</span>。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤3: 根据面积增加量列方程</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>新面积比原面积增加了40平方米：S<sub>新</sub> - S<sub>原</sub> = 40。</li>
+                        <li>代入表达式：
+                            <br><span class="formula-block">(LW + 4L + 4W + 16) - LW = 40</span>
+                        </li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤4: 解方程</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><span class="formula-inline">4L + 4W + 16 = 40</span></li>
+                        <li><span class="formula-inline">4L + 4W = 40 - 16</span></li>
+                        <li><span class="formula-inline">4L + 4W = 24</span></li>
+                        <li>两边同除以4：<span class="formula-inline">L + W = 6</span>。</li>
+                    </ul>
+                    <p class="step"><span class="step-label">步骤5: 计算原周长</span></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>原周长 C<sub>原</sub> = 2(L + W)。</li>
+                        <li>将 L + W = 6 代入：C<sub>原</sub> = 2 × 6 = <span class="formula-inline">12</span> 米。</li>
+                    </ul>
+                    <p class="mt-2"><strong>最终答案：A</strong></p>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="adv_niuchicao" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">牛吃草问题</h2>
+            <p class="mb-4 text-lg">题型特征：存在一个初始量（如草场原有草量），这个量一方面在被消耗（牛吃草），另一方面在自然增长（草生长）。</p>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">核心思想与公式：</h3>
+            <p class="mb-2 text-lg">将所有量统一用“单位草量”来衡量。</p>
+            <ul class="list-disc list-inside ml-4 mb-2 space-y-1 text-lg">
+                <li>设：
+                    <br><span class="formula-inline">Y</span> = 草场原有草量 (单位)
+                    <br><span class="formula-inline">x</span> = 草每天的生长速度 (单位/天)
+                    <br><span class="formula-inline">N</span> = 牛的数量 (头)
+                    <br><span class="formula-inline">P<sub>牛</sub></span> = 每头牛每天吃的草量 (通常设为1单位/牛·天)
+                    <br><span class="formula-inline">T</span> = 牛吃草的天数 (天)
+                </li>
+                <li>核心等量关系：<strong>原有草量 + 生长草量 = 被吃掉的草量</strong>
+                    <br><span class="formula-block">Y + x × T = N × P<sub>牛</sub> × T</span>
+                </li>
+                <li>变形公式 (常用)：
+                    <br>净消耗速度 = 牛吃的速度 - 草生长的速度 = <span class="formula-inline">N × P<sub>牛</sub> - x</span>
+                    <br>所以，时间 T = 原有草量 Y / 净消耗速度
+                    <br><span class="formula-block">T = Y / (N × P<sub>牛</sub> - x)</span>
+                    <br>或者，如果设 P<sub>牛</sub>=1，则 <span class="formula-block">Y = (N - x) × T</span> (此时x的单位是“相当于多少头牛的吃草量/天”)
+                </li>
+            </ul>
+            <p class="mb-4 text-lg">通常题目会给出两组(N, T)的数据，用来联立方程解出 Y 和 x。</p>
+        </section>
+        
+        <section id="adv_xunhuanzhouqi" class="content-section">
+            <h2 class="text-3xl font-bold mb-6 text-teal-700">循环周期问题</h2>
+            <p class="mb-4 text-lg">核心点：识别事物按固定顺序重复出现的规律（周期）。</p>
+            <h3 class="text-2xl font-semibold mb-3 text-sky-700">解题方法：</h3>
+            <ul class="list-disc list-inside ml-4 mb-4 space-y-1 text-lg">
+                <li><strong>确定周期 (T)：</strong> 观察或计算出完成一个完整循环所包含的元素个数或时间长度。</li>
+                <li><strong>定位第N项：</strong>
+                    <br>计算 <span class="formula-block">N ÷ T = 商 ... 余数 (R)</span>
+                </li>
+                <li><strong>判断结果：</strong>
+                    <ul class="list-circle list-inside ml-4">
+                        <li>如果余数 R ≠ 0，则第N项与周期中的第R项相同。</li>
+                        <li>如果余数 R = 0 (即N能被T整除)，则第N项与周期中的最后一项（即第T项）相同。</li>
+                    </ul>
+                </li>
+            </ul>
+            <p class="mb-2 text-lg">例如：按红、黄、蓝、绿的顺序循环排列彩灯，求第25盏灯的颜色。</p>
+            <ul class="list-disc list-inside ml-4 mb-2 space-y-1 text-sm">
+                <li>周期 T = 4 (红, 黄, 蓝, 绿)</li>
+                <li>N = 25</li>
+                <li>25 ÷ 4 = 6 ... 余 1</li>
+                <li>余数是1，所以第25盏灯的颜色与周期中第1盏灯的颜色相同，即红色。</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <script>
+        const contentSections = document.querySelectorAll('.content-section');
+        const navButtons = document.querySelectorAll('#sidebar button');
+
+        function showContent(id) {
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            const targetSection = document.getElementById(id);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            navButtons.forEach(button => {
+                if (button.getAttribute('onclick') === `showContent('${id}')`) {
+                    button.classList.add('bg-teal-500', 'font-semibold');
+                    button.classList.remove('hover:bg-teal-600');
+                } else {
+                    button.classList.remove('bg-teal-500', 'font-semibold');
+                    button.classList.add('hover:bg-teal-600');
+                }
+            });
+        }
+
+        function toggleSolution(button) {
+            const solutionDiv = button.nextElementSibling;
+            if (solutionDiv && (solutionDiv.classList.contains('solution') || solutionDiv.classList.contains('answer'))) {
+                if (solutionDiv.style.display === 'none' || solutionDiv.style.display === '') {
+                    solutionDiv.style.display = 'block';
+                    button.textContent = '隐藏解析';
+                } else {
+                    solutionDiv.style.display = 'none';
+                    // Reset button text based on context (example or exercise)
+                    if (button.closest('.example')) {
+                         button.textContent = '显示解析';
+                    } else if (button.closest('.exercise')) {
+                         button.textContent = '显示答案';
+                    } else {
+                         button.textContent = '显示/隐藏';
+                    }
+                }
+            }
+        }
+        
+        // Initialize with the first nav item active
+        if (navButtons.length > 0) {
+            navButtons[0].click();
+        }
+
+    </script>
+</body>
+</html>

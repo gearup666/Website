@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>判断推理系统课 - 交互式学习应用</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        /* Sidebar link styling */
+        #navigation-menu .sidebar-link {
+            color: #f0f9ff; /* sky-50, very light blue, almost white for default section links */
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+        #navigation-menu .sidebar-link:hover {
+            background-color: #0369a1; /* sky-700 */
+            color: white; /* Bright white on hover */
+        }
+        #navigation-menu .sidebar-link.active {
+            background-color: #0284c7; /* sky-600 */
+            color: white; /* Bright white when active */
+        }
+        .chapter-title { /* Specific styling for chapter titles if needed, though .sidebar-link covers it */
+            cursor: pointer;
+        }
+        .section-list {
+            display: none; 
+        }
+        .section-list.open {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; 
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; 
+            max-height: 350px; 
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        h2 {
+            font-size: 1.875rem; /* text-2xl */
+            font-weight: 700; /* bold */
+            margin-bottom: 1.5rem; /* mb-6 */
+            color: #0c4a6e; /* sky-800 */
+            border-bottom: 2px solid #0ea5e9; /* sky-500 */
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            font-size: 1.5rem; /* text-xl */
+            font-weight: 600; /* semibold */
+            margin-top: 2rem; /* mt-8 */
+            margin-bottom: 1rem; /* mb-4 */
+            color: #075985; /* sky-700 */
+        }
+        h4 {
+            font-size: 1.25rem; /* text-lg */
+            font-weight: 600; /* semibold */
+            margin-top: 1.5rem; /* mt-6 */
+            margin-bottom: 0.75rem; /* mb-3 */
+            color: #0369a1; /* sky-600 */
+        }
+        p, li {
+            line-height: 1.7;
+            margin-bottom: 0.75rem; /* mb-3 */
+            color: #4b5563; /* gray-600 */
+        }
+        strong, .font-semibold {
+            color: #1f2937; /* gray-800 */
+        }
+        .definition-card, .example-card, .rules-card, .tips-card {
+            background-color: #f9fafb; /* gray-50 */
+            border-left: 4px solid #0ea5e9; /* sky-500 */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.375rem; /* rounded-md */
+            margin-bottom: 1.5rem; /* mb-6 */
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        .example-card {
+            border-left-color: #f59e0b; /* amber-500 */
+            background-color: #fffbeb; /* amber-50 */
+        }
+        .tips-card {
+            border-left-color: #10b981; /* emerald-500 */
+            background-color: #ecfdf5; /* emerald-50 */
+        }
+        .unicode-char {
+            font-size: 1.5em;
+            color: #0ea5e9; /* sky-500 */
+            margin: 0 0.25em;
+        }
+        .shape-demo {
+            display: inline-block;
+            width: 2rem; /* w-8 */
+            height: 2rem; /* h-8 */
+            border: 1px solid #9ca3af; /* border-gray-400 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0.25rem;
+            font-size: 1.25rem;
+            background-color: white;
+        }
+        .shape-black {
+            background-color: #1f2937; /* gray-800 */
+            color: white;
+        }
+        .op-symbol {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0369a1; /* sky-700 */
+            margin: 0 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-stone-100 text-gray-800">
+    <div class="flex h-screen">
+        <aside id="sidebar" class="w-64 bg-sky-800 text-white p-4 space-y-2 overflow-y-auto transition-all duration-300 md:w-72 fixed md:static h-full z-20 -translate-x-full md:translate-x-0">
+            <h1 class="text-2xl font-bold mb-6 text-amber-400 border-b-2 border-amber-500 pb-2">判断推理系统课</h1>
+            <nav id="navigation-menu">
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+            <button id="menu-toggle" class="md:hidden fixed top-4 left-4 z-30 bg-sky-600 text-white p-2 rounded-md shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <div id="content-display" class="bg-white p-6 md:p-8 rounded-lg shadow-xl min-h-full">
+                <section id="home" class="content-section active">
+                    <h2>欢迎学习判断推理系统课</h2>
+                    <div class="definition-card">
+                        <p>本应用旨在帮助您系统学习《判断推理》的核心知识点和解题技巧。判断推理是行政职业能力测验的重要组成部分，主要考察应试者的逻辑思维、分析判断和图形规律识别等能力。本课程将带您逐一攻克各类题型。</p>
+                        <p>请通过左侧导航栏选择您想学习的章节和内容。</p>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h3 class="text-xl font-semibold text-sky-700 mb-3">🚀 应用内容概览：</h3>
+                        <ul class="list-none space-y-2 text-gray-700">
+                            <li class="flex items-center"><span class="unicode-char mr-2">🎨</span>图形推理：位置、样式、属性、数量、特殊规律，空间重构等。</li>
+                            <li class="flex items-center"><span class="unicode-char mr-2">🧩</span>类比推理：语义、逻辑、语法关系。</li>
+                            <li class="flex items-center"><span class="unicode-char mr-2">📖</span>定义判断：快速识别有效信息，同构选项排除。</li>
+                            <li class="flex items-center"><span class="unicode-char mr-2">🧠</span>逻辑判断：翻译推理、组合排列、日常结论、逻辑论证、真假推理等。</li>
+                        </ul>
+                    </div>
+                     <div class="chart-container mt-10">
+                        <canvas id="overviewChart"></canvas>
+                    </div>
+                </section>
+                
+                <section id="ch1" class="content-section">
+                    <h2>第一章 图形推理</h2>
+                    <div class="definition-card">
+                        <p>图形推理主要考察观察、抽象、推理能力。本章将介绍图形推理的常见规律和解题技巧，包括位置规律、样式规律、属性规律、数量规律、特殊规律以及空间重构等内容。掌握这些方法能有效提升图形识别和逻辑分析的速度与准确性。</p>
+                    </div>
+                </section>
+                <section id="ch1_s1" class="content-section">
+                    <h3>第一节 位置规律</h3>
+                    <p class="text-gray-500 italic mb-4">当一组图形中的元素组成完全相同时，优先考虑位置规律。其核心考点包括平移、旋转和翻转。</p>
+                    
+                    <h4>一、平移</h4>
+                    <div class="definition-card">
+                        <p><strong>定义：</strong>图形或图形的组成元素在平面上进行直线或曲线移动。</p>
+                        <p><strong>考点：</strong></p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li><strong>方向：</strong>
+                                <ul class="list-circle list-inside ml-4">
+                                    <li>直线：<span class="font-mono text-sky-600 text-xl">↑ ↓ ← → ↖ ↗ ↙ ↘</span></li>
+                                    <li>绕圈：<span class="font-mono text-sky-600 text-xl">↻</span> (顺时针), <span class="font-mono text-sky-600 text-xl">↺</span> (逆时针)</li>
+                                </ul>
+                            </li>
+                            <li><strong>步数：</strong>移动的格数或距离。
+                                <ul class="list-circle list-inside ml-4">
+                                    <li>恒定：如每次移动1格 (1, 1, 1...)</li>
+                                    <li>递增/递减：如依次移动1格, 2格, 3格 (1, 2, 3...)</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="example-card">
+                        <p class="font-semibold text-amber-700">💡 平移示例 (直线 - 向右移动1格):</p>
+                        <div class="flex space-x-2 items-center mt-2">
+                            <div class="shape-demo">●</div> <span class="op-symbol">➔</span>
+                            <div class="w-8 h-8 border border-gray-300 flex items-center justify-center bg-gray-100"></div> <div class="shape-demo">●</div><span class="op-symbol">➔</span>
+                            <div class="w-8 h-8 border border-gray-300 flex items-center justify-center bg-gray-100"></div><div class="w-8 h-8 border border-gray-300 flex items-center justify-center bg-gray-100"></div><div class="shape-demo">●</div>
+                        </div>
+                         <p class="font-semibold text-amber-700 mt-3">💡 平移示例 (绕圈 - 2x2格子顺时针):</p>
+                        <div class="flex items-center space-x-2 mt-2">
+                            <div class="grid grid-cols-2 w-16 h-16 border border-gray-400"> <div class="shape-demo m-0 w-full h-full shape-black">●</div> <div class="shape-demo m-0 w-full h-full"></div> <div class="shape-demo m-0 w-full h-full"></div> <div class="shape-demo m-0 w-full h-full"></div> </div>
+                            <span class="op-symbol">↻</span>
+                            <div class="grid grid-cols-2 w-16 h-16 border border-gray-400"> <div class="shape-demo m-0 w-full h-full"></div> <div class="shape-demo m-0 w-full h-full shape-black">●</div> <div class="shape-demo m-0 w-full h-full"></div> <div class="shape-demo m-0 w-full h-full"></div> </div>
+                        </div>
+                    </div>
+                     <div class="tips-card">
+                        <p class="font-semibold text-emerald-700">解题技巧：</p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><strong>标记定位：</strong>复杂图形中，选取一个特征元素作参照，追踪其移动轨迹。</li>
+                            <li><strong>相对位置：</strong>多元素移动时，关注它们之间的相对位置是否保持不变或规律性改变。</li>
+                        </ul>
+                    </div>
+                </section>
+                <section id="ch1_s2" class="content-section">
+                    <h3>第二节 样式规律</h3>
+                    <p class="text-gray-500 italic mb-4">当一组图形的元素组成相似，特别是存在相同线条或部件重复出现时，应考虑样式规律。</p>
+                    <h4>一、加减同异</h4>
+                    <div class="definition-card">
+                        <p><strong>定义：</strong>通过图形的叠加、相减、求同或求异等运算得到新的图形。</p>
+                        <p><strong>常见运算：</strong></p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><strong>相加（求和）：</strong>图1所有元素 + 图2所有元素 = 图3。</li>
+                            <li><strong>相减：</strong>图1 - (图1与图2共有部分) = 图3，或 图1 - 图2 = 图3。</li>
+                            <li><strong>求异（去同存异）：</strong>保留图1和图2中不相同的部分，去掉相同的部分。</li>
+                            <li><strong>求同（去异存同）：</strong>保留图1和图2中相同的部分，去掉不相同的部分。</li>
+                        </ul>
+                    </div>
+                    <div class="example-card">
+                        <p class="font-semibold text-amber-700">💡 运算示例:</p>
+                        <p class="mt-2"><strong>相加：</strong></p>
+                        <div class="flex items-center space-x-1 my-1">
+                          <span class="shape-demo text-sky-600">○</span> <span class="op-symbol">+</span> <span class="shape-demo text-sky-600">╳</span> <span class="op-symbol">➔</span> <span class="shape-demo text-red-500">⊕</span>
+                        </div>
+                        <p class="mt-2"><strong>求异 (去同存异)：</strong>图1[△□] 与 图2[□☆]</p>
+                        <div class="flex items-center space-x-1 my-1">
+                          <span class="shape-demo text-sky-600">△□</span> <span class="op-symbol">&</span> <span class="shape-demo text-sky-600">□☆</span> <span class="op-symbol">➔</span> <span class="shape-demo text-red-500">△☆</span>
+                        </div>
+                        <p class="mt-2"><strong>求同 (去异存同)：</strong>图1[△□] 与 图2[□☆]</p>
+                        <div class="flex items-center space-x-1 my-1">
+                          <span class="shape-demo text-sky-600">△□</span> <span class="op-symbol">&</span> <span class="shape-demo text-sky-600">□☆</span> <span class="op-symbol">➔</span> <span class="shape-demo text-red-500">□</span>
+                        </div>
+                    </div>
+
+                    <h4>二、黑白运算</h4>
+                     <div class="definition-card">
+                        <p><strong>特征：</strong>图形的轮廓和内部分割区域相同，但内部小区域的填充颜色（通常是黑白）不同。</p>
+                        <p><strong>方法：</strong>对图形相同位置的小区域进行颜色运算。常见规则如：黑+白=白, 白+黑=白, 白+白=黑 (具体规则依题目而定)。</p>
+                    </div>
+                    <div class="example-card">
+                        <p class="font-semibold text-amber-700">💡 黑白运算示例 (规则：相同为白，不同为黑):</p>
+                        <div class="flex items-center space-x-1 my-2">
+                            <div class="grid grid-cols-2 w-12 h-12 border border-gray-400"> <div class="bg-gray-800 w-full h-full"></div><div class="bg-white w-full h-full"></div><div class="bg-white w-full h-full"></div><div class="bg-gray-800 w-full h-full"></div> </div>
+                            <span class="op-symbol">+</span>
+                            <div class="grid grid-cols-2 w-12 h-12 border border-gray-400"> <div class="bg-gray-800 w-full h-full"></div><div class="bg-gray-800 w-full h-full"></div><div class="bg-white w-full h-full"></div><div class="bg-white w-full h-full"></div> </div>
+                            <span class="op-symbol">➔</span>
+                            <div class="grid grid-cols-2 w-12 h-12 border-2 border-sky-500"> <div class="bg-white w-full h-full"></div><div class="bg-gray-800 w-full h-full"></div><div class="bg-white w-full h-full"></div><div class="bg-gray-800 w-full h-full"></div> </div>
+                        </div>
+                        <p class="text-sm text-gray-600">图1左上(黑) + 图2左上(黑) = 图3左上(白)</p>
+                        <p class="text-sm text-gray-600">图1右上(白) + 图2右上(黑) = 图3右上(黑)</p>
+                    </div>
+                     <div class="tips-card">
+                        <p class="font-semibold text-emerald-700">技巧：</p>
+                        <ul class="list-disc list-inside ml-4">
+                           <li>若各图中黑块/白块数量相同，可能优先考虑位置规律。</li>
+                           <li>若黑块/白块数量不同，则优先考虑黑白运算。</li>
+                           <li>可从“？”处入手，结合选项反推可能的运算规则。</li>
+                        </ul>
+                    </div>
+                </section>
+                <section id="ch1_s3" class="content-section">
+                  <h3>第三节 属性规律</h3>
+                  <p class="text-gray-500 italic mb-4">当图形的元素组成不相同也不相似，且位置和样式规律不明显时，应考虑图形的固有属性。</p>
+                  <h4>一、对称性</h4>
+                  <div class="definition-card">
+                    <p><strong>轴对称：</strong>图形沿一条直线折叠后，两侧完全重合。关注对称轴方向 (↔, ↕, ⤢) 和数量。</p>
+                    <p><strong>中心对称：</strong>图形绕某点旋转180°后与自身重合。</p>
+                  </div>
+                  <div class="example-card">
+                    <p class="font-semibold text-amber-700">💡 对称性示例:</p>
+                    <p>轴对称图形: <span class="shape-demo text-xl">A</span> <span class="shape-demo text-xl">中</span> <span class="shape-demo text-xl">M</span> <span class="shape-demo text-xl">◇</span></p>
+                    <p>中心对称图形: <span class="shape-demo text-xl">Z</span> <span class="shape-demo text-xl">S</span> <span class="shape-demo text-xl">N</span> <span class="shape-demo text-xl">卍</span></p>
+                    <p>既轴对称又中心对称: <span class="shape-demo text-xl">O</span> <span class="shape-demo text-xl">H</span> <span class="shape-demo text-xl">X</span> <span class="shape-demo text-xl">十</span></p>
+                  </div>
+                  <h4>二、曲直性</h4>
+                  <div class="definition-card">
+                    <p>观察构成图形的线条是曲线还是直线。</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>全直线图形：</strong>例: <span class="shape-demo text-xl">△</span> <span class="shape-demo text-xl">□</span> <span class="shape-demo text-xl">☆</span></li>
+                        <li><strong>全曲线图形：</strong>例: <span class="shape-demo text-xl">○</span> <span class="shape-demo text-xl">🌙</span> <span class="shape-demo text-xl">S</span></li>
+                        <li><strong>曲直混合图形：</strong>例: <span class="shape-demo text-xl">D</span> <span class="shape-demo text-xl">♀</span> (半圆+直线)</li>
+                    </ul>
+                  </div>
+                  <h4>三、开闭性</h4>
+                  <div class="definition-card">
+                    <p>观察图形是否形成封闭区域。</p>
+                     <ul class="list-disc list-inside ml-4">
+                        <li><strong>全封闭图形：</strong>例: <span class="shape-demo text-xl">口</span> <span class="shape-demo text-xl">日</span> <span class="shape-demo text-xl">田</span> <span class="shape-demo text-xl">O</span></li>
+                        <li><strong>全开放图形：</strong>例: <span class="shape-demo text-xl">L</span> <span class="shape-demo text-xl">人</span> <span class="shape-demo text-xl">V</span> <span class="shape-demo text-xl">十</span></li>
+                        <li><strong>部分封闭/半开放图形：</strong>例: <span class="shape-demo text-xl">C</span> <span class="shape-demo text-xl">弓</span> <span class="shape-demo text-xl">月</span></li>
+                    </ul>
+                  </div>
+                </section>
+                <section id="ch1_s4" class="content-section">
+                    <h3>第四节 数量规律</h3>
+                    <p class="text-gray-500 italic mb-4">当图形的组成、样式、属性差异较大时，尝试从构成图形的元素的数量入手。</p>
+                    <h4>一、点数量</h4>
+                    <div class="definition-card">
+                    <p><strong>计数对象：</strong>交点 (直线间、曲直间、曲线间，含切点)、端点、顶点、孤立点。</p>
+                    <p><strong>特征：</strong>线条交叉多、图形多边角、有明显点状元素。</p>
+                    </div>
+                    <div class="example-card">
+                       <p class="font-semibold text-amber-700">💡 点数量示例:</p>
+                       <p>图形 <span class="text-2xl p-1 border rounded mx-1">※</span> 有 <span class="font-bold text-red-600">5</span> 个交点 (中心1个，外围4个)。</p>
+                       <p>图形 <span class="text-2xl p-1 border rounded mx-1">Ψ</span> 有 <span class="font-bold text-red-600">3</span> 个端点和 <span class="font-bold text-red-600">1</span> 个交点。</p>
+                    </div>
+                    <h4>二、线数量</h4>
+                    <div class="definition-card">
+                    <p><strong>直线数与曲线数：</strong>分别统计。直线特征：多边形。曲线特征：圆、弧。</p>
+                    <p><strong>笔画数 (一笔画)：</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>判断：图形连通，奇点 (引出奇数条线的点) 个数为0或2。端点为奇点。</li>
+                        <li>多笔画：笔画数 = 奇点数 / 2。</li>
+                    </ul>
+                    </div>
+                    <div class="example-card">
+                        <p class="font-semibold text-amber-700">💡 线数量示例:</p>
+                        <p>图形 <span class="text-2xl p-1 border rounded mx-1">五角星 (☆)</span> 是一笔画 (0个奇点，若顶点不交叉)。</p>
+                        <p>汉字 <span class="text-2xl p-1 border rounded mx-1">日</span> 是两笔画 (4个奇点)。</p>
+                        <p>图形 <span class="text-2xl p-1 border rounded mx-1">品</span> 有 <span class="font-bold text-red-600">12</span> 条直线。</p>
+                    </div>
+                    <h4>三、面数量</h4>
+                    <div class="definition-card"><p><strong>定义：</strong>图形内部形成的独立封闭区域的数量。</p></div>
+                    <div class="example-card">
+                        <p class="font-semibold text-amber-700">💡 面数量示例:</p>
+                        <p>汉字 <span class="text-2xl p-1 border rounded mx-1">田</span> 有 <span class="font-bold text-red-600">4</span> 个封闭面 (内部小方格)。</p>
+                        <p>图形 <span class="text-2xl p-1 border rounded mx-1">⊕</span> 有 <span class="font-bold text-red-600">4</span> 个封闭面 (被十字分割的圆)。</p>
+                    </div>
+                    <h4>四、素数量（元素数量）</h4>
+                    <div class="definition-card"><p><strong>小元素：</strong>图形由多个独立小图形构成。考察种类、总个数等。</p>
+                    <p><strong>部分数：</strong>图形由若干相互分离的独立部分构成。</p></div>
+                     <div class="example-card">
+                        <p class="font-semibold text-amber-700">💡 素数量示例:</p>
+                        <p>图形 <span class="text-xl p-1 border rounded mx-1">∵</span> (三个点) 元素种类为1 (点)，元素个数为3。</p>
+                        <p>图形 <span class="text-xl p-1 border rounded mx-1">品</span> (三个口) 部分数为3。</p>
+                    </div>
+                    <h4>五、角数量</h4>
+                    <div class="definition-card"><p><strong>定义：</strong>图形内角 (0°~180°)。可细分锐角、直角、钝角。</p></div>
+                     <div class="example-card">
+                        <p class="font-semibold text-amber-700">💡 角数量示例:</p>
+                        <p>三角形 <span class="text-2xl p-1 border rounded mx-1">△</span> 有 <span class="font-bold text-red-600">3</span> 个角。</p>
+                        <p>图形 <span class="text-2xl p-1 border rounded mx-1">└</span> 有 <span class="font-bold text-red-600">1</span> 个直角。</p>
+                    </div>
+                </section>
+                 <section id="ch1_s5" class="content-section">
+                    <h3>第五节 特殊规律</h3>
+                     <p class="text-gray-500 italic mb-4">包括功能元素、图形间关系及其他不易归类的规律。</p>
+                    <h4>一、功能元素</h4>
+                    <div class="definition-card">
+                    <p>指图形中的点、箭头等特定小图形，它们可能具有指示位置、方向、数量或分割等特殊功能。</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>点 <span class="font-mono text-sky-600 text-xl">•</span>：</strong>观察其位置（内外、边缘、角点）、数量、是否标记特定区域。</li>
+                        <li><strong>箭头 <span class="font-mono text-sky-600 text-xl">➢</span>：</strong>观察其指向（固定、旋转、往复）、数量、与其他元素的关系。</li>
+                    </ul>
+                    </div>
+                    <h4>二、图形间关系</h4>
+                    <div class="definition-card">
+                    <p>考察图形与图形之间的相对位置和组合方式。</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>相离：</strong>图形分离，无接触。 例： ○ □</li>
+                        <li><strong>相交/相切：</strong>图形有重叠或接触。 例： 겹치는 원 (重叠圆), ○-□ (相切)</li>
+                        <li><strong>包含：</strong>一个图形位于另一个内部。 例： ◎</li>
+                    </ul>
+                    <p>规律可能体现在相交点数量、接触方式（切、穿过）、叠加层次等的变化。</p>
+                    </div>
+                    <h4>三、其他规律</h4>
+                     <div class="definition-card">
+                    <p>包括汉字/字母的变形或规律（如笔顺、结构特点）、图形的遍历（元素按特定顺序出现）、对称轴的组合变化等。</p>
+                    </div>
+                </section>
+                <section id="ch1_s6" class="content-section">
+                    <h3>第六节 空间重构</h3>
+                     <p class="text-gray-500 italic mb-4">主要考察根据平面展开图折叠成立体图形的能力。</p>
+                    <h4>一、六面体（折纸盒）</h4>
+                    <div class="rules-card">
+                    <p class="font-semibold text-sky-700">核心方法：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>相对面：</strong>展开图中相间排列的面是相对面。相对面在立体图中不可能同时出现。
+                            <br><span class="text-sm text-gray-500">例：“1-4-1”型中，第一行与第三行的面相对；中间四个相连的面中，1与3相对，2与4相对。</span>
+                        </li>
+                        <li><strong>相邻面定位：</strong>确定相邻面及其图案在折叠后的相对位置和方向。
+                            <br><span class="text-sm text-gray-500">技巧：画箭头法/时针法——在一个面上画箭头，想象折叠后，相邻面图案与箭头的相对方向。</span>
+                        </li>
+                        <li><strong>特征面法：</strong>寻找有特殊标记的面，分析其与周围面的关系。</li>
+                    </ul>
+                    </div>
+                    <div class="example-card">
+                        <p class="font-semibold text-amber-700">💡 常见展开图类型与相对面记忆：</p>
+                        <p>“Z”字形两端相对；“凹”字形两端相对；同行/列隔一个相对。</p>
+                        <div class="mt-2 p-2 border rounded bg-gray-50">
+                            <p class="text-center">1-4-1型 (示例)</p>
+                            <div class="grid grid-cols-4 w-32 mx-auto text-center text-sm">
+                                <div class="col-start-2 shape-demo !w-8 !h-8">A</div>
+                            </div>
+                            <div class="grid grid-cols-4 w-32 mx-auto text-center text-sm">
+                                <div class="shape-demo !w-8 !h-8">B</div> <div class="shape-demo !w-8 !h-8">C</div> <div class="shape-demo !w-8 !h-8">D</div> <div class="shape-demo !w-8 !h-8">E</div>
+                            </div>
+                             <div class="grid grid-cols-4 w-32 mx-auto text-center text-sm">
+                                <div class="col-start-2 shape-demo !w-8 !h-8">F</div>
+                            </div>
+                            <p class="text-xs text-center mt-1">A与F相对；B与D相对；C与E相对。</p>
+                        </div>
+                    </div>
+                    <h4>二、四面体和八面体</h4>
+                    <div class="definition-card">
+                    <p><strong>四面体：</strong>由四个三角形面构成。</p>
+                    <p><strong>八面体：</strong>由八个等边三角形构成。展开图中，构成“菱形”或“ ”形状的两条边在折叠后是同一条边。每个顶点连接4个三角形面。</p>
+                    </div>
+                </section>
+                <section id="ch1_s7" class="content-section">
+                    <h3>第七节 三视图、截面图与立体拼合</h3>
+                    <h4>一、三视图</h4>
+                    <div class="definition-card">
+                    <p><strong>定义：</strong>主视图（正面看）、俯视图（上面看）、左视图（左面看）。</p>
+                    <p><strong>解题原则：</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>均为平面图。</li>
+                        <li>“长对正，高平齐，宽相等”。</li>
+                        <li>可见轮廓画实线，不可见但存在画虚线。</li>
+                        <li>曲面特定角度投影可能为直线。</li>
+                    </ul>
+                    </div>
+                    <h4>二、截面图</h4>
+                    <div class="definition-card">
+                    <p><strong>定义：</strong>用平面切割立体图形形成的相交面形状。</p>
+                    <p><strong>原则：</strong>“一刀切”，平面无限大，不拐弯。</p>
+                    </div>
+                     <div class="example-card">
+                        <p class="font-semibold text-amber-700">💡 常见截面:</p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li><strong>六面体：</strong>可得三角形、四边形、五边形、六边形。</li>
+                            <li><strong>圆柱：</strong>可得圆、椭圆、矩形。</li>
+                            <li><strong>圆锥：</strong>可得圆、椭圆、三角形、抛物线。</li>
+                            <li><strong>球体：</strong>任何截面都是圆。</li>
+                        </ul>
+                    </div>
+                    <h4>三、立体拼合</h4>
+                    <div class="rules-card">
+                    <p class="font-semibold text-sky-700">原则：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>数量守恒：</strong>基本单元（如小正方体）数量不变。</li>
+                        <li><strong>形状匹配：</strong>拼接处凹凸吻合。</li>
+                        <li><strong>特征对应：</strong>特殊标记或形状在拼接后的位置。</li>
+                    </ul>
+                    </div>
+                </section>
+
+                <section id="ch2" class="content-section">
+                    <h2>第二章 类比推理</h2>
+                    <div class="definition-card">
+                    <p>类比推理要求在备选答案中找出一组与题干词语在逻辑关系上最为贴近或相似的词。本章将探讨语义关系、逻辑关系和语法关系，帮助您准确识别词项间的深层联系。</p>
+                    </div>
+                </section>
+                <section id="ch2_s1" class="content-section">
+                    <h3>第一节 语义关系</h3>
+                    <p class="text-gray-500 italic mb-4">从词语的含义层面分析其关系。</p>
+                    <h4>一、近义关系与反义关系</h4>
+                    <div class="definition-card">
+                    <p><strong>近义关系：</strong>词义相近或相同。例：理想 <span class="op-symbol">≈</span> 梦想。</p>
+                    <p><strong>反义关系：</strong>词义相反或相对。例：光明 <span class="op-symbol">≠</span> 黑暗。</p>
+                    </div>
+                    <div class="tips-card">
+                    <p class="font-semibold text-emerald-700">二级辨析：</p>
+                    <p>当仅凭近/反义无法确定时，考虑：感情色彩（褒贬中）、语义轻重、词语范围、搭配习惯。</p>
+                    </div>
+                    <h4>二、比喻义与象征义</h4>
+                    <div class="definition-card">
+                    <p>词语除本义外，还用来比喻或象征其他事物/概念。</p>
+                    </div>
+                    <div class="example-card">
+                    <p class="font-semibold text-amber-700">💡 示例:</p>
+                    <p>狐狸 <span class="op-symbol">象征</span> 狡猾</p>
+                    <p>鸽子 <span class="op-symbol">象征</span> 和平</p>
+                    <p>蜡烛 <span class="op-symbol">比喻</span> 奉献</p>
+                    </div>
+                </section>
+                 <section id="ch2_s2" class="content-section">
+                    <h3>第二节 逻辑关系</h3>
+                     <p class="text-gray-500 italic mb-4">从概念的外延和内涵角度分析词语间的逻辑联系。</p>
+                    <h4>一、全同关系</h4>
+                    <div class="definition-card"><p>同一事物的不同称谓。例：番茄 <span class="op-symbol">≡</span> 西红柿。</p></div>
+                    <h4>二、并列关系</h4>
+                    <div class="definition-card"><p>概念同级独立。</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>矛盾关系：</strong>非此即彼。例：生 <span class="op-symbol">⊕</span> 死 (互斥且穷尽)。</li>
+                        <li><strong>反对关系：</strong>互斥但不穷尽。例：红色 <span class="op-symbol">|</span> 蓝色 (还有其他颜色)。</li>
+                    </ul>
+                    </div>
+                    <h4>三、包容关系（从属关系）</h4>
+                    <div class="definition-card">
+                    <p>一个概念外延完全包含另一个。</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>种属关系：</strong>A是B的一种。例：狗 <span class="op-symbol">⊂</span> 动物。</li>
+                        <li><strong>组成关系：</strong>A是B的一部分。例：轮胎 <span class="op-symbol">∈</span> 汽车。</li>
+                    </ul>
+                    </div>
+                    <h4>四、交叉关系</h4>
+                    <div class="definition-card"><p>概念外延有部分重合。例：教师 <span class="op-symbol">∩</span> 女性。</p></div>
+                    <h4>五、对应关系</h4>
+                    <div class="definition-card"><p>词语间特定联系，如：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>因果：</strong>骄傲 <span class="op-symbol">➔</span> 落后</li>
+                        <li><strong>功能：</strong>笔 <span class="op-symbol">➔</span> 书写</li>
+                        <li><strong>材料：</strong>木材 <span class="op-symbol">➔</span> 桌子</li>
+                        <li><strong>职业：</strong>医生 <span class="op-symbol">➔</span> 治病</li>
+                        <li><strong>时间顺序：</strong>播种 <span class="op-symbol">➔</span> 收获</li>
+                    </ul>
+                    </div>
+                </section>
+                <section id="ch2_s3" class="content-section">
+                    <h3>第三节 语法关系</h3>
+                    <p class="text-gray-500 italic mb-4">从词语在句子结构中的成分分析关系。</p>
+                    <div class="definition-card">
+                    <p><strong>常见关系：</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>主谓：</strong>太阳 : 升起 (太阳<span class="text-sky-600">[主]</span>升起<span class="text-sky-600">[谓]</span>)</li>
+                        <li><strong>动宾：</strong>阅读 : 书籍 (阅读<span class="text-sky-600">[动]</span>书籍<span class="text-sky-600">[宾]</span>)</li>
+                        <li><strong>主宾：</strong>学生 : 作业 (学生<span class="text-sky-600">[主]</span>(做)作业<span class="text-sky-600">[宾]</span>)</li>
+                        <li><strong>偏正 (定中/状中)：</strong>美丽 : 风景 (美丽<span class="text-sky-600">[定]</span>的风景<span class="text-sky-600">[中]</span>)；快速 : 奔跑 (快速<span class="text-sky-600">[状]</span>地奔跑<span class="text-sky-600">[中]</span>)</li>
+                    </ul>
+                    </div>
+                    <div class="tips-card">
+                    <p class="font-semibold text-emerald-700">解题技巧：</p>
+                    <p>尝试用词语造简单句子，分析结构，保持题干与选项结构一致。</p>
+                    </div>
+                </section>
+
+                <section id="ch3" class="content-section">
+                    <h2>第三章 定义判断</h2>
+                    <div class="definition-card">
+                    <p>定义判断题要求严格依据题干给出的定义，选出一个最符合或最不符合该定义的选项。准确理解定义的每一个要素是解题的关键。</p>
+                    </div>
+                </section>
+                <section id="ch3_s1" class="content-section">
+                    <h3>第一节 快速识别有效信息</h3>
+                    <p class="text-gray-500 italic mb-4">关注定义中的核心要素和限定条件。</p>
+                    <h4>一、关键词——主体、客体</h4>
+                    <div class="definition-card">
+                    <p><strong>主体：</strong>行为、动作或状态的发出者。例：定义主体是“国家机关”，则“公司行为”不符。</p>
+                    <p><strong>客体：</strong>行为、动作或状态作用的对象。例：定义客体是“公共财产”，则“私人用品”不符。</p>
+                    </div>
+                    <h4>二、关键词——条件、方式、目的、原因、结果、范围等</h4>
+                    <div class="rules-card">
+                    <p class="font-semibold text-sky-700">关注限定词：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>方式/手段：</strong>“通过…”、“利用…”</li>
+                        <li><strong>目的/目标：</strong>“为了…”、“旨在…”</li>
+                        <li><strong>原因/前提：</strong>“由于…”、“在…条件下”</li>
+                        <li><strong>结果/后果：</strong>“导致…”、“从而…”</li>
+                        <li><strong>时间/地点/范围：</strong>“在…期间”、“仅限于…”</li>
+                        <li><strong>核心特征：</strong>定义中最能体现其本质的描述。</li>
+                    </ul>
+                    <p>选项必须满足定义中的所有限定条件。</p>
+                    </div>
+                    <h4>三、包含定义的句子优先看</h4>
+                    <div class="tips-card"><p>长定义中，首句常为核心概述。注意“即”、“也就是说”等引导的解释性语句。</p></div>
+                    <h4>四、多定义题目</h4>
+                    <div class="tips-card"><p>明确题目针对哪个定义提问，集中分析该定义，必要时对比其他定义以区分。</p></div>
+                </section>
+                <section id="ch3_s2" class="content-section">
+                    <h3>第二节 同构选项排除法</h3>
+                    <div class="definition-card">
+                    <p><strong>定义：</strong>几个选项在核心含义、逻辑结构或与定义相关的关键特征上表现出高度一致性。</p>
+                    </div>
+                    <div class="rules-card">
+                    <p class="font-semibold text-sky-700">应用方法：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>选非题：</strong>若三项同构（均符合或均以类似方式不符），则不同构的第四项可能为答案。</li>
+                        <li><strong>选是题：</strong>若三项同构（均不符合或均以类似方式符合部分），则不同构的第四项可能为答案。</li>
+                    </ul>
+                    </div>
+                    <div class="tips-card"><p>辅助技巧，最终判断需回归定义本身。用于定义抽象或判断耗时的情况。</p></div>
+                </section>
+
+                <section id="ch4" class="content-section">
+                    <h2>第四章 逻辑判断</h2>
+                     <div class="definition-card">
+                    <p>逻辑判断主要考察演绎推理和归纳推理能力，包括翻译推理、组合排列、日常结论、逻辑论证、真假推理和集合推理等题型。本章旨在训练严谨的逻辑思维。</p>
+                    </div>
+                </section>
+                <section id="ch4_s1" class="content-section">
+                    <h3>第一节 翻译推理</h3>
+                    <p class="text-gray-500 italic mb-4">将自然语言准确翻译成逻辑命题，再运用规则推理。</p>
+                    <div class="rules-card">
+                    <p class="font-semibold text-sky-700">核心翻译规则：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>“如果A，那么B” <span class="op-symbol">⇒</span> A → B (前推后)</li>
+                        <li>“只有A，才B” <span class="op-symbol">⇒</span> B → A (后推前)</li>
+                        <li>“除非A，否则B” <span class="op-symbol">⇒</span> -B → A</li>
+                        <li>“A且B” <span class="op-symbol">⇒</span> A ∧ B</li>
+                        <li>“A或B” <span class="op-symbol">⇒</span> A ∨ B</li>
+                    </ul>
+                    <p class="font-semibold text-sky-700 mt-2">核心推理规则：</p>
+                     <ul class="list-disc list-inside ml-4">
+                        <li>逆否等价：A → B <span class="op-symbol">≡</span> -B → -A</li>
+                        <li>传递律：(A → B) ∧ (B → C) <span class="op-symbol">⇒</span> A → C</li>
+                        <li>德·摩根：-(A∧B) <span class="op-symbol">≡</span> -A∨-B； -(A∨B) <span class="op-symbol">≡</span> -A∧-B</li>
+                    </ul>
+                    </div>
+                </section>
+                <section id="ch4_s2" class="content-section">
+                    <h3>第二节 组合排列</h3>
+                    <p class="text-gray-500 italic mb-4">根据对象间的匹配、顺序或限制条件，确定唯一对应或排列。</p>
+                    <div class="rules-card">
+                    <p class="font-semibold text-sky-700">解题方法：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>排除法：</strong>逐条排除不符选项。</li>
+                        <li><strong>代入法：</strong>选项代入验证。</li>
+                        <li><strong>最大信息法：</strong>从关联最多的信息入手。</li>
+                        <li><strong>列表格法：</strong>清晰整理多对象多属性匹配。</li>
+                        <li><strong>假设法：</strong>无突破口时进行假设推导。</li>
+                    </ul>
+                    </div>
+                </section>
+                <section id="ch4_s3" class="content-section">
+                    <h3>第三节 日常结论</h3>
+                    <p class="text-gray-500 italic mb-4">从不含明显逻辑词的陈述中推出合理结论。</p>
+                     <div class="rules-card">
+                    <p class="font-semibold text-sky-700">解题原则：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>忠于原文：</strong>不主观臆断，不外加信息。</li>
+                        <li><strong>避免绝对化：</strong>慎选“一定、所有、最”等词。</li>
+                        <li><strong>优选可能性：</strong>“可能、有些”等词更易推出。</li>
+                        <li><strong>排除错误：</strong>无中生有、偷换概念、强加因果等。</li>
+                    </ul>
+                    </div>
+                </section>
+                 <section id="ch4_s4" class="content-section">
+                    <h3>第四节 逻辑论证</h3>
+                    <p class="text-gray-500 italic mb-4">分析论点、论据、论证关系，选择加强或削弱项。</p>
+                    <h4>一、加强类论证</h4>
+                    <div class="rules-card">
+                    <p class="font-semibold text-sky-700">方式 (强度由高到低)：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>搭桥/补充前提：</strong>建立论据与论点间必要联系。</li>
+                        <li><strong>补充新论据：</strong>提供新事实/例子支持论点。</li>
+                        <li><strong>排除他因：</strong>间接加强。</li>
+                    </ul>
+                    </div>
+                    <h4>二、削弱类论证</h4>
+                    <div class="rules-card">
+                    <p class="font-semibold text-sky-700">方式 (强度由高到低)：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>否定论点：</strong>直接反驳论点。</li>
+                        <li><strong>拆桥/否定前提：</strong>切断论据与论点联系或否定前提。</li>
+                        <li><strong>否定论据：</strong>指出论据不真实/不全面。</li>
+                        <li><strong>另有他因：</strong>提出其他原因解释结果。</li>
+                        <li><strong>因果倒置：</strong>指出因果关系相反。</li>
+                    </ul>
+                    </div>
+                </section>
+                <section id="ch4_s5" class="content-section">
+                    <h3>第五节 真假推理</h3>
+                    <p class="text-gray-500 italic mb-4">根据陈述中的真假话数量推断事实。</p>
+                    <div class="rules-card">
+                    <p class="font-semibold text-sky-700">核心步骤：</p>
+                    <ol class="list-decimal list-inside ml-4">
+                        <li><strong>找关系（突破口）：</strong>
+                            <ul class="list-disc list-inside ml-2">
+                                <li>矛盾关系优先 (必一真一假)。</li>
+                                <li>反对关系次之 (上反对至少一假；下反对至少一真)。</li>
+                            </ul>
+                        </li>
+                        <li><strong>看其余：</strong>结合真假话总数，定其余陈述真假。</li>
+                        <li><strong>回代验证/顺推：</strong>利用已定真假的陈述推理。</li>
+                    </ul>
+                    </div>
+                </section>
+                <section id="ch4_s6" class="content-section">
+                    <h3>第六节 集合推理</h3>
+                    <p class="text-gray-500 italic mb-4">考察“所有”、“有些”等量词相关的概念间关系。</p>
+                    <div class="rules-card">
+                    <p class="font-semibold text-sky-700">核心概念：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>“所有A是B” (A ⊆ B)</li>
+                        <li>“所有A不是B” (A与B全异)</li>
+                        <li>“有的A是B” (A与B相交) ⇒ 有的B是A。<strong>注意：</strong>不等于“有的A不是B”。</li>
+                        <li>“有的A不是B”</li>
+                    </ul>
+                    <p>可借助文氏图或三段论推理。</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const menuData = [
+            {
+                name: "课程首页", id: "home", sections: []
+            },
+            {
+                name: "第一章 图形推理", id: "ch1", sections: [
+                    { name: "第一节 位置规律", id: "ch1_s1" },
+                    { name: "第二节 样式规律", id: "ch1_s2" },
+                    { name: "第三节 属性规律", id: "ch1_s3" },
+                    { name: "第四节 数量规律", id: "ch1_s4" },
+                    { name: "第五节 特殊规律", id: "ch1_s5" },
+                    { name: "第六节 空间重构", id: "ch1_s6" },
+                    { name: "第七节 三视图、截面图与立体拼合", id: "ch1_s7" }
+                ]
+            },
+            {
+                name: "第二章 类比推理", id: "ch2", sections: [
+                    { name: "第一节 语义关系", id: "ch2_s1" },
+                    { name: "第二节 逻辑关系", id: "ch2_s2" },
+                    { name: "第三节 语法关系", id: "ch2_s3" }
+                ]
+            },
+            {
+                name: "第三章 定义判断", id: "ch3", sections: [
+                    { name: "第一节 快速识别有效信息", id: "ch3_s1" },
+                    { name: "第二节 同构选项排除法", id: "ch3_s2" }
+                ]
+            },
+            {
+                name: "第四章 逻辑判断", id: "ch4", sections: [
+                    { name: "第一节 翻译推理", id: "ch4_s1" },
+                    { name: "第二节 组合排列", id: "ch4_s2" },
+                    { name: "第三节 日常结论", id: "ch4_s3" },
+                    { name: "第四节 逻辑论证", id: "ch4_s4" },
+                    { name: "第五节 真假推理", id: "ch4_s5" },
+                    { name: "第六节 集合推理", id: "ch4_s6" }
+                ]
+            }
+        ];
+
+        const navigationMenu = document.getElementById('navigation-menu');
+        const contentDisplay = document.getElementById('content-display');
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menu-toggle');
+
+        menuData.forEach((chapter, chapterIndex) => {
+            const chapterDiv = document.createElement('div');
+            chapterDiv.classList.add('mb-1'); // Reduced margin
+
+            const chapterTitle = document.createElement('h4');
+            chapterTitle.textContent = chapter.name;
+            chapterTitle.classList.add('text-lg', 'font-semibold', 'p-2.5', 'rounded-md', 'sidebar-link'); // Adjusted padding
+            if (chapter.sections.length > 0) {
+                chapterTitle.classList.add('chapter-title');
+                chapterTitle.innerHTML += ' <span class="float-right text-xs transform transition-transform duration-200">▼</span>';
+            }
+            
+            chapterTitle.dataset.target = chapter.id;
+             if (chapterIndex === 0) {
+                chapterTitle.classList.add('active');
+            }
+            chapterDiv.appendChild(chapterTitle);
+
+            if (chapter.sections.length > 0) {
+                const sectionList = document.createElement('ul');
+                sectionList.classList.add('ml-4', 'space-y-0.5', 'section-list', 'overflow-hidden', 'transition-all', 'duration-300', 'ease-in-out'); // Added transition
+                // sectionList.style.maxHeight = '0px'; // Start collapsed
+
+                chapter.sections.forEach(section => {
+                    const sectionItem = document.createElement('li');
+                    const sectionLink = document.createElement('a');
+                    sectionLink.href = "#";
+                    sectionLink.textContent = section.name;
+                    sectionLink.classList.add('block', 'p-2', 'rounded-md', 'sidebar-link', 'text-sm', 'hover:bg-sky-700'); // hover directly
+                    sectionLink.dataset.target = section.id;
+                    sectionItem.appendChild(sectionLink);
+                    sectionList.appendChild(sectionItem);
+                });
+                chapterDiv.appendChild(sectionList);
+            }
+            navigationMenu.appendChild(chapterDiv);
+        });
+        
+        function showContent(targetId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            const currentSection = document.getElementById(targetId);
+            if (currentSection) {
+                currentSection.classList.add('active');
+            }
+
+
+            document.querySelectorAll('#navigation-menu .sidebar-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            const activeLink = document.querySelector(`#navigation-menu .sidebar-link[data-target="${targetId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+
+                // Expand parent chapter if a section link is activated
+                const parentChapterList = activeLink.closest('.section-list');
+                if (parentChapterList && !parentChapterList.classList.contains('open')) {
+                    parentChapterList.classList.add('open');
+                    // parentChapterList.style.maxHeight = parentChapterList.scrollHeight + "px";
+                    const chapterTitle = parentChapterList.previousElementSibling;
+                    if(chapterTitle) {
+                        const arrow = chapterTitle.querySelector('span');
+                        if (arrow) arrow.classList.add('rotate-180'); else if(arrow) arrow.classList.remove('rotate-180');
+                    }
+                }
+            }
+            
+            if (window.innerWidth < 768) {
+                sidebar.classList.add('-translate-x-full');
+            }
+             // Scroll main content to top
+            document.querySelector('main').scrollTop = 0;
+        }
+
+        navigationMenu.addEventListener('click', function(event) {
+            event.preventDefault();
+            const targetLink = event.target.closest('.sidebar-link');
+            if (targetLink) {
+                const targetId = targetLink.dataset.target;
+                if (targetId) {
+                    showContent(targetId);
+                    
+                    if (targetLink.classList.contains('chapter-title')) {
+                        const sectionList = targetLink.nextElementSibling;
+                        if (sectionList && sectionList.classList.contains('section-list')) {
+                            sectionList.classList.toggle('open');
+                            // sectionList.style.maxHeight = sectionList.classList.contains('open') ? sectionList.scrollHeight + "px" : "0px";
+                            const arrow = targetLink.querySelector('span');
+                            if (arrow) {
+                                arrow.classList.toggle('rotate-180');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+        
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth < 768 && !sidebar.contains(event.target) && !menuToggle.contains(event.target) && !sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+
+        showContent('home');
+        // Default open first chapter with sections
+        const firstRealChapter = menuData.find(ch => ch.sections.length > 0);
+        if (firstRealChapter) {
+            const firstChapterTitleElem = document.querySelector(`.chapter-title[data-target="${firstRealChapter.id}"]`);
+            if (firstChapterTitleElem) {
+                const sectionList = firstChapterTitleElem.nextElementSibling;
+                if (sectionList && sectionList.classList.contains('section-list')) {
+                     sectionList.classList.add('open');
+                     // sectionList.style.maxHeight = sectionList.scrollHeight + "px";
+                     const arrow = firstChapterTitleElem.querySelector('span');
+                     if(arrow) arrow.classList.add('rotate-180');
+                }
+            }
+        }
+        
+        const ctx = document.getElementById('overviewChart').getContext('2d');
+        const overviewChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['图形推理', '类比推理', '定义判断', '逻辑判断'],
+                datasets: [{
+                    label: '课程模块分布 (示例)',
+                    data: [7, 3, 2, 6], 
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.7)', 
+                        'rgba(255, 206, 86, 0.7)', 
+                        'rgba(75, 192, 192, 0.7)', 
+                        'rgba(153, 102, 255, 0.7)' 
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '判断推理课程模块构成 (按小节数示例)',
+                        font: { size: 16, weight: 'bold' },
+                        padding: { top: 10, bottom: 20 }
+                    },
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { size: 12 },
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + ' 节';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                onHover: (event, chartElement) => {
+                    event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

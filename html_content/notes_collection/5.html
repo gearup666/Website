@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资料分析系统课 - 交互式Web应用</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Visualization & Content Choices:
+        - Report Info: Statistical terms (e.g., growth rate, proportion). Goal: Inform/Teach. Viz/Presentation: Clear text definitions, formula blocks. Interaction: Interactive calculator for growth rate and two-period proportion change. Justification: Direct presentation and interactive exploration of core concepts. Library/Method: HTML/Tailwind for text/formulas, JS and Chart.js for interactive elements.
+        - Report Info: Calculation techniques (e.g., truncation division, special fractions). Goal: Teach methods. Viz/Presentation: Step-by-step explanations, examples from PDF. Interaction: Toggle visibility of example solutions/explanations. Justification: Clear demonstration of techniques. Library/Method: HTML/Tailwind, JS.
+        - Report Info: Key question types. Goal: Illustrate application of concepts. Viz/Presentation: Example problems and explanations focusing on formula application. Interaction: Toggle solution visibility. Justification: Reinforce learning through examples. Library/Method: HTML/Tailwind, JS.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif; /* Using Inter as a fallback, actual font will be system default if Inter is not available */
+            background-color: #fdfaf6; /* Warm neutral background */
+            color: #333;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            border-bottom-width: 4px;
+            border-bottom-color: transparent;
+        }
+        .tab-button.active {
+            color: #c084fc; /* Subtle accent for active tab */
+            border-bottom-color: #c084fc;
+        }
+        .tab-button:hover {
+            color: #a855f7;
+            border-bottom-color: #a855f7;
+        }
+        .content-section {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 1.5rem;
+        }
+        .formula-block {
+            background-color: #f3e8ff; /* Light purple for formula blocks */
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1em;
+            overflow-x: auto;
+        }
+        .example-toggle {
+            background-color: #e9d5ff;
+            color: #5b21b6;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+        .example-content {
+            border-left: 3px solid #c084fc;
+            padding-left: 1rem;
+            margin-top: 0.5rem;
+            background-color: #faf5ff;
+        }
+        h1, h2, h3 {
+            color: #581c87; /* Darker purple for headings */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width for charts */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px; /* Max height */
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fdfaf6;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d8b4fe; /* Accent color for scrollbar thumb */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c084fc;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold">资料分析系统课</h1>
+            <p class="text-lg text-gray-600 mt-2">核心知识点与解题技巧梳理</p>
+        </header>
+
+        <nav class="mb-8 sticky top-0 bg-white/80 backdrop-blur-md z-10 shadow-sm rounded-lg">
+            <div class="flex flex-wrap justify-center border-b border-gray-200">
+                <button class="tab-button active py-4 px-6 text-lg font-medium" onclick="showTab('introduction')">引言</button>
+                <button class="tab-button py-4 px-6 text-lg font-medium" onclick="showTab('terms')">统计术语</button>
+                <button class="tab-button py-4 px-6 text-lg font-medium" onclick="showTab('reading')">结构阅读法</button>
+                <button class="tab-button py-4 px-6 text-lg font-medium" onclick="showTab('calc_techniques')">速算技巧</button>
+                <button class="tab-button py-4 px-6 text-lg font-medium" onclick="showTab('question_types')">重点题型</button>
+            </div>
+        </nav>
+
+        <main id="app-content">
+            <section id="introduction" class="content-section">
+                <h2 class="text-3xl font-semibold mb-6">引言</h2>
+                <p class="mb-4 text-lg leading-relaxed">本部分概述了资料分析模块在公务员考试中的核心地位、主要考查能力以及高效的学习备考策略。资料分析并非单纯考查计算，更侧重于对图文材料的综合理解与分析加工能力。通过系统学习和大量真题演练，考生完全有能力在该模块取得高分甚至满分。</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-purple-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-2">核心认识</h3>
+                        <p>资料分析主要考查综合理解与分析加工能力，而非单纯计算。估算技巧是关键。</p>
+                    </div>
+                    <div class="bg-purple-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-2">学习策略</h3>
+                        <p>先学方法技巧，再做大量真题。目标正确率85%以上，时间控制在24-28分钟。</p>
+                    </div>
+                    <div class="bg-purple-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-2">答题顺序</h3>
+                        <p>不宜将资料分析放在最后作答，避免时间紧张影响发挥。</p>
+                    </div>
+                    <div class="bg-purple-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-2">参考资料</h3>
+                        <p>本讲义及近三年国考、省考真题为主要复习材料。不建议过多依赖模拟题。</p>
+                    </div>
+                </div>
+                 <p class="mt-6 text-sm text-gray-500">详细内容请参照讲义P3。</p>
+            </section>
+
+            <section id="terms" class="content-section hidden">
+                <h2 class="text-3xl font-semibold mb-6">第一章：统计术语</h2>
+                <p class="mb-6 text-lg leading-relaxed">本章详细介绍了资料分析中常用的核心统计术语，包括基期与现期、增长量、增长率、比重、平均数等基本概念及其计算公式。理解这些术语是准确解题的基础。</p>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">1. 基期量与现期量</h3>
+                        <p><strong>基期：</strong>作为对比参照的时期。<strong>现期：</strong>相对于基期的时期。</p>
+                        <p><strong>基期量：</strong>基期的具体数值。<strong>现期量：</strong>现期的具体数值。</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">2. 增长量</h3>
+                        <p>定义：现期量与基期量增长（或减少）的绝对量。</p>
+                        <div class="formula-block">增长量 = 现期量 - 基期量</div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">3. 增长率 (r)</h3>
+                        <p>定义：增长量与基期量的相对变化。</p>
+                        <div class="formula-block">增长率 (r) = 增长量 / 基期量 = (现期量 - 基期量) / 基期量 = (现期量 / 基期量) - 1</div>
+                        <p class="mt-2 text-red-600 font-semibold">易错点： “增长了n倍” vs “是...的n倍”</p>
+                        <ul class="list-disc list-inside ml-4 mt-2">
+                            <li>“增长了280%” (即增长了2.8倍) => 现期量是基期量的 (1 + 2.8) = 3.8倍。</li>
+                            <li>“是...的3.8倍” => 现期量是基期量的3.8倍。</li>
+                        </ul>
+                        <div class="mt-4 p-4 border rounded-lg bg-gray-50">
+                            <h4 class="text-lg font-semibold mb-2">交互计算：增长率</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                                <div>
+                                    <label for="baseValue" class="block text-sm font-medium text-gray-700">基期量:</label>
+                                    <input type="number" id="baseValue" value="100" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                                </div>
+                                <div>
+                                    <label for="currentValue" class="block text-sm font-medium text-gray-700">现期量:</label>
+                                    <input type="number" id="currentValue" value="120" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                                </div>
+                                <button onclick="calculateGrowthRate()" class="self-end bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md">计算增长率</button>
+                            </div>
+                            <p id="growthRateResult" class="text-lg font-semibold text-purple-700"></p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">4. 年均增长量</h3>
+                        <div class="formula-block">年均增长量 = (现期量 - 基期值) / 间隔年份</div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">5. 年均增长率</h3>
+                        <div class="formula-block">现期量 = 基期量 × (1 + 年均增长率)<sup>n</sup>  (n为相差年份)</div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">6. 同比与环比</h3>
+                        <p><strong>同比：</strong>与历史同期相比较（通常指与上一年同一时期）。</p>
+                        <p><strong>环比：</strong>与紧邻的上一个统计周期相比较。</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">7. 比重</h3>
+                        <p>定义：某部分在总体中所占的百分比。</p>
+                        <div class="formula-block">比重 = 部分量 / 整体量</div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">8. 倍数</h3>
+                        <p>A是B的 `A/B` 倍。</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">9. 平均数</h3>
+                        <div class="formula-block">平均数 = 总量 / 总份数</div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">10. 百分数与百分点</h3>
+                        <p><strong>百分点：</strong>表达不同百分数之间的“算术差”的单位。例：增长率从10%升至12%，是上升了2个百分点。</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">11. 成数</h3>
+                        <p>“成”表示十分之一。例：三成 = 30%。</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">12. 翻番</h3>
+                        <p>翻一番为原来的2倍。翻n番为原来的 2<sup>n</sup> 倍。</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">13. 顺差与逆差</h3>
+                        <p><strong>贸易顺差 (出超)：</strong>出口额 > 进口额。</p>
+                        <p><strong>贸易逆差 (入超)：</strong>出口额 < 进口额。</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">14. 国内生产总值 (GDP)</h3>
+                        <p>定义：一个国家（或地区）所有常住单位在一定时期内生产的最终产品和服务价值的总和。</p>
+                        <div class="formula-block">GDP = 第一产业增加值 + 第二产业增加值 + 第三产业增加值</div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">15. 三大产业</h3>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><strong>第一产业：</strong>农业（农、林、牧、渔业）。</li>
+                            <li><strong>第二产业：</strong>工业和建筑业。</li>
+                            <li><strong>第三产业：</strong>除第一、二产业以外的其他行业（服务业）。</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">16. 恩格尔系数</h3>
+                        <p>定义：食品支出总额占个人消费支出总额的比重。系数越低，生活水平越高。</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">17. 基尼系数</h3>
+                        <p>定义：衡量收入差距的常用指标 (0-1之间)。系数越大，不平等程度越高。</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">18. 五年计划/规划</h3>
+                        <p>中国国民经济计划的重要组成部分。讲义P11有具体时间表。</p>
+                    </div>
+                </div>
+                <p class="mt-6 text-sm text-gray-500">详细内容请参照讲义P4-P11。</p>
+            </section>
+
+            <section id="reading" class="content-section hidden">
+                <h2 class="text-3xl font-semibold mb-6">第二章：结构阅读法</h2>
+                <p class="mb-6 text-lg leading-relaxed">本章介绍如何高效阅读不同类型的统计资料，包括文字材料、表格材料和图形材料。掌握正确的阅读方法能帮助快速定位关键信息，提高解题效率。</p>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">通用阅读重点</h3>
+                        <ul class="list-disc list-inside ml-4 bg-purple-50 p-4 rounded">
+                            <li><strong>标题：</strong>明确主题。</li>
+                            <li><strong>注释：</strong>注意特殊说明和定义。</li>
+                            <li><strong>时间：</strong>明确数据所属时期，注意同比、环比的时间参照。</li>
+                            <li><strong>单位：</strong>确保量纲正确，注意单位换算。</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">文字材料阅读 (核心：结构、关键词、时间、标点)</h3>
+                        <p class="mb-2"><strong>多段落型：</strong>通常为“总—分”结构。标记每段首句与数据相关的关键词，理解段落主旨。</p>
+                        <p><strong>孤立段落型：</strong>通常为“总—分”或并列结构。关注句号“。”和分号“；”对信息的划分。</p>
+                        <button class="example-toggle" onclick="toggleVisibility('ex-reading-text')">查看示例说明</button>
+                        <div id="ex-reading-text" class="example-content hidden mt-2 p-3">
+                            <p><strong>示例（源于讲义P12 材料一）</strong></p>
+                            <p><em>“截至2014年12月底，全国实有各类市场主体6932.22万户，比上年末增长14.35%，增速较上年同期增加4.02个百分点；注册资本(金)129.23万亿元，比上年末增长27.70%。其中，企业1819.28万户，个体工商户4984.06万户，农民专业合作社128.88万户。”</em></p>
+                            <p><strong>阅读要点：</strong></p>
+                            <ul class="list-decimal list-inside">
+                                <li><strong>时间：</strong>2014年12月底。</li>
+                                <li><strong>核心数据：</strong>市场主体总数、同比增长率、增速同比变化、注册资本总额、同比增长率。</li>
+                                <li><strong>结构词“其中”：</strong>引出市场主体的分类数据（企业、个体工商户、农民专业合作社）。</li>
+                                <li><strong>标点“；”：</strong>分隔并列的信息点（市场主体数量与注册资本情况）。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">表格材料阅读 (核心：横标目、纵标目、标题、单位)</h3>
+                        <p><strong>横标目：</strong>多指研究分析的事物（主语），通常在左侧。</p>
+                        <p><strong>纵标目：</strong>用以说明分析事物的数据或指标（谓语），通常在上行。</p>
+                        <button class="example-toggle" onclick="toggleVisibility('ex-reading-table')">查看示例说明</button>
+                        <div id="ex-reading-table" class="example-content hidden mt-2 p-3">
+                             <p><strong>示例（源于讲义P14 表格）</strong></p>
+                             <p><em>2014年1~11月我国货物运输情况</em></p>
+                             <p><strong>阅读要点：</strong></p>
+                            <ul class="list-decimal list-inside">
+                                <li><strong>标题：</strong>明确了统计内容（货物运输情况）和时间范围（2014年1-11月）。</li>
+                                <li><strong>横标目（左侧）：</strong>货物运输总量、铁路、公路、水运、民航等运输方式（研究对象）。</li>
+                                <li><strong>纵标目（上行）：</strong>11月（绝对量）、同比增速(%)、1~11月（绝对量）、同比增速(%) (指标维度)。</li>
+                                <li><strong>单位：</strong>亿吨、万吨、亿吨公里，需注意不同指标的单位。</li>
+                                <li><strong>定位信息：</strong>例如，查找“2014年1-11月公路货物运输总量”，应定位到“公路”行与“1~11月”列的交叉单元格。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">图形材料阅读 (核心：标题、横轴、纵轴、图例、单位)</h3>
+                        <p class="mb-2"><strong>柱状/趋势图：</strong>关注横轴（通常为时间或类别）、纵轴（数值）的含义及图例说明。</p>
+                        <p><strong>饼图：</strong>关注各扇区代表的类别名称、百分比及图例。</p>
+                        <button class="example-toggle" onclick="toggleVisibility('ex-reading-chart')">查看示例说明</button>
+                        <div id="ex-reading-chart" class="example-content hidden mt-2 p-3">
+                            <p><strong>示例（源于讲义P15 饼图）</strong></p>
+                            <p><em>高新技术产业各领域增加值饼形图 (单位:亿元)</em></p>
+                            <p><strong>阅读要点：</strong></p>
+                           <ul class="list-decimal list-inside">
+                               <li><strong>标题：</strong>明确了是高新技术产业各领域增加值的构成，单位是亿元。</li>
+                               <li><strong>图例/扇区标签：</strong>识别每个扇区代表的具体领域（如光机电一体化、新材料、电子信息等）及其对应的增加值或所占比重。</li>
+                               <li><strong>比较：</strong>可以直观比较各领域增加值的大小或占比。</li>
+                           </ul>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-6 text-sm text-gray-500">详细内容请参照讲义P12-P15。</p>
+            </section>
+
+            <section id="calc_techniques" class="content-section hidden">
+                <h2 class="text-3xl font-semibold mb-6">第三章：速算技巧</h2>
+                <p class="mb-6 text-lg leading-relaxed">本章集中讲解资料分析中常用的速算技巧，旨在提高计算速度和准确性。这些技巧包括截位直除法、估算法、特殊分数法以及分数大小的比较方法。</p>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">第一节：截位直除法</h3>
+                        <p>核心：根据选项差距决定保留有效数字位数（通常2-3位），进行近似除法计算。</p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li>选项首位不同，保留两位；选项首位有相同，保留三位。</li>
+                            <li>一步除式 (A/B)：只估算分母B。</li>
+                            <li>多步连除：分子分母同时截位。</li>
+                        </ul>
+                        <button class="example-toggle" onclick="toggleVisibility('ex-truncation')">查看示例</button>
+                        <div id="ex-truncation" class="example-content hidden mt-2 p-3">
+                           <p><strong>例1 (讲义P16):</strong> 45.38 / 1.2635 = ?</p>
+                           <p>选项: A.21 B.36 C.57 D.110</p>
+                           <p><strong>解：</strong>选项首位不同，可保留两位有效数字估算。分母1.2635 ≈ 1.26 或 1.3。
+                           45.38 / 1.26 ≈ 45 / 1.25 = (45 × 4) / (1.25 × 4) = 180 / 5 = 36。
+                           或者 45.38 / 1.3 ≈ 450 / 13 ≈ 34.x。 选项B最接近。</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">第二节：估算法</h3>
+                        <p>包括乘法估算、叠除估算和饼图估算等。</p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><strong>乘法 (A × B)：</strong>若A、B一大一小，可按比例调整。</li>
+                            <li><strong>叠除 (A/B ÷ C/D = A/B × D/C)：</strong>分开估算或交叉估算。</li>
+                            <li><strong>饼图估算：</strong>根据扇形面积（角度）估算比例。1/4圆周(90°)是25%，1/3圆周(120°)约33.3%。</li>
+                        </ul>
+                        <button class="example-toggle" onclick="toggleVisibility('ex-estimation')">查看示例</button>
+                        <div id="ex-estimation" class="example-content hidden mt-2 p-3">
+                           <p><strong>例1 (讲义P21):</strong> 2010年猪肉产量5053万吨，肉类总产量7957万吨（均为2011年数据，增长率分别为-0.4%和0.4%）。求2010年猪肉产量占肉类总产量的比重。</p>
+                           <p><strong>解 (估算基期比重):</strong> 现期比重 ≈ 5053 / 7957 ≈ 5000 / 8000 = 5/8 = 62.5%。
+                           猪肉增长率a = -0.4%，肉类总产量增长率b = 0.4%。
+                           基期比重 ≈ 现期比重 × (1+b)/(1+a) ≈ 62.5% × (1+0.004)/(1-0.004) ≈ 62.5% × (1.004/0.996)。
+                           因为 (1.004/0.996) > 1 且略大于1，所以基期比重略大于62.5%。
+                           讲义中选项为: A.43% B.53% C.64% D.84%。选项C最接近。
+                           <em>(更精确计算: 基期猪肉 = 5053/(1-0.004) ≈ 5073.3; 基期肉类 = 7957/(1+0.004) ≈ 7925.3. 比重 = 5073.3/7925.3 ≈ 0.639 or 63.9%)</em>
+                           </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">第三节：特殊分数法</h3>
+                        <p>记忆常见百分数与简单分数的互化，简化计算。如 16.7% ≈ 1/6, 14.3% ≈ 1/7, 12.5% = 1/8, 11.1% ≈ 1/9, 9.1% ≈ 1/11。</p>
+                        <button class="example-toggle" onclick="toggleVisibility('ex-special-fractions')">查看对照表 (部分)</button>
+                        <div id="ex-special-fractions" class="example-content hidden mt-2 p-3">
+                            <ul class="list-disc list-inside">
+                                <li>1/2 = 50%</li>
+                                <li>1/3 ≈ 33.3%</li>
+                                <li>1/4 = 25%</li>
+                                <li>1/5 = 20%</li>
+                                <li>1/6 ≈ 16.7%</li>
+                                <li>1/8 = 12.5%</li>
+                                <li>1/9 ≈ 11.1%</li>
+                            </ul>
+                            <p><strong>例1 (讲义P24):</strong> 2011年西部农民工4245万人，其中从事批发零售业占比12.5%。求从事该行业人数。</p>
+                            <p><strong>解：</strong>12.5% = 1/8。人数 = 4245 × (1/8) = 4245 / 8 ≈ 530.6。选项B.531最接近。</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">第四节：分数比较</h3>
+                        <p>比较 A/B 与 C/D 的大小。</p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li><strong>趋势判断：</strong>分子大分母小，则分数大。同向变化看变化速度。</li>
+                            <li><strong>直除比较：</strong>直接相除，看商。</li>
+                            <li><strong>作差法：</strong> (A/B) - (C/D)，看差值的正负。</li>
+                            <li><strong>交叉相乘法：</strong>比较 A×D 与 B×C (当B,D > 0)。</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="mt-6 text-sm text-gray-500">详细内容及更多示例请参照讲义P16-P33。</p>
+            </section>
+
+            <section id="question_types" class="content-section hidden">
+                <h2 class="text-3xl font-semibold mb-6">第四章：重点题型</h2>
+                <p class="mb-6 text-lg leading-relaxed">本章归纳了资料分析中的各类重点题型，包括简单计算与直接查找、增长率相关问题、增长量相关问题、比重相关问题以及平均数与倍数问题。每种题型都有其特定的考查点和解题公式/技巧。</p>
+
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">第一节：简单计算和直接查找类</h3>
+                        <p>特点：直接从材料中查找数据或进行简单四则运算。关键在于细心和准确定位。</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">第二节：增长率相关</h3>
+                        <ul class="list-disc list-inside ml-4 space-y-2">
+                            <li><strong>增长率计算与比较：</strong>
+                                <div class="formula-block">r = (现期量 - 基期量) / 基期量</div>
+                            </li>
+                            <li><strong>基期量与现期量计算：</strong>
+                                <div class="formula-block">现期量 = 基期量 × (1 + r)</div>
+                                <div class="formula-block">基期量 = 现期量 / (1 + r)</div>
+                            </li>
+                            <li><strong>间隔增长率 (隔年增长率)：</strong> R = r₁ + r₂ + r₁×r₂  (r₁, r₂为连续两年的增长率)</li>
+                            <li><strong>混合增长率：</strong>整体增长率介于各部分增长率之间，偏向基期量（或现期量）大的部分。</li>
+                            <li><strong>年均增长率：</strong>现期量 = 基期量 × (1 + x)<sup>n</sup></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">第三节：增长量相关</h3>
+                         <div class="formula-block">增长量 = 现期量 - 基期量 = 基期量 × r = 现期量 × r / (1+r)</div>
+                        <p><strong>增长量大小比较：</strong></p>
+                        <ul class="list-disc list-inside ml-4">
+                            <li>现期量大且增长率大，则增长量通常大。</li>
+                            <li>精确比较：比较 `现期量 × r / (1+r)` 或近似比较 `现期量 × r` (当r较小或选项差距大时)。</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">第四节：比重相关</h3>
+                        <ul class="list-disc list-inside ml-4 space-y-2">
+                            <li><strong>现期比重：</strong> 部分量 / 整体量</li>
+                            <li><strong>基期比重：</strong> (A/(1+a)) / (B/(1+b)) = 现期比重 × (1+整体增长率b) / (1+部分增长率a)</li>
+                            <li><strong>两期比重变化：</strong>
+                                <p>判断：部分增长率 > 整体增长率 => 比重上升。反之下降。</p>
+                                <div class="formula-block">变化量 (百分点) = (A/B) × (a-b) / (1+a)</div>
+                                <div class="mt-4 p-4 border rounded-lg bg-gray-50">
+                                    <h4 class="text-lg font-semibold mb-2">交互计算：两期比重变化</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                                        <div><label for="currentProportion" class="block text-sm font-medium text-gray-700">现期比重 A/B (%):</label><input type="number" id="currentProportion" value="20" class="input-field p-2 border rounded w-full"></div>
+                                        <div><label for="partGrowthRate" class="block text-sm font-medium text-gray-700">部分增长率 a (%):</label><input type="number" id="partGrowthRate" value="10" class="input-field p-2 border rounded w-full"></div>
+                                        <div><label for="totalGrowthRate" class="block text-sm font-medium text-gray-700">整体增长率 b (%):</label><input type="number" id="totalGrowthRate" value="5" class="input-field p-2 border rounded w-full"></div>
+                                        <button onclick="calculateProportionChange()" class="self-end bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md">计算比重变化</button>
+                                    </div>
+                                     <p id="proportionChangeResult" class="text-lg font-semibold text-purple-700"></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">第五节：平均数与倍数</h3>
+                         <ul class="list-disc list-inside ml-4 space-y-2">
+                            <li><strong>现期倍数：</strong> A / B</li>
+                            <li><strong>基期倍数：</strong> (A/(1+a)) / (B/(1+b)) = 现期倍数 × (1+B增长率) / (1+A增长率)</li>
+                            <li><strong>平均数：</strong> 总量 / 份数</li>
+                            <li><strong>平均数增长率：</strong> ≈ (总量增长率a - 份数增长率b) / (1 + 份数增长率b)
+                                <br><small>(当a, b较小时的近似公式，更精确的是用定义法求出两期平均数再计算)</small>
+                                <p>判断：总量增速 > 份数增速 => 平均数上升。</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="mt-6 text-sm text-gray-500">详细解题方法及大量练习题请参照讲义P34-P95。</p>
+            </section>
+        </main>
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-200">
+            <p class="text-gray-500">&copy; 资料分析系统课 - 交互学习应用 (根据刘文超老师讲义改编)</p>
+        </footer>
+    </div>
+
+    <script>
+        let currentTab = 'introduction';
+        const tabs = ['introduction', 'terms', 'reading', 'calc_techniques', 'question_types'];
+
+        function showTab(tabId) {
+            document.getElementById(currentTab).classList.add('hidden');
+            document.querySelector(`.tab-button[onclick="showTab('${currentTab}')"]`).classList.remove('active');
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            document.querySelector(`.tab-button[onclick="showTab('${tabId}')"]`).classList.add('active');
+            
+            currentTab = tabId;
+            window.scrollTo(0, 0); // Scroll to top when tab changes
+        }
+
+        function toggleVisibility(elementId) {
+            const element = document.getElementById(elementId);
+            element.classList.toggle('hidden');
+        }
+
+        function calculateGrowthRate() {
+            const base = parseFloat(document.getElementById('baseValue').value);
+            const current = parseFloat(document.getElementById('currentValue').value);
+            const resultElement = document.getElementById('growthRateResult');
+
+            if (isNaN(base) || isNaN(current) || base === 0) {
+                resultElement.textContent = '请输入有效的基期量和现期量 (基期量不能为0)。';
+                return;
+            }
+
+            const growthAmount = current - base;
+            const growthRate = (growthAmount / base) * 100;
+            
+            resultElement.innerHTML = `增长量: ${growthAmount.toFixed(2)}<br>增长率: ${growthRate.toFixed(2)}%`;
+        }
+        
+        function calculateProportionChange() {
+            const currentProportionPercent = parseFloat(document.getElementById('currentProportion').value);
+            const partGrowthRatePercent = parseFloat(document.getElementById('partGrowthRate').value);
+            const totalGrowthRatePercent = parseFloat(document.getElementById('totalGrowthRate').value);
+            const resultElement = document.getElementById('proportionChangeResult');
+
+            if (isNaN(currentProportionPercent) || isNaN(partGrowthRatePercent) || isNaN(totalGrowthRatePercent)) {
+                resultElement.textContent = '请输入有效的百分比数值。';
+                return;
+            }
+
+            const A_B = currentProportionPercent / 100; // 现期比重 A/B
+            const a = partGrowthRatePercent / 100;     // 部分增长率 a
+            const b = totalGrowthRatePercent / 100;     // 整体增长率 b
+
+            if ((1 + a) === 0) {
+                 resultElement.textContent = '部分增长率不能为-100%。';
+                 return;
+            }
+            
+            const change = (A_B * (a - b)) / (1 + a);
+            const changePercent = change * 100;
+
+            let changeDescription = "";
+            if (changePercent > 0) {
+                changeDescription = `比重上升了 ${changePercent.toFixed(2)} 个百分点。`;
+            } else if (changePercent < 0) {
+                changeDescription = `比重下降了 ${Math.abs(changePercent).toFixed(2)} 个百分点。`;
+            } else {
+                changeDescription = "比重没有变化。";
+            }
+            resultElement.textContent = changeDescription;
+        }
+
+        // Initialize the first tab
+        document.addEventListener('DOMContentLoaded', () => {
+            tabs.forEach(tab => {
+                if (tab !== 'introduction') {
+                    document.getElementById(tab).classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

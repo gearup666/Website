@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>马克思主义哲学学习</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .accordion-content {
+            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-item.active .accordion-content {
+            display: block;
+            max-height: 1000px; /* Adjust as needed */
+        }
+        .accordion-title {
+            cursor: pointer;
+        }
+        h1, h2, h3 {
+            font-weight: 600;
+        }
+        /* Placeholder for images */
+        .placeholder-image {
+            background-color: #e0e0e0;
+            border: 1px dashed #aaa;
+            text-align: center;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .placeholder-image::before {
+            content: "[图示占位符]";
+            color: #777;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 md:p-8">
+    <div class="container mx-auto bg-white p-6 rounded-lg shadow-xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-600">第一章 马克思主义哲学</h1>
+        </header>
+
+        <div class="mb-6 border-b border-gray-200">
+            <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
+                <button class="tab-button text-lg whitespace-nowrap py-4 px-1 border-b-2 font-medium border-transparent hover:text-blue-600 hover:border-blue-500 focus:outline-none active" data-target="tab1">
+                    第一节 哲学概论
+                </button>
+                <button class="tab-button text-lg whitespace-nowrap py-4 px-1 border-b-2 font-medium border-transparent hover:text-blue-600 hover:border-blue-500 focus:outline-none" data-target="tab2">
+                    第二节 唯物论
+                </button>
+                <button class="tab-button text-lg whitespace-nowrap py-4 px-1 border-b-2 font-medium border-transparent hover:text-blue-600 hover:border-blue-500 focus:outline-none" data-target="tab3">
+                    第三节 辩证法
+                </button>
+                <button class="tab-button text-lg whitespace-nowrap py-4 px-1 border-b-2 font-medium border-transparent hover:text-blue-600 hover:border-blue-500 focus:outline-none" data-target="tab4">
+                    第四节 认识论
+                </button>
+                <button class="tab-button text-lg whitespace-nowrap py-4 px-1 border-b-2 font-medium border-transparent hover:text-blue-600 hover:border-blue-500 focus:outline-none" data-target="tab5">
+                    第五节 历史唯物主义
+                </button>
+            </nav>
+        </div>
+
+        <div id="tab1" class="tab-content active">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-500">第一节 哲学概论</h2>
+            
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    一、哲学与世界观
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>1. 哲学：</strong>是理论化、系统化的世界观，又是方法论。</p>
+                    <p><strong>2. 世界观：</strong>人们对于生活于其中的世界以及与世界关系的根本观点、根本看法。</p>
+                    <p><strong>3. 方法论：</strong>是人们认识世界、改造世界的一般方法，是人们用什么样的方式、方法来观察事物和处理问题。</p>
+                    <p><strong>4. 关系：</strong>世界观主要解决世界“是什么”的问题，方法论主要解决“怎么办”的问题。</p>
+                </div>
+            </div>
+
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    二、哲学与具体科学的关系
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p>哲学与具体科学是一般与个别、共性与个性的关系，二者既相区别又相联系：</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>区别：</strong>具体科学以世界某一领域的特殊规律为研究对象，哲学则以整个世界的最一般规律为研究对象。</li>
+                        <li><strong>联系：</strong>哲学以具体科学的成果为基础，并随着具体科学的发展而发展。哲学所概括的关于自然、社会和思维的普遍规律的理论，又为具体科学的研究提供了世界观和方法论的指导。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    三、哲学的基本问题
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p>恩格斯指出：“全部哲学，特别是近代哲学的重大的基本问题，是思维和存在的关系问题。”</p>
+                    <div class="placeholder-image my-4">哲学的基本问题示意图 (思维与存在的关系)
+                        <ul class="list-none text-left mt-2 text-sm">
+                            <li>- 思维与存在何者为第一性？
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>唯物主义：物质第一性，意识第二性，物质决定意识。</li>
+                                    <li>唯心主义：意识第一性，物质第二性，意识决定物质。</li>
+                                </ul>
+                            </li>
+                            <li>- 思维与存在有无同一性？
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>可知论：世界可知。</li>
+                                    <li>不可知论：世界不可知或思维不能认识本质。</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <p><strong>1. 唯物主义 (Materialism)</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>古代朴素唯物主义：</strong>认为某种物质的具体形态（如水、火、气）是世界的本原。进步性在于否定神创论，局限性在于缺乏科学依据且简单化。</li>
+                        <li><strong>近代形而上学唯物主义（机械唯物主义）：</strong>把原子等基本粒子作为世界本原，用孤立、静止观点看问题。局限性：机械性、形而上学性、不彻底性。</li>
+                        <li><strong>辩证唯物主义和历史唯物主义（马克思主义哲学）：</strong>克服了旧唯物主义的局限，实现了唯物主义与辩证法、唯物辩证的自然观与历史观在实践基础上的统一。</li>
+                    </ul>
+                    <p><strong>2. 唯心主义 (Idealism)</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>主观唯心主义：</strong>把人的主观精神（我、心、感觉、意志等）作为世界本原。代表人物及观点：
+                            <ul class="list-disc list-inside ml-6">
+                                <li>孟子：“万物皆备于我”</li>
+                                <li>王阳明：“心外无物”</li>
+                                <li>贝克莱：“存在就是被感知”、“物是观念的集合”</li>
+                                <li>笛卡尔：“我思故我在”</li>
+                            </ul>
+                        </li>
+                        <li><strong>客观唯心主义：</strong>把客观精神（道、理、绝对观念、上帝等）作为世界本原。代表人物及观点：
+                            <ul class="list-disc list-inside ml-6">
+                                <li>老子：“道是天地之根，万物之母”</li>
+                                <li>朱熹：“理在物先，理在事先”</li>
+                                <li>黑格尔：“绝对理念是万事万物的本源”</li>
+                                <li>柏拉图：“现实世界是理念世界的影子”</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    四、马克思主义和马克思主义哲学
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>1. 马克思主义哲学产生的自然科学基础：</strong>细胞学说、能量守恒和转化定律、达尔文的进化论。</p>
+                    <p><strong>2. 马克思主义三个组成部分的直接理论来源：</strong></p>
+                    <div class="placeholder-image my-4">马克思主义理论来源示意图
+                         <ul class="list-none text-left mt-2 text-sm">
+                            <li>德国古典哲学 (费尔巴哈、黑格尔)</li>
+                            <li>英国古典政治经济学 (亚当·斯密、大卫·李嘉图)</li>
+                            <li>英法空想社会主义 (圣西门、傅立叶、欧文)</li>
+                        </ul>
+                    </div>
+                    <p><strong>3. 马克思主义的三个主要组成部分：</strong>马克思主义哲学、马克思主义政治经济学、科学社会主义。</p>
+                    <p><strong>4. 马克思主义的基本特征：</strong>科学性、人民性、实践性、发展性。实践的观点是首要和基本的观点。科学性与革命性的统一是其最主要特征。</p>
+                    <p><strong>5. 马克思主义哲学的历史变革：</strong>创立了科学的实践观（关键）、实现了革命性与科学性的统一、实现了世界观和方法论的统一、实现了唯物论和辩证法及唯物主义自然观和历史观的结合。</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab2" class="tab-content">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-500">第二节 唯物论</h2>
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    一、世界的物质性
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 物质 (Matter)</strong></p>
+                    <p>列宁：“物质是标志客观实在的哲学范畴，这种客观实在是人通过感觉感知的，它不依赖于我们的感觉而存在，为我们的感觉所复写、摄影、反映。”</p>
+                    <p><strong>客观实在性</strong>是物质的唯一特性。</p>
+                    <p><strong>(二) 物质的存在形式——运动 (Motion)</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>运动定义：</strong>宇宙中发生的一切变化和过程。是物质的存在方式和根本属性。</li>
+                        <li><strong>运动的基本形式：</strong>机械运动、物理运动、化学运动、生命运动、社会运动。</li>
+                        <li><strong>物质和运动的关系：</strong>物质是运动的物质；运动是物质的运动。脱离运动的物质不存在（形而上学）；无物质的运动不存在（唯心主义）。</li>
+                        <li><strong>运动的特殊状态——静止 (Rest)：</strong>
+                            <ul class="list-disc list-inside ml-6">
+                                <li>定义：物质存在的平衡状态、平稳状态和量变状态；有条件的相对静止。是认识事物的起点和基础。</li>
+                                <li>形态：① 相对于参照系，空间位置不变；② 事物处在量变阶段，保持质的稳定性。</li>
+                                <li>运动与静止的辩证统一：运动绝对无条件，静止相对有条件；相互依赖、渗透、包含（动中有静、静中有动）。</li>
+                            </ul>
+                        </li>
+                         <li><strong>两种错误主张：</strong>形而上学（夸大相对静止为绝对静止）；相对主义（否认相对静止，导致不可知论）。</li>
+                    </ul>
+                    <p><strong>(三) 时间和空间 (Time and Space)</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>物质运动的存在形式。</li>
+                        <li><strong>时间：</strong>物质运动的持续性、顺序性，特点是一维性（一去不复返）。</li>
+                        <li><strong>空间：</strong>事物运动的广延性、伸张性，特点是三维性（长宽高）。</li>
+                        <li>时空既是有限的又是无限的，既是绝对的又是相对的。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    二、意识的主观能动性
+                     <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 意识的起源 (Origin of Consciousness)</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>自然界长期发展的产物：</strong>三环节：① 无生命物质的反应特性 -> 低等生物的刺激感应性；② 低等生物的刺激感应性 -> 动物感觉心理；③ 动物心理 -> 人类意识。</li>
+                        <li><strong>社会历史的产物：</strong>劳动在意识产生中起决定性作用。“劳动是理解社会发展史的锁钥”。语言作为思维的外壳在劳动中产生和发展。</li>
+                    </ul>
+                    <p><strong>(二) 意识的本质 (Essence of Consciousness)</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>意识是人脑对客观存在的主观映象（反映）。马克思：“观念的东西不外是移入人的头脑并在人的头脑中改造过的物质的东西而已”。</li>
+                        <li>意识是人脑的机能，人脑是意识的物质器官。</li>
+                    </ul>
+                    <p><strong>(三) 意识的作用 (Role of Consciousness)</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>意识的能动作用：</strong>指意识能动地反映客观世界和改造客观世界的能力。</li>
+                        <li><strong>表现为：</strong>① 意识活动的目的性、计划性；② 意识活动的创造性；③ 意识对客观世界的改造作用；④ 意识活动对人体活动的控制。</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    三、物质和意识的辩证关系
+                     <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                     <p><strong>(一) 物质决定意识：</strong>物质第一性，意识第二性。</p>
+                     <p><strong>(二) 意识对物质具有能动的反作用：</strong>正确的意识促进事物发展；错误的意识阻碍事物发展。</p>
+                     <p><strong>(三) 方法论：</strong>坚持一切从实际出发，使主观符合客观，坚持主观和客观具体的历史的统一。反对教条主义和经验主义等主观主义。</p>
+                </div>
+            </div>
+
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    四、客观规律与主观能动性
+                     <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 规律及其客观性 (Laws and their Objectivity)</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>规律定义：</strong>事物运动过程中固有的、本质的、必然的、稳定的联系。</li>
+                        <li><strong>客观性：</strong>规律的根本特性，不以人的意志为转移，不能被创造或消灭。</li>
+                        <li><strong>分类：</strong>自然规律和社会规律。</li>
+                    </ul>
+                    <p><strong>(二) 主观能动性 (Subjective Agency)</strong></p>
+                    <p>亦称“自觉能动性”，指人的主观意识和实践活动对于客观世界的反作用或能动作用。两方面含义：能动地认识世界；在认识指导下能动地改造世界。</p>
+                    <p><strong>(三) 辩证关系</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>尊重客观规律是发挥主观能动性的前提和基础。</li>
+                        <li>发挥人的主观能动性是认识、掌握和利用客观规律的必要条件。</li>
+                        <li>二者相辅相成，辩证统一。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab3" class="tab-content">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-500">第三节 辩证法</h2>
+            <p class="text-gray-700">辩证法包含两大总特征（普遍联系、永恒发展），三大规律（质量互变、否定之否定、对立统一），五对范畴（原因与结果、必然与偶然、可能与现实、本质与现象、内容与形式）。</p>
+
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    一、两大观点 (辩证法总特征)
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 世界的普遍联系 (Universal Connection)</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>联系概念：</strong>事物之间以及事物内部诸要素之间的相互影响、相互制约、相互作用。</li>
+                        <li><strong>联系的特点：</strong>客观性、普遍性（时时有联系，事事有联系）、多样性、条件性。</li>
+                        <li><strong>整体与部分：</strong>
+                            <ul class="list-disc list-inside ml-6">
+                                <li>含义：整体是有机统一体，部分是组成要素。</li>
+                                <li>区别与地位：整体功能不等于部分功能之和，有时关键部分决定整体。</li>
+                                <li>相互联系：相互依存，相互影响。</li>
+                                <li>方法论：着眼整体，兼顾局部。</li>
+                            </ul>
+                        </li>
+                        <li><strong>联系观点的方法论意义：</strong>从客观事物本身的真实联系去把握事物。</li>
+                    </ul>
+                    <p><strong>(二) 世界的永恒发展 (Eternal Development)</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>发展概念：</strong>前进的上升的运动。实质是新事物的产生和旧事物的灭亡。</li>
+                        <li><strong>发展与变化的关系：</strong>发展一定是变化，变化不一定是发展。</li>
+                        <li><strong>发展观点的方法论意义：</strong>用发展的眼光看待问题，与时俱进，培养创新精神。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    二、三大规律
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 质量互变规律 (Law of Transformation of Quantity into Quality)</strong> - 揭示事物发展的形式和状态</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>量变与质变：</strong>量变是数量增减或场所变更，不显著变化；质变是根本性质变化，渐进过程的中断。</li>
+                        <li><strong>辩证关系：</strong>量变是质变的必要准备，质变是量变的必然结果；相互转化、渗透。</li>
+                        <li><strong>度 (Degree)：</strong>事物保持其质的量的限度。超出度的范围是区分量变质变的根本标志。</li>
+                        <li><strong>方法论意义：</strong>积极积累量变，促使好的转化；防微杜渐；坚持适度原则。</li>
+                    </ul>
+                    <p><strong>(二) 否定之否定规律 (Law of Negation of Negation)</strong> - 揭示事物发展的方向和道路</p>
+                     <ul class="list-disc list-inside ml-4">
+                        <li><strong>肯定与否定：</strong>肯定是维持事物存在的方面；否定是促使其灭亡转化为其他事物的方面。</li>
+                        <li><strong>辩证的否定观：</strong>是包含肯定的否定；是事物的自我否定；是“扬弃”（克服旧消极，保留其积极）；是发展和联系的环节。</li>
+                        <li><strong>否定之否定：</strong>事物发展完整过程：肯定—否定—否定之否定。揭示事物发展是前进性与曲折性的统一。</li>
+                        <li><strong>方法论：</strong>反对肯定一切和否定一切的形而上学否定观；科学分析态度；把握总趋势，正确对待前进与曲折。</li>
+                    </ul>
+                    <p><strong>(三) 对立统一规律 (Law of Unity of Opposites)</strong> - 揭示事物发展的源泉和动力 (唯物辩证法的实质和核心)</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>矛盾的同一性和斗争性：</strong>
+                            <ul class="list-disc list-inside ml-6">
+                                <li>同一性：矛盾双方相互联系、吸引的趋势，相对有条件，一定条件下相互转化。</li>
+                                <li>斗争性：矛盾双方相互分离、排斥的趋势，绝对无条件。</li>
+                            </ul>
+                        </li>
+                        <li><strong>内外因辩证关系原理：</strong>内因是事物发展的根本原因（根据）；外因是第二位原因（条件），通过内因起作用。</li>
+                        <li><strong>矛盾的普遍性和特殊性：</strong>
+                            <ul class="list-disc list-inside ml-6">
+                                <li>普遍性：处处有矛盾，时时有矛盾。</li>
+                                <li>特殊性：具体事物矛盾及其各方面特点，是一事物区别于其他的本质。</li>
+                                <li>辩证关系：共性与个性，一般与个别。普遍性寓于特殊性，特殊性离不开普遍性。</li>
+                                <li>方法论：具体问题具体分析。</li>
+                            </ul>
+                        </li>
+                        <li><strong>矛盾的不平衡性原理：</strong>
+                            <ul class="list-disc list-inside ml-6">
+                                <li>主要矛盾与次要矛盾：主要矛盾起决定作用，次要矛盾从属。相互影响，一定条件下转化。</li>
+                                <li>矛盾的主要方面与次要方面：主要方面起主导作用，决定事物性质。相互影响，一定条件下转化。</li>
+                                <li>两点论与重点论：既要看到主次，又要抓住主要方面。反对一点论和均衡论。</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+             <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    三、五对范畴
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 原因与结果 (Cause and Effect)</strong></p>
+                    <p>揭示事物前后相继、彼此制约的关系。特点：原因在前结果在后，但非任何前后相继现象都有因果关系。</p>
+                    <p><strong>(二) 必然与偶然 (Necessity and Chance)</strong></p>
+                    <p>必然性是发展中一定如此的趋势；偶然性并非必定发生、不确定的趋势。必然性决定发展方向，偶然性影响发展进程。</p>
+                    <p><strong>(三) 可能与现实 (Possibility and Reality)</strong></p>
+                    <p>现实性是现在一切事物和现象的实际存在；可能性是包含在现实事物中、预示发展前途的各种趋势。</p>
+                    <p><strong>(四) 内容与形式 (Content and Form)</strong></p>
+                    <p>内容是事物内部各要素的总和，是存在和发展的基础；形式是构成内容要素的结构或外部表现。内容决定形式，形式反作用于内容。</p>
+                    <p><strong>(五) 本质与现象 (Essence and Phenomenon)</strong></p>
+                    <p>本质是事物的根本性质和内在联系；现象是事物外部联系和表面特征。本质决定现象，通过现象表现；现象表现本质。二者辩证统一。</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab4" class="tab-content">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-500">第四节 认识论</h2>
+            <p class="text-gray-700">认识论三大核心：实践、认识、真理。两大规律：认识与实践的辩证关系规律，认识发展规律。</p>
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    一、实践 (Practice)
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 概念：</strong>人类有目的地能动地改造和探索现实世界的社会性的客观物质活动。实践的观点是辩证唯物主义认识论的首要观点。</p>
+                    <p><strong>(二) 基本特征：</strong>客观物质性、直接现实性、主观能动性、社会历史性。</p>
+                    <p><strong>(三) 基本形式：</strong>物质生产实践（最基本）、调整社会关系的实践、精神文化的创造实践。</p>
+                </div>
+            </div>
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    二、认识的本质 (Essence of Cognition)
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>认识概念：</strong>在实践基础上主体对客体的能动反映。</p>
+                </div>
+            </div>
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    三、认识的两大规律
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 认识的发展规律 (Law of Cognitive Development)</strong></p>
+                    <p><strong>1. 从感性认识到理性认识 (第一次飞跃)</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>感性认识：</strong>通过感官获得的关于事物现象和外部联系的认识。形式：感觉、知觉、表象。</li>
+                        <li><strong>理性认识：</strong>通过抽象思维获得的关于事物本质和内部联系的认识。形式：概念、判断、推理。</li>
+                        <li><strong>辩证关系：</strong>
+                            <ul class="list-disc list-inside ml-6">
+                                <li>区别：低级阶段 vs 高级阶段；反映现象 vs 反映本质。</li>
+                                <li>依赖：理性认识依赖感性认识；感性认识有待发展到理性认识；相互包含、渗透；统一基础是实践。</li>
+                            </ul>
+                        </li>
+                         <li><strong>实现条件：</strong>获取丰富合乎实际的感性材料；正确的思维方法（逻辑与非逻辑）。</li>
+                    </ul>
+                    <p><strong>2. 从理性认识到实践 (第二次飞跃)</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>必要性：</strong>检验理论的正确性；指导实践，实现认识的目的。</li>
+                    </ul>
+                    <p><strong>(二) 认识与实践的辩证关系规律</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>实践是认识的基础，对认识具有决定作用：</strong>① 实践是认识的来源；② 实践是认识发展的动力；③ 实践是检验认识真理性的唯一标准；④ 实践是认识的目的和归宿。</li>
+                        <li><strong>认识能够指导实践：</strong>正确的理论指导实践顺利进行；错误的理论指导实践导致失败。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    四、真理 (Truth)
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>1. 概念：</strong>真理是人们对客观事物及其规律的正确反映。谬误是错误反映。</p>
+                    <p><strong>2. 特征：</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>客观性：</strong>真理内容不以人意志为转移；检验标准是客观社会实践。</li>
+                        <li><strong>具体性：</strong>真理是在一定时间、地点、条件下主观对客观的符合。</li>
+                    </ul>
+                    <p><strong>3. 真理的绝对性和相对性：</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>绝对真理（绝对性）：</strong>①任何真理都是对客观的正确反映，具有客观内容，无条件绝对。②人的认识本性能正确认识无限发展的客观世界，无条件绝对。</li>
+                        <li><strong>相对真理（相对性）：</strong>真理的条件性。①广度：对世界某些领域、事物的正确反映。②深度：对特定事物一定程度、层次的近似正确反映。③有待扩展和深化。</li>
+                    </ul>
+                    <p><strong>实践是检验真理的唯一标准：</strong>由真理的本性和实践的特点决定。</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab5" class="tab-content">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-500">第五节 历史唯物主义</h2>
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    一、两种根本对立的历史观
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 历史观的基本问题：</strong>社会意识与社会存在的关系问题。是划分历史唯物主义和历史唯心主义的分水岭。</p>
+                    <p><strong>(二) 唯心史观：</strong>认为社会意识决定社会存在，否定社会历史发展客观规律和人民群众的决定作用。</p>
+                    <p><strong>(三) 唯物史观：</strong>认为社会存在决定社会意识，社会意识反作用于社会存在；承认社会历史发展客观规律和人民群众的决定作用。</p>
+                </div>
+            </div>
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    二、社会存在与社会意识及其辩证关系
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 社会存在 (Social Existence)：</strong>社会物质生活条件的总和。包括地理环境、人口因素和生产方式（生产力+生产关系）。生产方式是决定性因素。</p>
+                    <p><strong>(二) 社会意识 (Social Consciousness)：</strong>社会生活的精神生活，是社会存在的总体反映。特征：具有相对独立性（发展不完全同步性、与经济发展水平不平衡性、历史继承性、相互影响作用、对社会存在的能动反作用）。</p>
+                    <p><strong>(三) 社会存在和社会意识关系：</strong>社会存在决定社会意识，社会意识是社会存在的反映，并反作用于社会存在。</p>
+                </div>
+            </div>
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    三、生产力与生产关系矛盾运动的规律
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 生产力 (Productive Forces)：</strong>人类改造自然、获得物质资料的能力。要素：实体性要素（劳动对象、劳动资料、劳动者），智能性要素（科技、管理、教育）。劳动者是最活跃主导因素，生产工具是生产力发展水平主要标志。</p>
+                    <p><strong>(二) 生产关系 (Relations of Production)：</strong>人们在生产过程中结成的经济关系。包括：生产资料所有制关系（基础）、人在生产中地位和相互关系、产品分配关系。</p>
+                    <p><strong>(三) 相互关系：</strong>生产力决定生产关系，生产关系反作用于生产力。</p>
+                </div>
+            </div>
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    四、经济基础与上层建筑矛盾运动的规律
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 经济基础 (Economic Base)：</strong>由一定发展阶段生产力决定的占统治地位的生产关系的总和。</p>
+                    <p><strong>(二) 上层建筑 (Superstructure)：</strong>建立在一定经济基础上的社会意识形态及与之相适应的政治法律制度。包括观念上层建筑（政治法律思想、道德、宗教、文艺、哲学等）和政治上层建筑（军队、警察、法庭、政府、政党等）。</p>
+                    <p><strong>(三) 矛盾运动：</strong>经济基础决定上层建筑，上层建筑对经济基础具有能动的反作用。</p>
+                </div>
+            </div>
+             <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    五、群众史观 (Mass View of History)
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 人民群众在社会历史中的作用：</strong>社会历史的主体，社会变革的决定力量。是社会物质财富和精神财富的源泉。</p>
+                    <p><strong>(二) 个人在历史上的作用：</strong>历史人物（杰出人物和反面人物）能影响历史事件，加速或延缓历史发展，但不能改变基本趋势。</p>
+                    <p><strong>(三) 坚持党的群众路线：</strong>“一切为了群众，一切依靠群众，从群众中来，到群众中去。”</p>
+                </div>
+            </div>
+            <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    六、人的本质和价值 (Essence and Value of Man)
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 人的本质：</strong>一切社会关系的总和。人具有自然属性和社会属性。</p>
+                    <p><strong>(二) 人的价值：</strong>社会价值（对社会需要的满足）和自我价值（满足生存发展需要）的统一。社会价值处于首要地位。</p>
+                </div>
+            </div>
+             <div class="accordion-item bg-gray-50 p-4 rounded-md mb-3 shadow">
+                <h3 class="accordion-title text-xl font-medium text-gray-700 flex justify-between items-center">
+                    七、社会发展的历史进程 (Historical Process of Social Development)
+                    <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </h3>
+                <div class="accordion-content mt-2 text-gray-600">
+                    <p><strong>(一) 社会形态 (Social Formation)：</strong>同生产力发展一定阶段相适应的经济基础和上层建筑的统一体。</p>
+                    <p><strong>划分方法：</strong></p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li><strong>经济社会形态划分：</strong>
+                            <ul class="list-disc list-inside ml-6">
+                                <li>五种社会形态：原始社会、奴隶社会、封建社会、资本主义社会、共产主义社会（第一阶段是社会主义社会）。</li>
+                                <li>三种社会形态：自然经济社会、商品经济社会、产品经济社会（人的依赖性社会、物的依赖性社会、个人全面发展社会）。</li>
+                            </ul>
+                        </li>
+                        <li><strong>技术社会形态划分：</strong>渔猎社会—农业社会—工业社会—信息社会。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const accordionItems = document.querySelectorAll('.accordion-item');
+
+        // Tab functionality
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.dataset.target;
+                
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active', 'text-blue-600', 'border-blue-600');
+                    btn.classList.add('border-transparent');
+                });
+                button.classList.add('active', 'text-blue-600', 'border-blue-600');
+                button.classList.remove('border-transparent');
+
+                tabContents.forEach(content => {
+                    if (content.id === targetId) {
+                        content.classList.add('active');
+                    } else {
+                        content.classList.remove('active');
+                    }
+                });
+            });
+        });
+        
+        // Set the first tab as active by default
+        if (tabButtons.length > 0) {
+            tabButtons[0].classList.add('active', 'text-blue-600', 'border-blue-600');
+            tabButtons[0].classList.remove('border-transparent');
+        }
+
+
+        // Accordion functionality
+        accordionItems.forEach(item => {
+            const title = item.querySelector('.accordion-title');
+            const content = item.querySelector('.accordion-content');
+            const icon = title.querySelector('svg');
+
+            title.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Optional: Close other accordions when one is opened
+                // accordionItems.forEach(otherItem => {
+                //     otherItem.classList.remove('active');
+                //     otherItem.querySelector('.accordion-content').style.maxHeight = null;
+                //     otherItem.querySelector('svg').style.transform = 'rotate(0deg)';
+                // });
+
+                if (isActive) {
+                    item.classList.remove('active');
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    item.classList.add('active');
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
