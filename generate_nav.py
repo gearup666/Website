@@ -38,7 +38,7 @@ def get_html_details(filepath):
 
 def generate_card_html(file_title, link_path, description):
     """为每个HTML文件生成卡片HTML代码"""
-    # 你可以根据第二个文档中的CSS样式自定义这里的HTML结构
+    # 你可以根据你的CSS样式自定义这里的HTML结构
     return f"""
 <div class="card">
   <h3><a href="{link_path}">{file_title}</a></h3>
@@ -80,9 +80,18 @@ def main():
         print("错误: 未找到 index.html。请创建一个包含占位符的基础 index.html 文件。")
         return
 
-    placeholder = "" # 已修正此处的占位符为正确的HTML注释
+    # --- 这是关键的修正 ---
+    placeholder = "" 
+    # ----------------------
+
+    if not placeholder.strip(): # 再次检查 placeholder 是否为空或仅包含空格
+        print("错误: placeholder 变量为空或仅包含空格。脚本无法继续。")
+        return
+
     if placeholder not in index_content:
         print(f"错误: 在 index.html 中未找到占位符 '{placeholder}'。")
+        print("请确保 index.html 文件中包含以下占位符，通常在一个 div 内部：")
+        print("")
         return
 
     # 确保占位符前后的内容保持不变，只替换占位符本身
@@ -90,19 +99,14 @@ def main():
     if len(parts) == 2:
         new_index_content = parts[0] + nav_links_html + parts[1]
     else:
-        # 如果占位符是HTML注释，它可能在文件中有多个实例（例如，如果用户添加了其他注释）
-        # 更稳健的方法是只替换第一个或最后一个实例，或者使用更独特的占位符。
-        # 对于这个场景，假设占位符是唯一的。
-        # 如果 index.html 结构复杂，可能需要更复杂的替换逻辑。
-        # 例如，使用正则表达式确保只替换特定div内的占位符。
-        # 但对于当前简单的占位符，split应该可以工作，前提是占位符是唯一的。
-        print(f"警告: 占位符 '{placeholder}' 在 index.html 中未精确匹配或出现多次。将尝试替换第一个实例。")
-        # 尝试找到第一个实例并替换
+        # 这种替换方式更安全，即使占位符出现多次，也只替换第一个
         start_index = index_content.find(placeholder)
         if start_index != -1:
+            print(f"警告: 占位符 '{placeholder}' 在 index.html 中可能出现多次或匹配不精确。将替换第一个找到的实例。")
             new_index_content = index_content[:start_index] + nav_links_html + index_content[start_index + len(placeholder):]
         else:
-            print(f"错误: 无法在 index.html 中定位占位符 '{placeholder}' 进行替换。")
+            # 理论上，如果 placeholder in index_content 为真，这里不应该执行
+            print(f"错误: 无法在 index.html 中定位占位符 '{placeholder}' 进行替换，尽管它似乎存在。")
             return
 
     # 仅当内容发生变化时才写入文件
